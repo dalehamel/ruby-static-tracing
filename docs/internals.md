@@ -38,6 +38,10 @@ This should cause bpftrace to print `My little probe 42`, and the python program
 
 When you stop bpftrace, the python program should stop printing.
 
+Here's a gif showing this usage:
+
+![pythongif](https://user-images.githubusercontent.com/618615/55049582-3b458500-5023-11e9-8278-d27f9a82f404.gif)
+
 # The magic sauce
 
 Normally, static probes should be defined in source code, usually in a C program.
