@@ -111,6 +111,10 @@ So long as all calls to fire a probe are wrapped in an (extremely fast) is-enabl
 
 The above processing is also only done when a probe is enabled / disabled, meaning that it is not overhead that is incurred each time a probe is actually fired.
 
+When a probe is enabled, `int3` instruction is used to cause the probe to be executed:
+
+![diagram](https://dev.framing.life/assets/images/post/kernel-and-user-probes-magic/instruction-probes-workflow-z1-escaped.svg)
+
 # Measuring performance of tracing itself
 
 Using bpftrace, we can approximate the overhead of getting the current monoonic time. By examining the C code in ruby, we can see that 
@@ -142,3 +146,4 @@ we must also measure the speed of checking if a probe is enabled to get the full
 * https://sourceware.org/systemtap/wiki/UserSpaceProbeImplementation
 * https://medium.com/sthima-insights/we-just-got-a-new-super-power-runtime-usdt-comes-to-linux-814dc47e909f
 * https://github.com/jav/systemtap/blob/master/runtime/uprobes/uprobes.txt
+* https://dev.framing.life/tracing/uprobes-and-int3-insn/

@@ -131,6 +131,16 @@ This should generate a probe using the existing class/module as a provider (and 
 
 Registering a tracepoint against an existing method name should cause the original name to be replaced by the traced version depending on configuration.
 
+## Stack probes
+
+It would be great to be able to fire off the current call stack, eg via wrapping [code from vm\_backtrace](https://github.com/ruby/ruby/blob/a8695d5022d7afbf004765bfb86457fbb9d56457/vm_backtrace.c#L987)
+
+This could provide something like “StaticTracing::StackTracer”, but we would need to be very conscious of the overhead of grabbing these stack traces, and profile the underlying ruby C code for this. This is certain to be more expensive than just calculating latency.
+
+The overhead here seems to all be in `ec_backtrace_to_ary` which does same processing of the execution context pointer from `GET_EC`. We should profile this function a lot to see if it results in observable overhead, and examine the implementation closely to determine the worst case runtime complexity.
+
+This functionality could allow for building flamegraphs and doing stack profiling, but only for those methods who are participating in tracing, so this is an incomplete view as compared to other profiling techniques already available.
+
 # Custom probes
 
 ## Block format
@@ -138,7 +148,6 @@ Registering a tracepoint against an existing method name should cause the origin
 Defining custom probes in a block format will require that the block return the values to be fired.
 
 This is probably the most robust usage of the custom tracepoint, and potentially the most dangerous.
-
 
 
 ```ruby
@@ -159,7 +168,7 @@ Simply including static tracing no a class or module should result in tracepoint
 ```ruby
 
 class MyController
-  include StaticTracing::LatencyTracer
+  include StaticTracing::Helper::LatencyTracer
   def index; end
   def create; end
   def default_url_options; end
