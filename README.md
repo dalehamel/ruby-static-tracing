@@ -1,3 +1,5 @@
+![ponycorn](http://www.brendangregg.com/blog/images/2015/pony_ebpf01_small.png)
+
 # Hackdays
 
 This project is in a design phase, in preparations for hackdays so we can hit the ground running on the coding.
