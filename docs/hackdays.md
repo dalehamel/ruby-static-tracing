@@ -22,7 +22,7 @@ This means specialized probe types of different types, each specialized with the
 
 * [ ] Finishing the implementation of rubyland basics
 * [ ] Special probe types, such as LatencyProbe, HeaderProbe, and anything else we can think of that might be useful, contextual to rails.
-* [ ] The exact logic of how tracepoints and providers are loaded and unloaded on receiving SIGTRAP needs to be determined.
+* [ ] The exact logic of how tracepoints and providers are loaded and unloaded on receiving a signal needs to be determined.
 
 ## Stress and Perf Testing 
 

@@ -12,15 +12,15 @@ StaticTracing::Configuration.some_config = "My Awesome Value"
 
 ```ruby
 StaticTracing::Configuration.mode = StaticTracing::Configuration::Modes::SIGNAL
-StaticTracing::Configuration.signal = StaticTracing::Configuration::Modes::SIGNALS::SIGTRAP
+StaticTracing::Configuration.signal = StaticTracing::Configuration::Modes::SIGNALS::SIGPROF
 ```
 
 Where a tracepoint accepts a method as an argument, there are three options:
 - "ON": Immediately replace the definition of the original method with a wrapped version that adds the tracepoint.
 - "OFF": Require manually toggling tracepoints on and off within source code
-- "SIGNAL": Activate behavior of "ON" upon receiving `SIGTRAP`, or a user-defined signal to replace this with a configuration value. Upon receiving the signal again, it will be toggled back to "OFF".
+- "SIGNAL": Activate behavior of "ON" upon receiving `SIGPROF`, or a user-defined signal to replace this with a configuration value. Upon receiving the signal again, it will be toggled back to "OFF".
 
-SIGNAL should be the default behavior.
+SIGNAL should be the default behavior. `SIGPROF` seems to be unused (and uncaught) by either ruby or unicorn, so it *should* be fine to trap it. SIGPROF seems like the proper signal to trap on.
 
 The extra processing overhead added by "ON" should always be limited to checking if a probe is enabled, and the cost of returning from a wrapper methed - both of which should be known and low overhead.
 

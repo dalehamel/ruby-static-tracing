@@ -85,3 +85,11 @@ Porting in its support for dtrace would be a possible option for supporting deve
 https://github.com/chrisa/libusdt
 
 If libstapsdt is merged into upstream libusdt, it would significantly simplify the implementation of this gem. That project appears to be inactive though, and until the support for dtrace and bpftrace have a unified backend, this project will implement against their interfaces separately.
+
+## lttng-ust
+
+There is an existing (apparently unmaintained) [gem](https://github.com/riddochc/lttng-agent-ruby) for ruby that utilizes lttng's userspace support.
+
+It is possible that this could provide improved performance by way of lover overhead as compared to USDT probes.
+
+lttng-ust does tracing 100% in userspace, as opposed to uprobes which are executed within a kernel context. It may be worthwile to benchmark agints lttng-ust libraries, to ascertain what the magnitude of the difference is overhead is, particularly if USDT probe overhead becomes observable and detrimental.

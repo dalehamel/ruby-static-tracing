@@ -84,7 +84,7 @@ This contains the provider and probe name, as well as the address of the probe a
 
 The python helper will `dlopen` this library, adding these probes to its process image when it pulls in these stub libraries.
 
-## int3 (0x90) and uprobes
+## int3 (0xCC), NOP (0x90) and uprobes
 
 The other bit of magic here is that the probe automatically becomes enabled when it is attached to.
 
@@ -119,6 +119,18 @@ When a probe is enabled, `int3` instruction is used to cause the probe to be exe
 
 ![diagram](https://dev.framing.life/assets/images/post/kernel-and-user-probes-magic/instruction-probes-workflow-z1-escaped.svg)
 
+`int3` is a special debugging/breakpoint instruction with opcode `0xCC`. When a uprobe is enabled, it will overwrite the memory at the probe point with this
+single-byte instruction, and save the original byte for when execution is resumed. Upon executing this instruction, the uprobe is triggered and
+the handle routine is executed. Upon completion of the handler routine, the original assembly is executed.
+
+In libstapsdt, the address where we place the uprobe is actually in the generated ELF binary, and a NOP instruction (0x90) is all we are overwriting.
+
+So, in order to check if a tracepoint is enabled, we just check the address of our tracepoint to see if it contains a NOP instruction. If it does,
+then the tracepoint isn't enabled. If it doesn't, then a uprobe has placed a 0xCC instruction here, and we know to execute our tracepoint logic.
+
+Upon firing the probe, libstapsdt will actually execute the code at this address, letting the kernel "take the wheel" briefly, to collect the trace data.
+This will execute our eBPF program that collects the tracepoint data and buffers it inside the kernel, then hand control back to our userspace ruby process.
+
 # Measuring performance of tracing itself
 
 Using bpftrace, we can approximate the overhead of getting the current monoonic time. By examining the C code in ruby, we can see that 
@@ -143,6 +155,15 @@ This means that it would take about one hundred probed methods to add one millis
 
 we must also measure the speed of checking if a probe is enabled to get the full picture, as well as any other in-line logic that is performed.
 
+## Kernel vs userspace buffering
+
+It may not end up being an issue, but if probes are enabled (and fired!) persistently and frequently, the cost of the `int3` trap overhead may become significant.
+
+uprobes allow for buffering trace event data in kernel space, but lttng-ust provides a means to buffer data in userspace.
+
+This elminates the necessity of the `int3` trap, and allows for buffering trace data in the userspace application rather than the kernel.
+
+
 # Further reading
 
 * http://www.brendangregg.com/blog/2015-07-03/hacking-linux-usdt-ftrace.html
@@ -151,3 +172,4 @@ we must also measure the speed of checking if a probe is enabled to get the full
 * https://medium.com/sthima-insights/we-just-got-a-new-super-power-runtime-usdt-comes-to-linux-814dc47e909f
 * https://github.com/jav/systemtap/blob/master/runtime/uprobes/uprobes.txt
 * https://dev.framing.life/tracing/uprobes-and-int3-insn/
+* [lttng-ust vs USDT](https://lwn.net/Articles/754868/)
