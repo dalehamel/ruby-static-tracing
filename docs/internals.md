@@ -1,6 +1,6 @@
 # How this works
 
-In short, this works by creating static tracepoints, dynamically.
+In short, this works by creating static tracepoints on a ruby process, dynamically.
 
 To illustrate the point, we'll how we're able to add static tracepoints to python, which is similar to what we'll be doing here with ruby.
 
