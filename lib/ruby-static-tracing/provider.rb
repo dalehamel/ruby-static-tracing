@@ -11,7 +11,7 @@ module StaticTracing
       end
 
       def fetch(namespace)
-        @providers.fetch(namespace) do
+        providers.fetch(namespace) do
           raise ProviderNotFound
         end
       end

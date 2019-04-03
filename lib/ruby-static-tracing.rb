@@ -31,6 +31,7 @@ module StaticTracing
   # Efficiently return the current monotonic clocktime.
   # Wraps libc clock_gettime
   # The overhead of this is tested to be on the order of 10 microseconds under normal conditions
+  # You should inline this method in your tracer to avoid an extra method call.
   def nsec
     Process.clock_gettime(Process::CLOCK_MONOTONIC, :nanosecond)
   end
@@ -43,6 +44,7 @@ module StaticTracing
   # Overwrite the definition of all functions that are enabled
   # with a wrapped version that has tracing enabled
   def enable!
+    tracers.each(&:enable!)
     @enabled = true
   end
 

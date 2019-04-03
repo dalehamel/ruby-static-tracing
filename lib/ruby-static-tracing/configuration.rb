@@ -40,6 +40,10 @@ module StaticTracing
       enable_trap
     end
 
+    def add_tracer(tracer)
+      StaticTracing.tracers << tracer
+    end
+
     private
 
     def handle_old_mode
