@@ -63,10 +63,6 @@ end
 # within a trap handler.
 # Specify default signals, but allow these to be overidden for easier integration
 
-<<<<<<< HEAD
 # This loads the actual C extension, we might want to guard it
 # for cases where the extension isn't yet built
 require 'ruby-static-tracing/ruby_static_tracing'
-=======
-Signal.trap("PROF") { StaticTracing.enabled? ? StaticTracing.disable : StaticTracing.enable }
->>>>>>> Add config class
