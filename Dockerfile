@@ -31,8 +31,8 @@ RUN wget -O ruby-install-0.7.0.tar.gz https://github.com/postmodern/ruby-install
     tar -xzvf ruby-install-0.7.0.tar.gz && \
     cd ruby-install-0.7.0 && \
     make install && rm -rf /ruby-install*
-RUN ruby-install ruby 2.4.0 -- --enable-dtrace && rm -rf /usr/local/src/ruby*
-ENV PATH=${PATH}:/opt/rubies/ruby-2.4.0/bin/
-RUN echo 'PATH=${PATH}:/opt/rubies/ruby-2.4.0/bin/' >> /etc/bash.bashrc
+RUN ruby-install ruby 2.5.5 -- --enable-dtrace && rm -rf /usr/local/src/ruby*
+ENV PATH=${PATH}:/opt/rubies/ruby-2.5.5/bin/
+RUN echo 'PATH=${PATH}:/opt/rubies/ruby-2.5.5/bin/' >> /etc/bash.bashrc
 RUN gem install bundler
 WORKDIR /app
