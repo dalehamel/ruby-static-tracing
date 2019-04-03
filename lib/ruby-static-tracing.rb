@@ -4,6 +4,7 @@ require 'ruby-static-tracing/version'
 require 'ruby-static-tracing/platform'
 require 'ruby-static-tracing/provider'
 require 'ruby-static-tracing/tracepoint'
+require 'ruby-static-tracing/configuration'
 
 # FIXME Including StaticTracing should cause every method in a module or class to be registered
 # Implement this by introspecting all methods on the includor, and wrapping them.
@@ -33,21 +34,28 @@ module StaticTracing
 
   # Should indicate if static tracing is enabled - a global constant
   def enabled?
+    !!@enabled
   end
 
   # Overwrite the definition of all functions that are enabled
   # with a wrapped version that has tracing enabled
   def enable
+    @enabled = true
   end
 
   # Overwrite the definition of all functions to their original definition,
   # no longer wrapping them
   def disable
+    @enabled = false
   end
 
   # Retrieves a hash of all registered providers
   def providers
     @providers ||= {}
+  end
+
+  def configure
+    yield Configuration.instance
   end
 end
 
@@ -55,6 +63,10 @@ end
 # within a trap handler.
 # Specify default signals, but allow these to be overidden for easier integration
 
+<<<<<<< HEAD
 # This loads the actual C extension, we might want to guard it
 # for cases where the extension isn't yet built
 require 'ruby-static-tracing/ruby_static_tracing'
+=======
+Signal.trap("PROF") { StaticTracing.enabled? ? StaticTracing.disable : StaticTracing.enable }
+>>>>>>> Add config class
