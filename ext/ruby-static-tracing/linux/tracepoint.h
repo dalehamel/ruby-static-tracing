@@ -17,6 +17,10 @@ typedef struct {
   SDTProbe_t *sdt_tracepoint;
 } static_tracing_tracepoint_t;
 
+typedef enum TRACEPOINT_ARG_TYPES {
+  Integer,
+  String,
+} Tracepoint_arg_types_enum;
 
 /*
  * call-seq:

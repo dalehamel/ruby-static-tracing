@@ -3,14 +3,11 @@ $LOAD_PATH.unshift File.expand_path("../../../lib", __FILE__)
 require 'mkmf'
 require 'ruby-static-tracing/platform'
 
-unless StaticTracing.linux?
-end
-
 def platform_dir(platform)
   File.expand_path("../../../ext/ruby-static-tracing/#{platform}/", __FILE__)
 end
 
-if StaticTracing.linux?
+if StaticTracing::Platform.linux?
   abort 'libstapsdt.h is missing, please install libstapsdt' unless find_header('libstapsdt.h')
 
   have_header 'libstapsdt.h'

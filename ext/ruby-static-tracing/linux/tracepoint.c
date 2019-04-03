@@ -16,10 +16,9 @@ tracepoint_initialize(VALUE self, VALUE provider, VALUE name, VALUE vargs)
   VALUE cStaticTracing, cProvider, cProviderInst;
   static_tracing_tracepoint_t *tracepoint = NULL;
   const char *c_name_str = NULL;
-  const char *c_provider_str = NULL;
 
   c_name_str     = check_name_arg(name);
-  c_provider_str = check_provider_arg(name);
+  check_provider_arg(name); // FIXME should only accept string
 
   /// Get a handle to global provider list for lookup
   cStaticTracing = rb_const_get(rb_cObject, rb_intern("StaticTracing"));

@@ -12,8 +12,8 @@ module StaticTracing
       @name = name
       @args = args
 
-      if StaticTracing.linux?
-        tracepoint_initialize(provider, name, vargs)
+      if StaticTracing::Platform.linux?
+        tracepoint_initialize(provider, name, args)
       else
         StaticTracing.issue_disabled_tracepoints_warning
       end
