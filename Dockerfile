@@ -34,5 +34,7 @@ RUN wget -O ruby-install-0.7.0.tar.gz https://github.com/postmodern/ruby-install
 RUN ruby-install ruby 2.5.5 -- --enable-dtrace && rm -rf /usr/local/src/ruby*
 ENV PATH=${PATH}:/opt/rubies/ruby-2.5.5/bin/
 RUN echo 'PATH=${PATH}:/opt/rubies/ruby-2.5.5/bin/' >> /etc/bash.bashrc
-RUN gem install bundler
+RUN gem install bundler:1.17.3
 WORKDIR /app
+COPY . .
+RUN bundle install
