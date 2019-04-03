@@ -57,6 +57,10 @@ module StaticTracing
     @providers ||= {}
   end
 
+  def tracers
+    @tracers ||= []
+  end
+
   def toggle_tracing!
     enabled? ? disable! : enable!
   end
