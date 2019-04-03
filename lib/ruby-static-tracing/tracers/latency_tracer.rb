@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module StaticTracing
-  class Tracers
+  module Tracers
     class LatencyTracer
       LATENCY_TRACER_ORIGINAL_METHOD_PREFIX = 'latency_tracer_original_method_'
       LATENCY_TRACER_TRACED_METHOD_PREFIX = 'latency_tracer_traced_method_'
@@ -22,6 +22,8 @@ module StaticTracing
             result
           end
 
+          # This will create a copy of the original method under `latency_tracer_original_method_*`
+          # and then overwrite the method with the instrumented method`latency_tracer_traced_method_*`
           klass.alias_method original_method_name, method_name
           klass.alias_method method_name, traced_method_name
         end

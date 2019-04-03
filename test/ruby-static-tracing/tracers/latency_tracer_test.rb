@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
+require 'test_helper'
+require 'ruby-static-tracing/tracers/latency_tracer'
+
 module StaticTracing
-  class Tracers
+  module Tracers
     class LatencyTracerTest < MiniTest::Test
       class Example
         def noop
