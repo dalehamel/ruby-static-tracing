@@ -38,7 +38,6 @@ void Init_ruby_static_tracing()
   rb_define_method(cProvider, "enable", provider_enable, 0);
   rb_define_method(cProvider, "disable", provider_disable, 0);
   rb_define_method(cProvider, "destroy", provider_destroy, 0);
-  rb_define_method(cProvider, "add_tracepoint", provider_add_tracepoint, 3); // FIXME accept vargs
 
   rb_define_alloc_func(cTracepoint, static_tracing_tracepoint_alloc);
   rb_define_method(cTracepoint, "tracepoint_initialize", tracepoint_initialize, 3); // FIXME accept vargs

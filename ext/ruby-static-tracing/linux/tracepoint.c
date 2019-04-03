@@ -10,15 +10,20 @@ check_name_arg(VALUE provider);
 static const char*
 check_provider_arg(VALUE provider);
 
+static Tracepoint_arg_types
+*check_vargs(int *argc, VALUE vargs);
+
 VALUE
 tracepoint_initialize(VALUE self, VALUE provider, VALUE name, VALUE vargs)
 {
   VALUE cStaticTracing, cProvider, cProviderInst;
   static_tracing_tracepoint_t *tracepoint = NULL;
   const char *c_name_str = NULL;
+  int argc = 0;
 
   c_name_str     = check_name_arg(name);
-  check_provider_arg(name); // FIXME should only accept string
+  check_provider_arg(provider); // FIXME should only accept string
+  Tracepoint_arg_types *args = check_vargs(&argc, vargs);
 
   /// Get a handle to global provider list for lookup
   cStaticTracing = rb_const_get(rb_cObject, rb_intern("StaticTracing"));
@@ -26,11 +31,12 @@ tracepoint_initialize(VALUE self, VALUE provider, VALUE name, VALUE vargs)
   cProviderInst = rb_funcall(cProvider, rb_intern("register"), 1, provider);
 
   // Use the provider to register a tracepoint
-  SDTProbe_t *probe = provider_add_tracepoint_internal(cProviderInst, c_name_str, vargs);
+  SDTProbe_t *probe = provider_add_tracepoint_internal(cProviderInst, c_name_str, argc, args);
   TypedData_Get_Struct(self, static_tracing_tracepoint_t, &static_tracing_tracepoint_type, tracepoint);
 
   // Stare the tracepoint handle in our struct
   tracepoint->sdt_tracepoint = probe;
+  tracepoint->args = args;
 
   return self;
 }
@@ -85,6 +91,40 @@ check_provider_arg(VALUE provider)
   }
 
   return c_provider_str;
+}
+
+static Tracepoint_arg_types
+*check_vargs(int *argc, VALUE vargs)
+{
+  if(TYPE(vargs) == T_ARRAY)
+  {
+    VALUE rLength = rb_funcall(vargs, rb_intern("length"), 0, Qnil);
+    *argc = NUM2INT(rLength);
+
+    if(*argc > 6)
+    {
+      printf("ERROR - passed %i args, maximum 6 argument types can be passed", *argc);
+      return NULL;
+    }
+
+    Tracepoint_arg_types *args = malloc(*argc * sizeof(Tracepoint_arg_types));
+    for (int i = 0; i < *argc; i++)
+    {
+      VALUE str = rb_funcall(rb_ary_entry(vargs, i), rb_intern("to_s"), 0, Qnil);
+      const char* cStr = RSTRING_PTR(str);
+      if (strcmp(cStr, "Integer")) {
+        args[i] = Integer;
+      } else if (strcmp(cStr, "String")) {
+        args[i] = String;
+      } else {
+        printf("ERROR - type \"%s\" is unsupported\n", cStr);
+      }
+    }
+    return args;
+  } else {
+    printf("ERROR - array was expected\n");
+    return NULL;
+  }
 }
 
 // Allocate a static_tracing_tracepoint_type struct for ruby memory management

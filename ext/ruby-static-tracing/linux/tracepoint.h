@@ -15,12 +15,8 @@ Functions here are associated with rubyland operations.
 typedef struct {
   char *name;
   SDTProbe_t *sdt_tracepoint;
+  Tracepoint_arg_types *args;
 } static_tracing_tracepoint_t;
-
-typedef enum TRACEPOINT_ARG_TYPES {
-  Integer,
-  String,
-} Tracepoint_arg_types_enum;
 
 /*
  * call-seq:
