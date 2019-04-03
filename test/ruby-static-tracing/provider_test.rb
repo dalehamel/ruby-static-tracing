@@ -18,5 +18,10 @@ module StaticTracing
     def test_provider
       assert_equal @provider, Provider.fetch(@namespace)
     end
+
+    def test_add_tracepoint
+      tracepoint = @provider.add_tracepoint('my_method', Integer, String)
+      assert_instance_of Tracepoint, tracepoint
+    end
   end
 end

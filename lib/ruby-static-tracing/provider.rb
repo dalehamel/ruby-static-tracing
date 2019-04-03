@@ -22,13 +22,19 @@ module StaticTracing
       end
     end
 
-    def initialize(name)
+    attr_reader :namespace
+
+    def initialize(namespace)
       if StaticTracing::Platform.linux?
-        provider_initialize(name)
+        provider_initialize(namespace)
       else
         StaticTracing.issue_disabled_tracepoints_warning
       end
-      @name = name
+      @namespace = namespace
+    end
+
+    def add_tracepoint(method_name, *args)
+      Tracepoint.new(namespace, method_name, args)
     end
 
 # FIXME - how to store list of tracepoints on provider? Allocate map in C?
