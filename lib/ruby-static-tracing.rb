@@ -69,4 +69,4 @@ end
 
 # This loads the actual C extension, we might want to guard it
 # for cases where the extension isn't yet built
-require 'ruby-static-tracing/ruby_static_tracing'
+require 'ruby-static-tracing/ruby_static_tracing' if StaticTracing.linux?

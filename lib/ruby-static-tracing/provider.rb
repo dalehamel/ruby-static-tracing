@@ -1,9 +1,16 @@
 module StaticTracing
   class Provider #:nodoc:
+    class ProviderNotFound < StandardError; end
 
     class << self
       def register(namespace)
-        providers[namespace] = new(namespace)
+        providers[namespace] ||= new(namespace)
+      end
+
+      def fetch(namespace)
+        @providers.fetch(namespace) do
+          raise ProviderNotFound
+        end
       end
 
       private

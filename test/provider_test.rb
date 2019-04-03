@@ -7,18 +7,14 @@ module StaticTracing
       @provider = Provider.register(@namespace)
     end
 
-    def test_instance
-      assert_equal @provider, Provider.instance(@namespace)
+    def test_instance_not_found
+      assert_raises Provider::ProviderNotFound do
+        Provider.fetch('not_registered')
+      end
     end
 
-    def test_instance_will_create_a_new_provider_if_one_doesnt_exist
-      provider = Provider.instance('testing')
-      assert_instance_of Provider, provider
-      refute_equal @provider, provider
-    end
-
-    def test_register
-      refute_equal @provider, Provider.register(@namespace)
+    def test_provider
+      assert_equal @provider, Provider.fetch(@namespace)
     end
   end
 end
