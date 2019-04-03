@@ -11,6 +11,12 @@ module StaticTracing
       @provider = provider
       @name = name
       @args = args
+
+      if StaticTracing.linux?
+        tracepoint_initialize(provider, name, vargs)
+      else
+        StaticTracing.issue_disabled_tracepoints_warning
+      end
     end
 
     def fire(*values)

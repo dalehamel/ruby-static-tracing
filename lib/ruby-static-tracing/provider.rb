@@ -2,6 +2,7 @@
 
 module StaticTracing
   class Provider #:nodoc:
+    attr_accessor :name
     class ProviderNotFound < StandardError; end
 
     class << self

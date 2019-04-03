@@ -34,6 +34,16 @@ provider_add_tracepoint(VALUE self, VALUE name, VALUE vargs)
   return Qnil;
 }
 
+SDTProbe_t
+*provider_add_tracepoint_internal(VALUE self, const char* name, VALUE vargs)
+{
+  static_tracing_provider_t *res = NULL;
+  TypedData_Get_Struct(self, static_tracing_provider_t, &static_tracing_provider_type, res);
+
+  SDTProbe_t *probe = providerAddProbe(res->sdt_provider, name, 0);
+  return probe;
+}
+
 /*
   Wraps providerLoad from libstapsdt
 */

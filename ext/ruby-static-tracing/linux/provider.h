@@ -84,4 +84,7 @@ provider_destroy(VALUE self);
 VALUE
 static_tracing_provider_alloc(VALUE klass);
 
+SDTProbe_t
+*provider_add_tracepoint_internal(VALUE self, const char* name, VALUE vargs);
+
 #endif //STATIC_TRACING_PROVIDER_H
