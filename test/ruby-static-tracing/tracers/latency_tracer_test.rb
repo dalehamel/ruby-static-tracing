@@ -1,19 +1,17 @@
 # frozen_string_literal: true
 
-require 'ruby-static-tracing/tracers/latency_tracer'
-
 module StaticTracing
   class Tracers
     class LatencyTracerTest < MiniTest::Test
       class Example
         def noop
         end
-        LatencyTracer.register(self, :noop)
+        Tracers::LatencyTracer.register(self, :noop)
       end
 
       def setup
         @example = Example.new
-        LatencyTracer.enable!
+        Tracers::LatencyTracer.enable!
       end
 
       def test_noop_will_fire_an_event_when
@@ -23,7 +21,7 @@ module StaticTracing
 
       def test_disable_will_prevent_firing_an_event
         Process.expects(:clock_gettime).never
-        LatencyTracer.disable!
+        Tracers::LatencyTracer.disable!
         @example.noop
       end
     end
