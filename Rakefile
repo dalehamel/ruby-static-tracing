@@ -1,3 +1,4 @@
+require 'rake/testtask'
 require 'bundler/gem_tasks'
 
 GEMSPEC = eval(File.read('ruby-static-tracing.gemspec'))
@@ -25,4 +26,10 @@ task :run do
   containerid=`docker run -v $(pwd):/app -d ruby-static-tracing:latest /bin/sh -c "sleep infinity"`.strip
   puts "Entering docker container #{containerid}"
   system("docker exec -ti #{containerid} bash")
+end
+
+Rake::TestTask.new do |t|
+  t.libs << "test"
+  t.test_files = FileList['test/*_test.rb']
+  t.verbose = true
 end

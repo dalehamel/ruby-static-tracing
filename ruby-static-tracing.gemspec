@@ -20,4 +20,6 @@ Gem::Specification.new do |s|
   s.extensions = ['ext/ruby-static-tracing/extconf.rb']
   s.add_development_dependency 'rake-compiler', '~> 0.9'
   s.add_development_dependency 'rake', '< 11.0'
+  s.add_development_dependency 'minitest'
+  s.add_development_dependency 'mocha'
 end
