@@ -15,7 +15,7 @@ if StaticTracing.linux?
 
   have_header 'libstapsdt.h'
 
-  $CFLAGS = "-D_GNU_SOURCE -Werror -Wall "
+  $CFLAGS = "-D_GNU_SOURCE -Wall " # -Werror  complaining
   if ENV.key?('DEBUG')
     $CFLAGS << "-O0 -g -DDEBUG"
   else

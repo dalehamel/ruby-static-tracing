@@ -2,6 +2,8 @@ require 'logger'
 
 require 'ruby-static-tracing/version'
 require 'ruby-static-tracing/platform'
+require 'ruby-static-tracing/provider'
+require 'ruby-static-tracing/tracepoint'
 
 # FIXME Including StaticTracing should cause every method in a module or class to be registered
 # Implement this by introspecting all methods on the includor, and wrapping them.
@@ -52,3 +54,7 @@ end
 # FIXME add signal handlers to enable-disable on specific process signals
 # within a trap handler.
 # Specify default signals, but allow these to be overidden for easier integration
+
+# This loads the actual C extension, we might want to guard it
+# for cases where the extension isn't yet built
+require 'ruby-static-tracing/ruby_static_tracing'

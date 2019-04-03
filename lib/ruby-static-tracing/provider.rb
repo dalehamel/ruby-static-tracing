@@ -10,7 +10,7 @@ module StaticTracing
 
     def initialize(name)
       if StaticTracing.linux?
-        initialize_provider(name)
+        provider_initialize(name)
       else
         StaticTracing.issue_disabled_tracepoints_warning
       end
