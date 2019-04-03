@@ -14,9 +14,9 @@ module StaticTracing
           original_method_name = build_original_method_name(method_name)
           traced_method_name = build_traced_method_name(method_name)
 
-          klass.define_method(traced_method_name) do
+          klass.define_method(traced_method_name) do |*args|
             start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC, :nanosecond)
-            result = send(original_method_name)
+            result = send(original_method_name, *args)
             duration = Process.clock_gettime(Process::CLOCK_MONOTONIC, :nanosecond) - start_time
             LatencyTracer.fire_tracepoint(provider, method_name, duration)
             result
