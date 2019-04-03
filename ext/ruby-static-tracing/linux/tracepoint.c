@@ -13,6 +13,9 @@ check_provider_arg(VALUE provider);
 static Tracepoint_arg_types
 *check_vargs(int *argc, VALUE vargs);
 
+static Tracepoint_fire_arg
+*check_fire_args(int *argc, VALUE vargs);
+
 VALUE
 tracepoint_initialize(VALUE self, VALUE provider, VALUE name, VALUE vargs)
 {
@@ -46,7 +49,21 @@ tracepoint_fire(VALUE self, VALUE vargs)
 {
   static_tracing_tracepoint_t *res = NULL;
   TypedData_Get_Struct(self, static_tracing_tracepoint_t, &static_tracing_tracepoint_type, res);
-  probeFire(res->sdt_tracepoint); // FIXME vargs
+  int argc = 0;
+
+  Tracepoint_fire_arg *args = check_fire_args(&argc, vargs);
+  switch(argc)
+  {
+    case 0: probeFire(res->sdt_tracepoint); break;
+    case 1: probeFire(res->sdt_tracepoint, args[0]); break;
+    case 2: probeFire(res->sdt_tracepoint, args[0], args[1]); break;
+    case 3: probeFire(res->sdt_tracepoint, args[0], args[1], args[2]); break;
+    case 4: probeFire(res->sdt_tracepoint, args[0], args[1], args[2], args[3]); break;
+    case 5: probeFire(res->sdt_tracepoint, args[0], args[1], args[2], args[3], args[4]); break;
+    case 6: probeFire(res->sdt_tracepoint, args[0], args[1], args[2], args[3], args[4], args[5]); break;
+    default: probeFire(res->sdt_tracepoint); break;
+  }
+
   return Qnil;
 }
 
@@ -118,6 +135,45 @@ static Tracepoint_arg_types
         args[i] = String;
       } else {
         printf("ERROR - type \"%s\" is unsupported\n", cStr);
+      }
+    }
+    return args;
+  } else {
+    printf("ERROR - array was expected\n");
+    return NULL;
+  }
+}
+
+static Tracepoint_fire_arg
+*check_fire_args(int *argc, VALUE vargs)
+{
+  if(TYPE(vargs) == T_ARRAY)
+  {
+    VALUE rLength = rb_funcall(vargs, rb_intern("length"), 0, Qnil);
+    *argc = NUM2INT(rLength);
+
+    if(*argc > 6)
+    {
+      printf("ERROR - passed %i args, maximum 6 argument types can be passed", *argc);
+      return NULL;
+    }
+
+    Tracepoint_fire_arg *args = malloc(*argc * sizeof(Tracepoint_fire_arg));
+    //printf("SIZE: %i ARGC: %i \n", sizeof(Tracepoint_fire_arg), *argc);
+    for (int i = 0; i < *argc; i++)
+    {
+      VALUE val = rb_ary_entry(vargs, i);
+      switch(TYPE(val))
+      {
+        case T_FIXNUM:
+          args[i].intval = FIX2LONG(val);
+          break;
+        case T_STRING:
+          args[i].strval = RSTRING_PTR(val);
+          break;
+        default:
+          printf("ERROR unsupported type passed for argument %i to fire\n", i);
+          break;
       }
     }
     return args;

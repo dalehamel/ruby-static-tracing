@@ -12,6 +12,11 @@ Functions here are associated with rubyland operations.
 
 #include "ruby_static_tracing.h"
 
+typedef union {
+  unsigned long long intval;
+  char *             strval;
+} Tracepoint_fire_arg;
+
 typedef struct {
   char *name;
   SDTProbe_t *sdt_tracepoint;
