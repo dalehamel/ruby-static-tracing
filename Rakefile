@@ -5,7 +5,7 @@ GEMSPEC = eval(File.read('ruby-static-tracing.gemspec'))
 
 $LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
 require 'ruby-static-tracing/platform'
-if StaticTracing.linux?
+if StaticTracing::Platform.linux?
   require 'rake/extensiontask'
   Rake::ExtensionTask.new('ruby_static_tracing', GEMSPEC) do |ext|
     ext.ext_dir = 'ext/ruby-static-tracing'
@@ -51,6 +51,6 @@ end
 
 Rake::TestTask.new do |t|
   t.libs << "test"
-  t.test_files = FileList['test/*_test.rb']
+  t.test_files = FileList['test/**/*_test.rb']
   t.verbose = true
 end

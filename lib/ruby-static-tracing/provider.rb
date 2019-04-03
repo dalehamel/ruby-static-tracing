@@ -21,7 +21,7 @@ module StaticTracing
     end
 
     def initialize(name)
-      if StaticTracing.linux?
+      if StaticTracing::Platform.linux?
         provider_initialize(name)
       else
         StaticTracing.issue_disabled_tracepoints_warning
@@ -46,7 +46,7 @@ module StaticTracing
     def destroy
     end
 
-    def initialize_provider(*)
+    def provider_initialize(*)
     end
   end
 end
