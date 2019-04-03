@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module StaticTracing
   module Platform
     extend self

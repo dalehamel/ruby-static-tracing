@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module StaticTracing
   class Provider #:nodoc:
     class ProviderNotFound < StandardError; end
