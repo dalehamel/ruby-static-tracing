@@ -24,8 +24,8 @@ Then you can run these commands, from within this gems root directory:
 
 ```
 bundle install
-rake dockerbuild
-rake run
+rake docker:build
+rake docker:run
 ```
 
 This should build you a container with suitable deps to get going to be able to build the gem and run unit tests.
