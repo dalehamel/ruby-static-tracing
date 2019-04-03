@@ -39,19 +39,23 @@ module StaticTracing
 
   # Overwrite the definition of all functions that are enabled
   # with a wrapped version that has tracing enabled
-  def enable
+  def enable!
     @enabled = true
   end
 
   # Overwrite the definition of all functions to their original definition,
   # no longer wrapping them
-  def disable
+  def disable!
     @enabled = false
   end
 
   # Retrieves a hash of all registered providers
   def providers
     @providers ||= {}
+  end
+
+  def toggle_tracing!
+    enabled? ? disable! : enable!
   end
 
   def configure
