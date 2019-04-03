@@ -12,4 +12,13 @@ class RubyStaticTracingTest < MiniTest::Test
 
     StaticTracing.nsec
   end
+
+  def test_toggle_tracing
+    StaticTracing.enable!
+    assert StaticTracing.enabled?
+    StaticTracing.toggle_tracing!
+    refute StaticTracing.enabled?
+    StaticTracing.toggle_tracing!
+    assert StaticTracing.enabled?
+  end
 end
