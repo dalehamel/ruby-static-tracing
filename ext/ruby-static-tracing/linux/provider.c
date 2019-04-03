@@ -40,8 +40,10 @@ provider_add_tracepoint(VALUE self, VALUE name, VALUE vargs)
 VALUE
 provider_enable(VALUE self)
 {
-// int providerLoad(SDTProvider_t *provider);
-  return Qnil;
+  static_tracing_provider_t *res = NULL;
+  TypedData_Get_Struct(self, static_tracing_provider_t, &static_tracing_provider_type, res);
+  int retval = providerLoad(res->sdt_provider);
+  return INT2NUM(retval);
 }
 
 /*
@@ -50,8 +52,10 @@ provider_enable(VALUE self)
 VALUE
 provider_disable(VALUE self)
 {
-// int providerUnload(SDTProvider_t *provider);
-  return Qnil;
+  static_tracing_provider_t *res = NULL;
+  TypedData_Get_Struct(self, static_tracing_provider_t, &static_tracing_provider_type, res);
+  int retval = providerUnload(res->sdt_provider);
+  return INT2NUM(retval);
 }
 
 /*
@@ -60,7 +64,9 @@ provider_disable(VALUE self)
 VALUE
 provider_destroy(VALUE self)
 {
-// void providerDestroy(SDTProvider_t *provider);
+  static_tracing_provider_t *res = NULL;
+  TypedData_Get_Struct(self, static_tracing_provider_t, &static_tracing_provider_type, res);
+  providerDestroy(res->sdt_provider);
   return Qnil;
 }
 
