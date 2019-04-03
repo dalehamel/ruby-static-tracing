@@ -35,7 +35,7 @@ module StaticTracing
     end
 
     def add_tracepoint(method_name, *args)
-      Tracepoint.new(namespace, method_name, args)
+      Tracepoint.new(namespace, method_name, *args)
     end
 
 # FIXME - how to store list of tracepoints on provider? Allocate map in C?

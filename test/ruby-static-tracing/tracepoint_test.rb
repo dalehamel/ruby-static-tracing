@@ -8,6 +8,12 @@ module StaticTracing
       @tracepoint = Tracepoint.new('test', 'my_method', Integer, String)
     end
 
+    def test_initialize_raises_when_args_is_not_supported
+      assert_raises(Tracepoint::InvalidArgType) do
+        Tracepoint.new('test', 'my_method', Integer, Float)
+      end
+    end
+
     def test_fire_match_the_right_args
       assert_raises(Tracepoint::InvalidArgumentError) do
         @tracepoint.fire('hello', 1)
