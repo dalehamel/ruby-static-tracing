@@ -15,6 +15,10 @@ if StaticTracing.linux?
 
   have_header 'libstapsdt.h'
 
+  unless have_library('stapsdt')
+    abort "libstapsdt is missing, please install it"
+  end
+
   $CFLAGS = "-D_GNU_SOURCE -Wall " # -Werror  complaining
   if ENV.key?('DEBUG')
     $CFLAGS << "-O0 -g -DDEBUG"

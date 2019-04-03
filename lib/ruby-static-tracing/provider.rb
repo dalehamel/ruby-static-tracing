@@ -2,11 +2,6 @@ module StaticTracing
   class Provider #:nodoc:
 
     class << self
-      # Ensure that there can only be one provider for each name
-      def instance(namespace)
-        providers[namespace] ||= new(namespace) # FIXME allocate this dictionary of providers
-      end
-
       def register(namespace)
         providers[namespace] = new(namespace)
       end

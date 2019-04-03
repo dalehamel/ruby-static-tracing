@@ -2,21 +2,27 @@
 
 static const rb_data_type_t
 static_tracing_provider_type;
+
+// Forward decls
+static const char*
+check_name_arg(VALUE name);
+
 /*
   Wraps ProviderInit from libstapsdt
 */
 VALUE
-provider_initialize(VALUE self, VALUE id)
+provider_initialize(VALUE self, VALUE name)
 {
+  const char *c_name_str = NULL;
+  static_tracing_provider_t *res = NULL;
 
-  static_tracing_provider_t *provider = NULL;
+  // Check and cast arguments
+  c_name_str = check_name_arg(name);
 
-  TypedData_Get_Struct(self, static_tracing_provider_t, &static_tracing_provider_type, provider);
-rb_hash_new();
-
-  provider->tracepoints = rb_hash_new();
-// SDTProvider_t *providerInit(const char *name);
-  return Qnil;
+  // Build semian resource structure
+  TypedData_Get_Struct(self, static_tracing_provider_t, &static_tracing_provider_type, res);
+  res->sdt_provider = providerInit(c_name_str);
+  return self;
 }
 
 /*
@@ -62,7 +68,27 @@ provider_destroy(VALUE self)
 VALUE
 static_tracing_provider_alloc(VALUE klass)
 {
-  return Qnil;
+  static_tracing_provider_t *res;
+  VALUE obj = TypedData_Make_Struct(klass, static_tracing_provider_t, &static_tracing_provider_type, res);
+  return obj;
+}
+
+
+static const char*
+check_name_arg(VALUE name)
+{
+  const char *c_name_str = NULL;
+
+  if (TYPE(name) != T_SYMBOL && TYPE(name) != T_STRING) {
+    rb_raise(rb_eTypeError, "name must be a symbol or string");
+  }
+  if (TYPE(name) == T_SYMBOL) {
+    c_name_str = rb_id2name(rb_to_id(name));
+  } else if (TYPE(name) == T_STRING) {
+    c_name_str = RSTRING_PTR(name);
+  }
+
+  return c_name_str;
 }
 
 static inline void
