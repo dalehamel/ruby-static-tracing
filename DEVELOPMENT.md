@@ -1,6 +1,26 @@
 # Getting going quickly
 
-Run these commands:
+## Prerequisites
+
+You must have a docker host running on your computer. This can be acheived by
+following the following steps, assuming you're running macOS.
+
+```
+# install docker machine & the xhyve hypervisor
+brew install docker docker-machine-driver-xhyve
+
+# docker-machine-driver-xhyve need root owner and uid
+sudo chown root:wheel $(brew --prefix)/opt/docker-machine-driver-xhyve/bin/docker-machine-driver-xhyve
+sudo chmod u+s $(brew --prefix)/opt/docker-machine-driver-xhyve/bin/docker-machine-driver-xhyve
+
+# create your docker host
+docker-machine create -d xhyve host
+
+# set up your shell environment to use that host
+eval $(docker-machine env host)
+```
+
+Then you can run these commands, from within this gems root directory:
 
 ```
 bundle install
