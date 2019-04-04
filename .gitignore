@@ -1,4 +1,5 @@
 *.so
 *.swp
+html
 tmp
 pkg

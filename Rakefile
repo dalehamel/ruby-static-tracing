@@ -74,3 +74,11 @@ Rake::TestTask.new do |t|
   t.test_files = FileList['test/**/*_test.rb']
   t.verbose = true
 end
+
+# ==========================================================
+# Documentation
+# ==========================================================
+require 'rdoc/task'
+RDoc::Task.new do |rdoc|
+  rdoc.rdoc_files.include("lib/*.rb", "ext/semian/*.c")
+end
