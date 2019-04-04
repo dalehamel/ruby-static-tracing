@@ -54,6 +54,11 @@ namespace :vagrant do
   task :tests do
     system("vagrant ssh -c 'cd /vagrant && bundle exec rake docker:tests'")
   end
+
+  desc "Cleans up the vagrant VM"
+  task :clean do
+    system("vagrant destroy")
+  end
 end
 
 # Quick helpers to get a dev env set up
