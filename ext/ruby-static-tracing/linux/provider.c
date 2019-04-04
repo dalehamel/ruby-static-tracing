@@ -57,8 +57,7 @@ provider_enable(VALUE self)
 {
   static_tracing_provider_t *res = NULL;
   TypedData_Get_Struct(self, static_tracing_provider_t, &static_tracing_provider_type, res);
-  int retval = providerLoad(res->sdt_provider);
-  return INT2NUM(retval);
+  return providerLoad(res->sdt_provider) == 0 ? Qtrue : Qfalse;
 }
 
 /*
@@ -69,8 +68,7 @@ provider_disable(VALUE self)
 {
   static_tracing_provider_t *res = NULL;
   TypedData_Get_Struct(self, static_tracing_provider_t, &static_tracing_provider_type, res);
-  int retval = providerUnload(res->sdt_provider);
-  return INT2NUM(retval);
+  return providerUnload(res->sdt_provider) == 0 ? Qtrue : Qfalse;
 }
 
 /*

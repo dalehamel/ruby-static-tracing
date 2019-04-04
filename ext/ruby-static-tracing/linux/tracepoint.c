@@ -72,8 +72,7 @@ tracepoint_enabled(VALUE self)
 {
   static_tracing_tracepoint_t *res = NULL;
   TypedData_Get_Struct(self, static_tracing_tracepoint_t, &static_tracing_tracepoint_type, res);
-  int retval = probeIsEnabled(res->sdt_tracepoint);
-  return INT2NUM(retval);
+  return probeIsEnabled(res->sdt_tracepoint) == 1 ? Qtrue : Qfalse;
 }
 
 static const char*

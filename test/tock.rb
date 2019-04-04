@@ -7,7 +7,7 @@ p = StaticTracing::Provider.fetch(t.provider)
 p.enable
 
 while true do
-  if t.enabled? == 1
+  if t.enabled?
     t.fire_tracepoint([StaticTracing.nsec, "Hello world"])
     puts "Probe fired!"
   else
