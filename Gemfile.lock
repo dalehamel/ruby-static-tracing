@@ -22,6 +22,7 @@ GEM
     rake (10.5.0)
     rake-compiler (0.9.9)
       rake
+    unmixer (0.4.0)
 
 PLATFORMS
   ruby
@@ -33,6 +34,7 @@ DEPENDENCIES
   rake (< 11.0)
   rake-compiler (~> 0.9)
   ruby-static-tracing!
+  unmixer
 
 BUNDLED WITH
    1.17.3

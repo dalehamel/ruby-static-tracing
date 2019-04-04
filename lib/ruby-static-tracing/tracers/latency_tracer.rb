@@ -1,4 +1,7 @@
 # frozen_string_literal: true
+require 'unmixer'
+
+using Unmixer
 
 module StaticTracing
   module Tracers
@@ -21,8 +24,6 @@ module StaticTracing
         def register(klass, method_names, provider: nil)
           provider ||= underscore(klass.name)
           latency_module = LatencyModuleGenerator.new(provider, Array(method_names))
-
-          klass.prepend latency_module
           modified_classes[klass] = latency_module
         end
 
@@ -34,11 +35,7 @@ module StaticTracing
 
         def disable!
           modified_classes.each do |klass, latency_module|
-            latency_module.instance_methods.each do |method_name|
-              klass.ancestors.first.class.class_eval do
-                undef_method(method_name)
-              end
-            end
+            klass.instance_eval { unprepend latency_module }
           end
         end
 
@@ -52,14 +49,6 @@ module StaticTracing
         end
 
         private
-
-        def build_traced_method_name(method_name)
-          "#{LATENCY_TRACER_TRACED_METHOD_PREFIX}#{method_name}"
-        end
-
-        def build_original_method_name(method_name)
-          "#{LATENCY_TRACER_ORIGINAL_METHOD_PREFIX}#{method_name}"
-        end
 
         def tracepoint(provider, name)
           @tracepoints[name] ||= StaticTracing::Tracepoint.new(provider, name, String, Interger)
