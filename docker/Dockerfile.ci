@@ -19,7 +19,7 @@ RUN apt-get install -y bison cmake flex vim g++ libelf-dev zlib1g-dev libfl-dev 
 RUN apt-get install -y systemtap-sdt-dev libstapsdt0 libstapsdt-dev  && apt-get clean
 RUN apt-get install -y clang-5.0 libclang-5.0-dev libclang-common-5.0-dev libclang1-5.0 libllvm5.0 llvm-5.0 llvm-5.0-dev llvm-5.0-runtime && apt-get clean
 RUN apt-get install -y libbcc=0.9.0-1 && apt-get clean
-RUN apt-get install -y ruby && apt-get clean
+RUN apt-get install -y ruby ruby-dev && apt-get clean
 RUN gem install bundler:1.17.3
 
 COPY scripts/fetch-linux-headers.sh /tmp/fetch-linux-headers.sh

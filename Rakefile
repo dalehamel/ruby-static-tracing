@@ -42,7 +42,7 @@ namespace :docker do
   end
 
   task :run do
-    `docker run --name ruby-static-tracing-#{Time.now.getutc.to_i} -v $(pwd):/app -d ruby-static-tracing:latest /bin/sh -c "sleep infinity"`.strip
+    `docker run --privileged --name ruby-static-tracing-#{Time.now.getutc.to_i} -v $(pwd):/app -d ruby-static-tracing:latest /bin/sh -c "sleep infinity"`.strip
   end
 
   task :shell do
