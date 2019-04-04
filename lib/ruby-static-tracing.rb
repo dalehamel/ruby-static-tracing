@@ -51,7 +51,6 @@ module StaticTracing
   # Overwrite the definition of all functions to their original definition,
   # no longer wrapping them
   def disable!
-    tracers.each(&:disable!)
     @enabled = false
   end
 

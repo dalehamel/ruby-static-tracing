@@ -22,6 +22,10 @@ module StaticTracing
         Tracers::LatencyTracer.enable!
       end
 
+      def teardown
+        Tracers::LatencyTracer.reset_modified_classes
+      end
+
       def test_noop_will_fire_an_event_when
         Process.expects(:clock_gettime).twice.with(Process::CLOCK_MONOTONIC, :nanosecond).returns(1)
         @example.noop
