@@ -24,7 +24,6 @@ module StaticTracing
 
         def teardown
           Tracers::LatencyTracer.disable!
-          Tracers::LatencyTracer.reset_modified_classes
         end
 
         def test_noop_will_fire_an_event_when

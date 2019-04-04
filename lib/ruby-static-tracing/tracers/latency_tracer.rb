@@ -44,10 +44,6 @@ module StaticTracing
           tracepoint(provider, name).fire(name, duration)
         end
 
-        def reset_modified_classes
-          @modified_classes = {}
-        end
-
         private
 
         def tracepoint(provider, name)
