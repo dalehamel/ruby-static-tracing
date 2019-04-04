@@ -1,5 +1,10 @@
 FROM ubuntu:18.04
 
+# THIS DOCKERFILE IS DEPRECATED
+# But it does show how to build a ruby image with dtrace probes enabled using ruby-install further down so i'm keeping it for posterity, for now
+
+
+
 # This dockerfile is multi-purpose, to serve as a complete development environment for the projcet.
 # It will set up an environment te build against ruby 2.4, with dtrace probes enabled for some functional tests.
 # To actually run USDT probes, this container will probably need to be run privileged in CI.

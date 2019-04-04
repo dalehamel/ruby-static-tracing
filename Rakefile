@@ -2,6 +2,7 @@ require 'rake/testtask'
 require 'bundler/gem_tasks'
 
 GEMSPEC = eval(File.read('ruby-static-tracing.gemspec'))
+BASE_DIR = File.expand_path(File.dirname(__FILE__))
 
 $LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
 require 'ruby-static-tracing/platform'
@@ -17,14 +18,15 @@ else
   end
 end
 
+DOCKER_DIR = File.join(BASE_DIR, 'docker')
 # Quick helpers to get a dev env set up
 namespace :docker do
   task :build do
-    system('docker build . -t ruby-static-tracing')
+      system("docker build -f #{File.join(DOCKER_DIR, 'Dockerfile.ci')} #{DOCKER_DIR} -t ruby-static-tracing:latest")
   end
 
   task :run do
-    `docker run -v $(pwd):/app -d ruby-static-tracing:latest /bin/sh -c "sleep infinity"`.strip
+    `docker run --name ruby-static-tracing-#{Time.now.getutc.to_i} -v $(pwd):/app -d ruby-static-tracing:latest /bin/sh -c "sleep infinity"`.strip
   end
 
   task :shell do
@@ -35,12 +37,14 @@ namespace :docker do
     system("docker exec -ti #{latest_running_container_id} bundle exec rake test")
   end
 
-  task :remove_containers do
-    system("docker container ls --quiet | xargs docker container kill")
+  task :clean do
+    system("docker container ls --quiet --filter name=ruby-static-tracing* | xargs -I@ docker container kill @")
   end
 
+  task :up => [:build, :run, :shell]
+
   def latest_running_container_id
-    container_id = `docker container ls --latest --quiet --filter status=running`.strip
+    container_id = `docker container ls --latest --quiet --filter status=running --filter name=ruby-static-tracing*`.strip
     if container_id.empty?
       raise "No containers running, please run rake docker:run and then retry this task"
     else

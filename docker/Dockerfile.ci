@@ -1,0 +1,41 @@
+FROM ubuntu:18.10 as builder
+ENV RUN_TESTS=0
+
+RUN apt-get update && apt-get install -y wget gnupg && rm -rf /var/lib/apt/lists/*  && apt-get clean
+
+RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+COPY sources.list /etc/apt/sources.list.d/llvm.list
+
+RUN wget -O - https://repo.iovisor.org/GPG-KEY | apt-key add -
+RUN echo "deb https://repo.iovisor.org/apt/bionic bionic main" > /etc/apt/sources.list.d/iovisor.list
+
+RUN gpg --keyserver keyserver.ubuntu.com --recv ED0AF6FB72C51845 && rm -rf /var/lib/apt/lists/*  && apt-get clean
+RUN gpg --export --armor ED0AF6FB72C51845 | apt-key add -
+RUN echo 'deb http://ppa.launchpad.net/sthima/oss/ubuntu xenial main' >> /etc/apt/sources.list.d/libstapsdt.list
+
+RUN apt-get update
+
+RUN apt-get install -y bison cmake flex vim g++ libelf-dev zlib1g-dev libfl-dev curl git bc && apt-get clean
+RUN apt-get install -y systemtap-sdt-dev libstapsdt0 libstapsdt-dev  && apt-get clean
+RUN apt-get install -y clang-5.0 libclang-5.0-dev libclang-common-5.0-dev libclang1-5.0 libllvm5.0 llvm-5.0 llvm-5.0-dev llvm-5.0-runtime && apt-get clean
+RUN apt-get install -y libbcc=0.9.0-1 && apt-get clean
+RUN apt-get install -y ruby && apt-get clean
+RUN gem install bundler:1.17.3
+
+COPY scripts/fetch-linux-headers.sh /tmp/fetch-linux-headers.sh
+RUN /tmp/fetch-linux-headers.sh
+
+ADD https://github.com/iovisor/bpftrace/archive/v0.9.tar.gz /bpftrace.tar.gz
+RUN tar -xvf /bpftrace.tar.gz
+
+RUN mv bpftrace-0.9 /bpftrace
+
+RUN mkdir /bpftrace/build
+
+WORKDIR /bpftrace/build
+
+RUN cmake -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_INSTALL_PREFIX=/usr/local/ ..
+RUN make -j9
+RUN make install
+
+WORKDIR /app

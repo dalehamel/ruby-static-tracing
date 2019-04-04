@@ -2,37 +2,32 @@
 
 ## Prerequisites
 
-You must have a docker host running on your computer. This can be acheived by
-following the following steps, assuming you're running macOS.
+In order to have a linux environment that supports eBPF and uprobes, we must use docker for mac.
 
-```
-# install docker machine & the xhyve hypervisor
-brew install docker docker-machine-driver-xhyve
+You can download docker for mac from https://hub.docker.com/editions/community/docker-ce-desktop-mac. Unfortunately, you are forced by docker to create a dockerhub account. Make one or use an existing one to be able to use docker for mac.
 
-# docker-machine-driver-xhyve need root owner and uid
-sudo chown root:wheel $(brew --prefix)/opt/docker-machine-driver-xhyve/bin/docker-machine-driver-xhyve
-sudo chmod u+s $(brew --prefix)/opt/docker-machine-driver-xhyve/bin/docker-machine-driver-xhyve
+Docker for mac ships with an eBPF enabled kernel on v4.9, which is sufficient for our uses here, but is railgun support would be easier for internal shopify development (see github.com/Shopify/ruby-static-tracing/issues/8).
 
-# create your docker host
-docker-machine create -d xhyve host
-
-# set up your shell environment to use that host
-eval $(docker-machine env host)
-```
-
-Then you can run these commands, from within this gems root directory:
+You can then obtain a linux shell for an ubuntu development image with
 
 ```
 bundle install
-rake docker:build
-rake docker:run
+bundle exec rake docker:up
 ```
+
+Or, individually:
+
+```
+bundle exec rake docker:build
+bundle exec rake docker:run
+bundle exec rake docker:shell
+```
+
+From within this shell, you will now be running with your current working directory mounted within a linux environment.
 
 This should build you a container with suitable deps to get going to be able to build the gem and run unit tests.
 
 FIXME - can we do this in dev?
-
-FIXME - tag images and do additional setup in them
 
 FIXME - get this to be something that will work in CI
 
