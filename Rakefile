@@ -34,28 +34,56 @@ end
 # Development
 # ==========================================================
 
+namespace :vagrant do
+  desc "Sets up a vagrant VM, needed for our development environment."
+  task :up do
+    system("vagrant up")
+  end
+
+  desc "Provides a shell within vagrant."
+  task :ssh do
+    system("vagrant ssh")
+  end
+
+  desc "Enters a shell within our development docker image, within vagrant."
+  task :shell do
+    system("vagrant ssh -c 'cd /vagrant && bundle exec rake docker:shell'")
+  end
+
+  desc "Runs tests within the development docker image, within vagrant"
+  task :tests do
+    system("vagrant ssh -c 'cd /vagrant && bundle exec rake docker:tests'")
+  end
+end
+
 # Quick helpers to get a dev env set up
 namespace :docker do
+  desc "Builds the development docker image"
   task :build do
       system("docker build -f #{File.join(DOCKER_DIR, 'Dockerfile.ci')} #{DOCKER_DIR} -t ruby-static-tracing:latest")
   end
 
+  desc "Runs the development docker image"
   task :run do
     `docker run --privileged --name ruby-static-tracing-#{Time.now.getutc.to_i} -v $(pwd):/app -d ruby-static-tracing:latest /bin/sh -c "sleep infinity"`.strip
   end
 
+  desc "Provides a shell within the development docker image"
   task :shell do
     system("docker exec -ti #{latest_running_container_id} bash")
   end
 
+  desc "Runs tests within the development docker image"
   task :tests do
     system("docker exec -ti #{latest_running_container_id} bundle exec rake test")
   end
 
+  desc "Cleans up all development docker images for this project"
   task :clean do
     system("docker container ls --quiet --filter name=ruby-static-tracing* | xargs -I@ docker container kill @")
   end
 
+  desc "Fully set up a development docker image, and get a shell"
   task :up => [:build, :run, :shell]
 
   def latest_running_container_id

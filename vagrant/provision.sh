@@ -11,4 +11,4 @@ sudo gem install bundler:1.17.3
 sudo usermod -a -G docker vagrant
 
 echo "cd /vagrant" >> /home/vagrant/.bashrc
-echo "You are running in the Vagrant VM, to run tests you must run 'bundle exec rake docker:rhell' in /vagrant" | sudo tee > /etc/motd
+echo -e "You are running in the Vagrant VM.\nTo enter the dev env, you must run:\n\tbundle exec rake docker:shell" | sudo tee > /etc/motd
