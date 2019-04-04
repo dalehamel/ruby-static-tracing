@@ -10,7 +10,7 @@ module StaticTracing
         class Example
           def noop
           end
-          
+
           include StaticTracing::Tracers::Concerns::LatencyTracer
 
           def untraced_noop
@@ -19,15 +19,20 @@ module StaticTracing
 
         def setup
           @example = Example.new
+          Tracers::LatencyTracer.enable!
         end
-  
+
+        def teardown
+          Tracers::LatencyTracer.disable!
+        end
+
         def test_noop_will_fire_an_event_when
-          Process.expects(:clock_gettime).twice.with(Process::CLOCK_MONOTONIC, :nanosecond).returns(1)
+          Tracers::LatencyTracer.expects(:fire_tracepoint).once
           @example.noop
         end
-  
+
         def test_untraced_noop_will_not_fire_an_event
-          Process.expects(:clock_gettime).never
+          Tracers::LatencyTracer.expects(:fire_tracepoint).never
           @example.untraced_noop
         end
       end

@@ -1,50 +1,41 @@
 # frozen_string_literal: true
+require 'unmixer'
+
+using Unmixer
 
 module StaticTracing
   module Tracers
     class LatencyTracer
-      LATENCY_TRACER_ORIGINAL_METHOD_PREFIX = 'latency_tracer_original_method_'
-      LATENCY_TRACER_TRACED_METHOD_PREFIX = 'latency_tracer_traced_method_'
+      class LatencyModuleGenerator < Module
+        def initialize(provider, methods)
+          methods.each do |method|
+            define_method(method) do |*args, &block|
+              start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC, :nanosecond)
+              result = super(*args, &block)
+              duration = Process.clock_gettime(Process::CLOCK_MONOTONIC, :nanosecond) - start_time
+              LatencyTracer.fire_tracepoint(provider, method, duration)
+              result
+            end
+          end
+        end
+      end
 
       class << self
-        def register(klass, method_name, provider: nil)
-          modified_classes[klass] ||= []
-          modified_classes[klass] << method_name
+        def register(klass, method_names, provider: nil)
           provider ||= underscore(klass.name)
-          original_method_name = build_original_method_name(method_name)
-          traced_method_name = build_traced_method_name(method_name)
-
-          klass.define_method(traced_method_name) do |*args|
-            start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC, :nanosecond)
-            result = send(original_method_name, *args)
-            duration = Process.clock_gettime(Process::CLOCK_MONOTONIC, :nanosecond) - start_time
-            LatencyTracer.fire_tracepoint(provider, method_name, duration)
-            result
-          end
-
-          # This will create a copy of the original method under `latency_tracer_original_method_*`
-          # and then overwrite the method with the instrumented method`latency_tracer_traced_method_*`
-          klass.alias_method original_method_name, method_name
-          klass.alias_method method_name, traced_method_name
+          latency_module = LatencyModuleGenerator.new(provider, Array(method_names))
+          modified_classes[klass] = latency_module
         end
 
-        # TODO: alias_method will add a copy of the method in memory so enabling and disabling
-        # tracers will cause the memory of a program to continously grow.
         def enable!
-          modified_classes.each do |klass, methods|
-            methods.each do |method_name|
-              klass.alias_method method_name, build_traced_method_name(method_name)
-            end
+          modified_classes.each do |klass, latency_module|
+            klass.prepend latency_module
           end
         end
 
-        # TODO: alias_method will add a copy of the method in memory so enabling and disabling
-        # tracers will cause the memory of a program to continously grow.
         def disable!
-          modified_classes.each do |klass, methods|
-            methods.each do |method_name|
-              klass.alias_method method_name, build_original_method_name(method_name)
-            end
+          modified_classes.each do |klass, latency_module|
+            klass.instance_eval { unprepend latency_module }
           end
         end
 
@@ -54,14 +45,6 @@ module StaticTracing
         end
 
         private
-
-        def build_traced_method_name(method_name)
-          "#{LATENCY_TRACER_TRACED_METHOD_PREFIX}#{method_name}"
-        end
-
-        def build_original_method_name(method_name)
-          "#{LATENCY_TRACER_ORIGINAL_METHOD_PREFIX}#{method_name}"
-        end
 
         def tracepoint(provider, name)
           @tracepoints[name] ||= StaticTracing::Tracepoint.new(provider, name, String, Interger)

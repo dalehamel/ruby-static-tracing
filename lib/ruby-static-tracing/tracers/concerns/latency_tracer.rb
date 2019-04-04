@@ -7,9 +7,8 @@ module StaticTracing
     module Concerns
       module LatencyTracer
         def self.included(base)
-          base.public_instance_methods(false).each do |method_name|           
-            StaticTracing::Tracers::LatencyTracer.register(base, method_name)
-          end
+          methods = base.public_instance_methods(false)
+          StaticTracing::Tracers::LatencyTracer.register(base, methods)
         end
       end
     end
