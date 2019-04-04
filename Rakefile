@@ -4,6 +4,18 @@ require 'bundler/gem_tasks'
 GEMSPEC = eval(File.read('ruby-static-tracing.gemspec'))
 BASE_DIR = File.expand_path(File.dirname(__FILE__))
 
+# ==========================================================
+# Packaging
+# ==========================================================
+
+require 'rubygems/package_task'
+Gem::PackageTask.new(GEMSPEC) do |_pkg|
+end
+
+# ==========================================================
+# Ruby Extension
+# ==========================================================
+
 $LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
 require 'ruby-static-tracing/platform'
 if StaticTracing::Platform.linux?
@@ -17,6 +29,10 @@ else
   task :build do
   end
 end
+
+# ==========================================================
+# Development
+# ==========================================================
 
 DOCKER_DIR = File.join(BASE_DIR, 'docker')
 # Quick helpers to get a dev env set up

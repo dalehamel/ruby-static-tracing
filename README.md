@@ -10,9 +10,9 @@ This project is in a design phase, in preparations for hackdays so we can hit th
 
 This README is currently aspirational for the end-state after hackdays and future development of this project.
 
-A proof of concept of this functionality in python is demonstrated in this gif:
+A proof of concept of this funcitonality in ruby:
 
-![python](https://user-images.githubusercontent.com/618615/55049582-3b458500-5023-11e9-8278-d27f9a82f404.gif)
+![probefif](./docs/probetest.gif)
 
 # Internals
 
