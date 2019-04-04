@@ -1,25 +1,40 @@
-# Getting going quickly
+# Prerequisites
 
-FIXME - can we do this in dev?
+This functionality depends on having both a linux machine, and a recent linux kernel (4.18+ ideally).
 
-FIXME - tag images and do additional setup in them
+This means we must set up a virtual machine to run linux for us.
 
-FIXME - get this to be something that will work in CI
+## Vagrant
 
-## Prerequisites
+We'll use vagrant to get a VM up and running. To provision the vagrant VM, you should just need to:
 
-In order to have a linux environment that supports eBPF and uprobes, we must use docker for mac.
+* Install vagrant for mac from https://www.vagrantup.com/downloads.html
+* Install virtualbox for mac from https://www.virtualbox.org/wiki/Downloads
 
-You can download docker for mac from https://hub.docker.com/editions/community/docker-ce-desktop-mac. Unfortunately, you are forced by docker to create a dockerhub account. Make one or use an existing one to be able to use docker for mac.
+If you've previously installed vagrant, blow away any old gems if you need to.
 
-Docker for mac ships with an eBPF enabled kernel on v4.9, which is sufficient for our uses here, but is railgun support would be easier for internal shopify development (see github.com/Shopify/ruby-static-tracing/issues/8).
+Once vagrant is installed, calling `vagrant up` from inside this repository should get everything set up.
 
-You can then obtain a linux shell for an ubuntu development image with
+You must run `vagrant ssh` to connect from your laptop to tho development VM.
+
+Vagrant will share you application source directory at /vagrant, so you can use a local editor and the changes should be reflected in the VM.
+
+Vagrant is just used to get us access to:
+
+* A modern kernel (ubuntu cosmic ships with 4.18)
+* A working docker daemon
+
+## Docker
+
+The development environment is packaged up as a docker container, which you can access from vagrant.
+
+`vagrant up` should already have set up the docker container for you, so you should just be able to run:
 
 ```
-bundle install
-bundle exec rake docker:up
+bundle exec rake docker:shell
 ```
+
+To get access to a shell.
 
 Or, individually:
 
@@ -33,7 +48,7 @@ From within this shell, you will now be running with your current working direct
 
 This should build you a container with suitable deps to get going to be able to build the gem and run unit tests.
 
-## Tock example
+# Tock example
 
 In one shell, start ruby:
 
@@ -50,7 +65,7 @@ ps -auxf | grep tock.rb | grep -v grep
 
 Trace the function defined in tock.rb
 ```
-bpftrace -e 'usdt::global:hello_nsec { printf("%d %s\n", arg0, str(arg1))}' -p ${PID_OF_RUBY}
+bpftrace -e 'usdt::global:hello_nsec { printf("%lld %s\n", arg0, str(arg1))}' -p ${PID_OF_RUBY}
 ```
 
 # Development libraries

@@ -6,4 +6,9 @@ Vagrant.configure("2") do |config|
   end
   config.vm.provision "shell",
     inline: "/bin/bash /vagrant/vagrant/provision.sh"
+
+  config.vm.provision "shell",
+    inline: "/bin/bash /vagrant/vagrant/docker.sh"
+
+  config.vm.provision "shell", inline: 'echo "Vagrant is now provisioned - run \"vagrant ssh\" to access the vm, and \"bundle exec rake docker:shell\" to start a development shell"'
 end
