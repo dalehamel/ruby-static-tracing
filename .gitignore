@@ -1,5 +1,8 @@
 *.so
 *.swp
 html
+*.iso
+*.log
+.vagrant
 tmp
 pkg

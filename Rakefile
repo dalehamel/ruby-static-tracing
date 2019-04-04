@@ -3,7 +3,7 @@ require 'bundler/gem_tasks'
 
 GEMSPEC = eval(File.read('ruby-static-tracing.gemspec'))
 BASE_DIR = File.expand_path(File.dirname(__FILE__))
-
+DOCKER_DIR = File.join(BASE_DIR, 'docker')
 # ==========================================================
 # Packaging
 # ==========================================================
@@ -34,7 +34,6 @@ end
 # Development
 # ==========================================================
 
-DOCKER_DIR = File.join(BASE_DIR, 'docker')
 # Quick helpers to get a dev env set up
 namespace :docker do
   task :build do
