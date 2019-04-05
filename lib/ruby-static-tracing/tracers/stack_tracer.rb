@@ -7,8 +7,9 @@ module StaticTracing
     class StackTracer < Base
       set_wrapping_function -> (*args, &block) {
         current_stack = self.send(:caller).join("\n")
-
-        StackTracer.fire_tracepoint(__method__, current_stack)
+        method_name = __method__.to_s
+        provider = Tracers::Helpers.underscore(self.class.name)
+        Tracepoints.get(provider, method_name).fire(method_name, current_stack)
         super(*args, &block)
       }
 

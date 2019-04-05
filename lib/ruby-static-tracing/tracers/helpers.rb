@@ -1,6 +1,8 @@
 module StaticTracing
   module Tracers
     module Helpers
+      extend self
+
       def underscore(class_name)
         class_name.gsub(/::/, '_').
           gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').

@@ -44,7 +44,7 @@ module StaticTracing
 
       def test_basic_methods_fire_tracepoints
         Tracers::StackTracer.enable!
-        StackTracer.expects(:fire_tracepoint).with(:noop, anything)
+        StaticTracing::Tracepoint.any_instance.expects(:fire).once
 
         @example = Example.new
 
@@ -53,7 +53,7 @@ module StaticTracing
 
       def test_methods_with_args_still_work
         Tracers::StackTracer.enable!
-        StackTracer.expects(:fire_tracepoint).with(:noop_with_arg, anything)
+        StaticTracing::Tracepoint.any_instance.expects(:fire).once
 
         @example = Example.new
 
@@ -62,7 +62,7 @@ module StaticTracing
 
       def test_methods_with_blocks_still_work
         Tracers::StackTracer.enable!
-        StackTracer.expects(:fire_tracepoint).with(:noop_with_block, anything)
+        StaticTracing::Tracepoint.any_instance.expects(:fire).once
 
         @example = Example.new
 
@@ -71,8 +71,7 @@ module StaticTracing
 
       def test_methods_with_blocks_and_args_still_work
         Tracers::StackTracer.enable!
-        StackTracer.expects(:fire_tracepoint)
-          .with(:noop_with_arg_and_block, anything)
+        StaticTracing::Tracepoint.any_instance.expects(:fire).once
 
         @example = Example.new
 

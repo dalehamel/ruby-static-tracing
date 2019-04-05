@@ -10,12 +10,10 @@ module StaticTracing
         include Tracers::Helpers
 
         def register(klass, *method_names, provider: nil)
-          @provider ||= underscore(klass.name)
-
-          method_overrides = function_wrapper.new(provider, @wrapping_function)
-
+          provider ||= underscore(klass.name)
+          method_overrides = function_wrapper.new(provider, @wrapping_function, @data_types)
           modified_classes[klass] ||= method_overrides
-          modified_classes[klass].add_override(Array(method_names))
+          modified_classes[klass].add_override(method_names.flatten)
         end
 
         def enable!
@@ -30,43 +28,27 @@ module StaticTracing
           end
         end
 
-        def fire_tracepoint(name, *args)
-          tracepoint(@provider, name).fire(name, *args)
-        end
-
         private
 
         def function_wrapper
           Class.new(Module) do
-            attr_reader :provider
-
-            def initialize(provider, wrapping_function)
+            def initialize(provider, wrapping_function, data_types)
               @provider = provider
               @wrapping_function = wrapping_function
+              @data_types = data_types
             end
 
             def add_override(methods)
               methods.each do |method|
-                define_method(method, @wrapping_function)
+                Tracepoints.add_tracepoint(@provider, method, @data_types)
+                define_method(method.to_s, @wrapping_function)
               end
             end
           end
         end
 
-        def tracepoint(provider, name)
-          tracepoints[provider][name] ||= begin
-            StaticTracing::Tracepoint.new(provider, name.to_s, *tracepoint_data_types)
-          end
-        end
-
-        private
-
         def modified_classes
           @modified_classes ||= {}
-        end
-
-        def tracepoints
-          @tracepoints ||= Hash.new { |hash, key| hash[key] = {} }
         end
 
         def set_tracepoint_data_types(*args)
