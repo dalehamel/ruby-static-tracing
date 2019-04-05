@@ -27,24 +27,24 @@ module StaticTracing
       end
 
       def test_noop_will_fire_an_event_when
-        LatencyTracer.expects(:fire_tracepoint).once
+        StaticTracing::Tracepoint.any_instance.expects(:fire).once
         @example.noop
       end
 
       def test_disable_will_prevent_firing_an_event
         Tracers::LatencyTracer.disable!
-        LatencyTracer.expects(:fire_tracepoint).never
+        StaticTracing::Tracepoint.any_instance.expects(:fire).never
         @example.noop
       end
 
       def test_noop_with_args_will_fire_events
-        Process.expects(:clock_gettime).twice.with(Process::CLOCK_MONOTONIC, :nanosecond).returns(1)
+        StaticTracing::Tracepoint.any_instance.expects(:fire).once
         result = @example.noop_with_args(2, 3, arg1: 1)
         assert_equal([3, 4], result)
       end
 
       def test_noop_with_args_works_correctly_when_disabled
-        Process.expects(:clock_gettime).never
+        StaticTracing::Tracepoint.any_instance.expects(:fire).never
         Tracers::LatencyTracer.disable!
         result = @example.noop_with_args(2, 3, arg1: 1)
 

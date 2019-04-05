@@ -28,6 +28,10 @@ module StaticTracing
         end
       end
 
+      def clean
+        @providers = {}
+      end
+
       private
 
       def providers

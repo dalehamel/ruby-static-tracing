@@ -9,6 +9,10 @@ module StaticTracing
       @provider = Provider.register(@namespace)
     end
 
+    def teardown
+      Provider.clean
+    end
+
     def test_instance_not_found
       assert_raises Provider::ProviderNotFound do
         Provider.fetch('not_registered')

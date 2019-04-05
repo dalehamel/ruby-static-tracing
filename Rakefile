@@ -55,6 +55,11 @@ namespace :vagrant do
     system("vagrant ssh -c 'cd /vagrant && bundle exec rake docker:tests'")
   end
 
+  desc "Runs integration tests within the development docker image, within vagrant"
+  task :integration do
+    system("vagrant ssh -c 'cd /vagrant && bundle exec rake docker:integration'")
+  end
+
   desc "Cleans up the vagrant VM"
   task :clean do
     system("vagrant destroy")
@@ -71,6 +76,7 @@ namespace :docker do
   desc "Runs the development docker image"
   task :run do
     `docker run --privileged --name ruby-static-tracing-#{Time.now.getutc.to_i} -v $(pwd):/app -d ruby-static-tracing:latest /bin/sh -c "sleep infinity"`.strip
+    system("docker exec -ti #{latest_running_container_id} /app/vagrant/debugfs.sh")
   end
 
   desc "Provides a shell within the development docker image"
@@ -80,7 +86,12 @@ namespace :docker do
 
   desc "Runs tests within the development docker image"
   task :tests do
-    system("docker exec -ti #{latest_running_container_id} bundle exec rake test")
+    system("docker exec -ti #{latest_running_container_id} bash -c 'bundle install && bundle exec rake clean && bundle exec rake build && bundle exec rake test'")
+  end
+
+  desc "Runs integration tests within the development docker image"
+  task :integration do
+    system("docker exec -ti #{latest_running_container_id} bash -c 'bundle install && bundle exec rake clean && bundle exec rake build && bundle exec rake integration'")
   end
 
   desc "Cleans up all development docker images for this project"
@@ -104,6 +115,13 @@ end
 Rake::TestTask.new do |t|
   t.libs << "test"
   t.test_files = FileList['test/**/*_test.rb']
+  t.verbose = true
+end
+
+Rake::TestTask.new do |t|
+  t.name = 'integration'
+  t.libs << 'integration'
+  t.test_files = FileList['integration/**/*_test.rb']
   t.verbose = true
 end
 
