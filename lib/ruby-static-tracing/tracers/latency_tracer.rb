@@ -17,7 +17,8 @@ module StaticTracing
               start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC, :nanosecond)
               result = super(*args, &block)
               duration = Process.clock_gettime(Process::CLOCK_MONOTONIC, :nanosecond) - start_time
-              LatencyTracer.fire_tracepoint(@provider, method, duration)
+              puts "probing...."
+              LatencyTracer.fire_tracepoint(provider, method, duration)
               result
             end
           end
@@ -45,14 +46,26 @@ module StaticTracing
         end
 
         def fire_tracepoint(provider, name, duration)
-          return
           tracepoint(provider, name).fire(name, duration)
         end
 
         private
 
         def tracepoint(provider, name)
-          @tracepoints[name] ||= StaticTracing::Tracepoint.new(provider, name, String, Interger)
+          tracepoints[provider][name] ||= begin
+            t = StaticTracing::Tracepoint.new(provider, name.to_s, String, Integer)
+            puts t.inspect
+            p = StaticTracing::Provider.fetch(t.provider)
+            puts p.inspect
+            p.enable
+            puts "enabled"
+            puts p.enabled?
+            t
+          end
+        end
+
+        def tracepoints
+          @tracepoints ||= Hash.new { |hash, key| hash[key] = {} }
         end
 
         def modified_classes
