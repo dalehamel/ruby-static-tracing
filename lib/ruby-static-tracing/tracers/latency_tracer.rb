@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'unmixer'
+require 'ruby-static-tracing/tracers/helpers'
 
 using Unmixer
 
@@ -28,6 +29,8 @@ module StaticTracing
       end
 
       class << self
+        include Tracers::Helpers
+
         def register(klass, method_names, provider: nil)
           provider ||= underscore(klass.name)
           latency_module = LatencyModuleGenerator.new(provider)
@@ -61,14 +64,6 @@ module StaticTracing
 
         def modified_classes
           @modified_classes ||= {}
-        end
-
-        def underscore(class_name)
-          class_name.gsub(/::/, '_').
-          gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
-          gsub(/([a-z\d])([A-Z])/,'\1_\2').
-          tr("-", "_").
-          downcase
         end
       end
     end
