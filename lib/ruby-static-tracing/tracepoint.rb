@@ -27,6 +27,7 @@ module StaticTracing
       values.each_with_index do |arg, i|
         raise InvalidArgumentError unless arg.is_a?(args[i])
       end
+      _fire_tracepoint(values)
     end
 
     def enabled?
