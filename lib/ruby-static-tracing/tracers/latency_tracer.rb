@@ -7,18 +7,20 @@ module StaticTracing
   module Tracers
     class LatencyTracer
       class LatencyModuleGenerator < Module
+        attr_reader :provider
+
         def initialize(provider)
           @provider = provider
         end
 
         def add_override(methods)
+          p = provider
           methods.each do |method|
             define_method(method) do |*args, &block|
               start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC, :nanosecond)
               result = super(*args, &block)
               duration = Process.clock_gettime(Process::CLOCK_MONOTONIC, :nanosecond) - start_time
-              puts "probing...."
-              LatencyTracer.fire_tracepoint(provider, method, duration)
+              LatencyTracer.fire_tracepoint(p, method, duration)
               result
             end
           end
@@ -54,12 +56,8 @@ module StaticTracing
         def tracepoint(provider, name)
           tracepoints[provider][name] ||= begin
             t = StaticTracing::Tracepoint.new(provider, name.to_s, String, Integer)
-            puts t.inspect
             p = StaticTracing::Provider.fetch(t.provider)
-            puts p.inspect
             p.enable
-            puts "enabled"
-            puts p.enabled?
             t
           end
         end

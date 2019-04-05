@@ -38,13 +38,13 @@ module StaticTracing
       end
 
       def test_noop_with_args_will_fire_events
-        Process.expects(:clock_gettime).twice.with(Process::CLOCK_MONOTONIC, :nanosecond).returns(1)
+        LatencyTracer.expects(:fire_tracepoint).once
         result = @example.noop_with_args(2, 3, arg1: 1)
         assert_equal([3, 4], result)
       end
 
       def test_noop_with_args_works_correctly_when_disabled
-        Process.expects(:clock_gettime).never
+        LatencyTracer.expects(:fire_tracepoint).never
         Tracers::LatencyTracer.disable!
         result = @example.noop_with_args(2, 3, arg1: 1)
 
