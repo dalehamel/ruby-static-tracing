@@ -7,7 +7,11 @@ p.enable
 
 Signal.trap('USR2') do
   puts "TRAP #{t.enabled?}"
+<<<<<<< HEAD
   t.fire("Hello world") if t.enabled?
+=======
+  t.fire_tracepoint(["Hello world"]) if t.enabled?
+>>>>>>> Integration test 'hello world' using Process.spawn, directory tree
   sleep 5
 end
 
