@@ -27,12 +27,12 @@ module StaticTracing
         end
 
         def test_noop_will_fire_an_event_when
-          Tracers::LatencyTracer.expects(:fire_tracepoint).once
+          StaticTracing::Tracepoint.any_instance.expects(:fire).once
           @example.noop
         end
 
         def test_untraced_noop_will_not_fire_an_event
-          Tracers::LatencyTracer.expects(:fire_tracepoint).never
+          StaticTracing::Tracepoint.any_instance.expects(:fire).never
           @example.untraced_noop
         end
       end

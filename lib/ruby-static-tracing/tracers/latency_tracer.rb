@@ -7,6 +7,8 @@ module StaticTracing
   module Tracers
     class LatencyTracer
       class LatencyModuleGenerator < Module
+        attr_reader :provider
+
         def initialize(provider)
           @provider = provider
         end
@@ -15,9 +17,9 @@ module StaticTracing
           methods.each do |method|
             probe = StaticTracing::Tracers::LatencyTracer.tracepoint(@provider, method)
             define_method(method) do |*args, &block|
-              start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC, :nanosecond)
+              start_time = StaticTracing.nsec
               result = super(*args, &block)
-              duration = Process.clock_gettime(Process::CLOCK_MONOTONIC, :nanosecond) - start_time
+              duration = StaticTracing.nsec - start_time
               probe.fire(method.to_s, duration)
               result
             end
@@ -43,10 +45,6 @@ module StaticTracing
           modified_classes.each do |klass, latency_module|
             klass.instance_eval { unprepend latency_module }
           end
-        end
-
-        def fire_tracepoint(provider, name, duration)
-          tracepoint(provider, name).fire(name.to_s, duration)
         end
 
         def tracepoint(provider, name)
