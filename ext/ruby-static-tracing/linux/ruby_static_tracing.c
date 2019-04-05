@@ -41,7 +41,7 @@ void Init_ruby_static_tracing()
 
   rb_define_alloc_func(cTracepoint, static_tracing_tracepoint_alloc);
   rb_define_method(cTracepoint, "tracepoint_initialize", tracepoint_initialize, 3);
-  rb_define_method(cTracepoint, "fire_tracepoint", tracepoint_fire, 1);
+  rb_define_method(cTracepoint, "_fire_tracepoint", tracepoint_fire, 1);
   rb_define_method(cTracepoint, "enabled?", tracepoint_enabled, 0);
 }
 
