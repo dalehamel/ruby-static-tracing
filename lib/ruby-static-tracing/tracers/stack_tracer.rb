@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'ruby-static-tracing/tracers/base'
-require 'ruby-static-tracing/tracers/helpers'
 
 module StaticTracing
   module Tracers

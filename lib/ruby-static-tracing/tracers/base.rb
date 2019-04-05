@@ -1,6 +1,8 @@
 require 'unmixer'
 using Unmixer
 
+require 'ruby-static-tracing/tracers/helpers'
+
 module StaticTracing
   module Tracers
     class Base
@@ -12,7 +14,7 @@ module StaticTracing
 
           method_overrides = function_wrapper.new(provider, @wrapping_function)
 
-          modified_classes[klass] = method_overrides
+          modified_classes[klass] ||= method_overrides
           modified_classes[klass].add_override(Array(method_names))
         end
 
@@ -52,18 +54,19 @@ module StaticTracing
         end
 
         def tracepoint(provider, name)
-          tracepoints[name] ||=
-            StaticTracing::Tracepoint.new(
-              provider, name, *tracepoint_data_types
-            )
+          tracepoints[provider][name] ||= begin
+            StaticTracing::Tracepoint.new(provider, name.to_s, *tracepoint_data_types)
+          end
         end
+
+        private
 
         def modified_classes
           @modified_classes ||= {}
         end
 
         def tracepoints
-          @tracepoints ||= {}
+          @tracepoints ||= Hash.new { |hash, key| hash[key] = {} }
         end
 
         def set_tracepoint_data_types(*args)
