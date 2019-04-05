@@ -7,7 +7,7 @@ p.enable
 
 Signal.trap('USR2') do
   puts "TRAP #{t.enabled?}"
-  t.fire_tracepoint(["Hello world"]) if t.enabled?
+  t.fire("Hello world") if t.enabled?
   sleep 5
 end
 
