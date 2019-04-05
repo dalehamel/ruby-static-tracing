@@ -45,3 +45,5 @@ Each of of the methods is `CommandRunner` takes an optional argument for the amo
 This is a bit of a hack to avoid race conditions. If you can, you should ideally try and check in a blocking manner if the condition you would have expected has succeeded.
 
 Often though, you just need to wait for a buffer to flush, or a system call to completed. Typically 1 second is more than enough, and anything more than 5 seconds should be highly discouraged as it will make the suite slower.
+
+You may also want to force some synchrony between the tracer and the tracee using a signal, which is why i added the `usr2` helper. This can be used to induce the tracee to fire a probe at a predictable time.
