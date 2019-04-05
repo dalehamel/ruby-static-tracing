@@ -20,7 +20,7 @@ module StaticTracing
               start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC, :nanosecond)
               result = super(*args, &block)
               duration = Process.clock_gettime(Process::CLOCK_MONOTONIC, :nanosecond) - start_time
-              LatencyTracer.fire_tracepoint(p, method, duration)
+              LatencyTracer.fire_tracepoint(p, method.to_s, duration)
               result
             end
           end
