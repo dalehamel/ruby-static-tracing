@@ -1,0 +1,4 @@
+usdt::expensive_operation:execute
+{
+  printf("%s\n", str(arg0))
+}
