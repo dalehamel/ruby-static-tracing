@@ -86,12 +86,12 @@ namespace :docker do
 
   desc "Runs tests within the development docker image"
   task :tests do
-    system("docker exec -ti #{latest_running_container_id} bundle install && bundle exec rake test")
+    system("docker exec -ti #{latest_running_container_id} bash -c 'bundle install && bundle exec rake clean && bundle exec rake build && bundle exec rake test'")
   end
 
   desc "Runs integration tests within the development docker image"
   task :integration do
-    system("docker exec -ti #{latest_running_container_id} bundle install && bundle exec rake integration")
+    system("docker exec -ti #{latest_running_container_id} bash -c 'bundle install && bundle exec rake clean && bundle exec rake build && bundle exec rake integration'")
   end
 
   desc "Cleans up all development docker images for this project"
