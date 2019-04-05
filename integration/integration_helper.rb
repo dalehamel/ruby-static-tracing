@@ -43,3 +43,21 @@ class CommandRunner
     sleep wait if wait
   end
 end
+
+class IntegrationTestCase < MiniTest::Test
+  def run
+    file_directory = location.split('#').last
+    test_dir = File.expand_path(file_directory, File.dirname(__FILE__))
+    Dir.chdir(test_dir) do
+      super
+    end
+  end
+
+  def command(command, wait: nil)
+    CommandRunner.new(command, wait)
+  end
+
+  def read_probe_file(file)
+    File.read(file)
+  end
+end

@@ -1,21 +1,15 @@
 require 'integration_helper'
 
-test_dir = File.expand_path(File.dirname(__FILE__))
-Dir.chdir(test_dir)
-
 # FIXME can any of this be generalized / should the convention be encoded?
-class RubyStaticTracingTest < MiniTest::Test
+class RubyStaticTracingTest < IntegrationTestCase
   def test_hello
-    test_dir = File.expand_path(File.dirname(__FILE__))
-    Dir.chdir(test_dir)
-
-    target = CommandRunner.new('bundle exec ruby hello.rb', 1)
-    tracer = CommandRunner.new("bpftrace hello.bt -p #{target.pid}", 5)
+    target = command('bundle exec ruby hello.rb', wait: 1)
+    tracer = command("bpftrace hello.bt -p #{target.pid}", wait: 5)
 
     # Signal the target to trigger probe firing
     target.usr2(1)
     # Signal bpftrace to exit, flushing output
     tracer.interrupt(1)
-    assert_equal(tracer.output, File.read('hello.out'))
+    assert_equal(tracer.output, read_probe_file('hello.out'))
   end
 end
