@@ -10,13 +10,10 @@ module StaticTracing
         def register(klass, *method_names, provider: nil)
           @provider ||= underscore(klass.name)
 
-          method_overrides = function_wrapper.new(
-            provider,
-            Array(method_names),
-            @wrapping_function
-          )
+          method_overrides = function_wrapper.new(provider, @wrapping_function)
 
           modified_classes[klass] = method_overrides
+          modified_classes[klass].add_override(Array(method_names))
         end
 
         def enable!
@@ -39,9 +36,16 @@ module StaticTracing
 
         def function_wrapper
           Class.new(Module) do
-            def initialize(provider, methods, wrapping_function)
+            attr_reader :provider
+
+            def initialize(provider, wrapping_function)
+              @provider = provider
+              @wrapping_function = wrapping_function
+            end
+
+            def add_override(methods)
               methods.each do |method|
-                define_method(method, wrapping_function)
+                define_method(method, @wrapping_function)
               end
             end
           end
