@@ -61,6 +61,12 @@ Taking inspiration from the eBPF verifier, it might make sense to introspect any
 
 Until such times as it makes sense to implement advanced techniques such as examining the AST of any user-defined codeblocks, or explicitly creating a minimal DSL, an initial approach is human-based verification. Probes should not change the state of the application, and only be used to gather values that are useful for performance and debugging purposes.
 
+# Latency tracer
+
+Here's a demonstration of the latency tracer worknig end-to-end:
+
+![latencytracer.gif](./docs/latency_tracer.gif)
+
 # Alternatives
 
 ## Ruby tracing
