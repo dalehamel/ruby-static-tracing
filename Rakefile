@@ -107,6 +107,13 @@ Rake::TestTask.new do |t|
   t.verbose = true
 end
 
+Rake::TestTask.new do |t|
+  t.name = 'integration'
+  t.libs << 'integration'
+  t.test_files = FileList['integration/**/*_test.rb']
+  t.verbose = true
+end
+
 # ==========================================================
 # Documentation
 # ==========================================================
