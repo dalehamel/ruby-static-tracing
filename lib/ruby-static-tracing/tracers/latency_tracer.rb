@@ -12,12 +12,13 @@ module StaticTracing
         end
 
         def add_override(methods)
+          provider = @provider
           methods.each do |method|
             define_method(method) do |*args, &block|
               start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC, :nanosecond)
               result = super(*args, &block)
               duration = Process.clock_gettime(Process::CLOCK_MONOTONIC, :nanosecond) - start_time
-              LatencyTracer.fire_tracepoint(@provider, method, duration)
+              LatencyTracer.fire_tracepoint(provider, method, duration)
               result
             end
           end
@@ -45,14 +46,19 @@ module StaticTracing
         end
 
         def fire_tracepoint(provider, name, duration)
-          return
-          tracepoint(provider, name).fire(name, duration)
+          tracepoint(provider, name).fire(name.to_s, duration)
         end
 
         private
 
         def tracepoint(provider, name)
-          @tracepoints[name] ||= StaticTracing::Tracepoint.new(provider, name, String, Interger)
+          tracepoints[provider][name] ||= begin
+            StaticTracing::Tracepoint.new(provider, name.to_s, String, Integer)
+          end
+        end
+
+        def tracepoints
+          @tracepoints ||= Hash.new { |hash, key| hash[key] = {} }
         end
 
         def modified_classes

@@ -45,12 +45,15 @@ module StaticTracing
   # with a wrapped version that has tracing enabled
   def enable!
     tracers.each(&:enable!)
+    StaticTracing::Provider.enable!
     @enabled = true
   end
 
   # Overwrite the definition of all functions to their original definition,
   # no longer wrapping them
   def disable!
+    tracers.each(&:disable!)
+    StaticTracing::Provider.disable!
     @enabled = false
   end
 

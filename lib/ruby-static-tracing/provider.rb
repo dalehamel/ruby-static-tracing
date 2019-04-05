@@ -16,6 +16,18 @@ module StaticTracing
         end
       end
 
+      def enable!
+        providers.values.each do |provider|
+          provider.enable
+        end
+      end
+
+      def disable!
+        providers.values.each do |provider|
+          provider.disable
+        end
+      end
+
       private
 
       def providers
