@@ -18,7 +18,9 @@ RUN apt-get update
 RUN apt-get install -y bison cmake flex vim g++ libelf-dev zlib1g-dev libfl-dev curl git bc && apt-get clean
 RUN apt-get install -y systemtap-sdt-dev  && apt-get clean
 RUN apt-get install -y clang-5.0 libclang-5.0-dev libclang-common-5.0-dev libclang1-5.0 libllvm5.0 llvm-5.0 llvm-5.0-dev llvm-5.0-runtime && apt-get clean
-RUN apt-get install -y libbcc=0.9.0-1 && apt-get clean
+RUN apt-get install -y libbcc=0.9.0-1 bcc-tools && apt-get clean
+
+RUN echo 'PATH="$PATH:/usr/share/bcc/tools"' >> /etc/bash.bashrc
 
 # We must build libstapsdt from source, as the upstream version seems to have a bug that can cause stack smashing on providerLoad
 RUN git clone https://github.com/sthima/libstapsdt.git /libstapsdt && cd /libstapsdt && make && make install && cd / && rm -rf /libstapsdt
