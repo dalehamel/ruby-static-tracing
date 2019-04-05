@@ -7,13 +7,17 @@ module StaticTracing
   module Tracers
     class LatencyTracer
       class LatencyModuleGenerator < Module
-        def initialize(provider, methods)
+        def initialize(provider)
+          @provider = provider
+        end
+
+        def add_override(methods)
           methods.each do |method|
             define_method(method) do |*args, &block|
               start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC, :nanosecond)
               result = super(*args, &block)
               duration = Process.clock_gettime(Process::CLOCK_MONOTONIC, :nanosecond) - start_time
-              LatencyTracer.fire_tracepoint(provider, method, duration)
+              LatencyTracer.fire_tracepoint(@provider, method, duration)
               result
             end
           end
@@ -23,8 +27,9 @@ module StaticTracing
       class << self
         def register(klass, method_names, provider: nil)
           provider ||= underscore(klass.name)
-          latency_module = LatencyModuleGenerator.new(provider, Array(method_names))
-          modified_classes[klass] = latency_module
+          latency_module = LatencyModuleGenerator.new(provider)
+          modified_classes[klass] ||= latency_module
+          modified_classes[klass].add_override(Array(method_names))
         end
 
         def enable!
