@@ -12,7 +12,7 @@ This README is currently aspirational for the end-state after hackdays and futur
 
 A proof of concept of this funcitonality in ruby:
 
-![probefif](./docs/probetest.gif)
+![probegif](./docs/probetest.gif)
 
 # Internals
 
