@@ -16,7 +16,9 @@ Gem::Specification.new do |s|
   s.email = 'dale.hamel@srvthe.net'
   s.license = 'MIT'
 
-  s.files = Dir['{lib,ext}/**/**/*.{rb,h,c}']
+  s.files = Dir['{lib,ext}/**/**/*.{rb,h,c}'] +
+	    Dir['ext/ruby-static-tracing/libusdt/*'] +
+	    Dir['ext/ruby-static-tracing/libusdt/*.{h,c,s}']
   s.extensions = ['ext/ruby-static-tracing/extconf.rb']
   s.add_development_dependency 'rake-compiler', '~> 0.9'
   s.add_development_dependency 'rake', '< 11.0'

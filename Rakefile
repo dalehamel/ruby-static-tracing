@@ -1,10 +1,11 @@
 require 'rake/testtask'
 require 'bundler/gem_tasks'
 
-GEMSPEC = eval(File.read('ruby-static-tracing.gemspec'))
-BASE_DIR = File.expand_path(File.dirname(__FILE__))
+GEMSPEC    = eval(File.read('ruby-static-tracing.gemspec'))
+BASE_DIR   = File.expand_path(File.dirname(__FILE__))
 DOCKER_DIR = File.join(BASE_DIR, 'docker')
-EXT_DIR =   File.join(BASE_DIR, "ext/ruby-static-tracing")
+EXT_DIR    = File.join(BASE_DIR, "ext/ruby-static-tracing")
+LIB_DIR    = File.join(BASE_DIR, 'lib', 'ruby-static-tracing')
 # ==========================================================
 # Packaging
 # ==========================================================
@@ -18,8 +19,7 @@ end
 # ==========================================================
 
 task :relink do
-  lib_dir = File.join(BASE_DIR, 'lib', 'ruby-static-tracing')
-  sh "install_name_tool -change libusdt.dylib @loader_path/../ruby-static-tracing/libusdt.dylib #{lib_dir}/ruby_static_tracing.bundle"
+  sh "install_name_tool -change libusdt.dylib @loader_path/../ruby-static-tracing/libusdt.dylib #{LIB_DIR}/ruby_static_tracing.bundle"
 end
 
 $LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
@@ -27,13 +27,21 @@ require 'ruby-static-tracing/platform'
 if StaticTracing::Platform.linux? ||
    StaticTracing::Platform.darwin?
   require 'rake/extensiontask'
+
+#  Rake::ExtensionTask.new('libusdt', GEMSPEC) do |ext|
+#    ext.ext_dir = 'ext/ruby-static-tracing/libusdt'
+#    ext.lib_dir = 'lib/ruby-static-tracing'
+#  end
+
   Rake::ExtensionTask.new('ruby_static_tracing', GEMSPEC) do |ext|
     ext.ext_dir = 'ext/ruby-static-tracing'
     ext.lib_dir = 'lib/ruby-static-tracing'
   end
 
+  # FIXME darwin packaging is broken, it doesn't build libusdt
   if StaticTracing::Platform.darwin?
-    task build: [:clean, 'libusdt:up', :compile, :relink]
+    task compile: [:clean, 'libusdt:up', 'compile:ruby_static_tracing', :relink]
+    task build: [:clean, :compile]
   else
     task build: [:clean, :compile]
   end	  
@@ -168,21 +176,23 @@ namespace :new do
 end
 
 namespace :libusdt do
-
   task :get do
     system("git submodule update")
   end
 
   task :clean do
-    system("cd #{File.join(EXT_DIR, "libusdt")} && make clean")
+    system("cd #{File.join(EXT_DIR, 'libusdt')} && make clean")
   end
 
   task :build  do
-    system("cd #{File.join(EXT_DIR, "libusdt")} && make")
+    system("cd #{File.join(EXT_DIR, 'libusdt')} && make")
   end
 
-  task :up => [:get, :clean, :build]
+  task :install  do
+    system("cp #{File.join(EXT_DIR, 'libusdt', 'libusdt.dylib')} #{LIB_DIR}")
+  end
 
+  task :up => [:get, :clean, :build, :install]
 end
 
 Rake::TestTask.new do |t|

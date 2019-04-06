@@ -37,7 +37,7 @@ if StaticTracing::Platform.linux?
 elsif StaticTracing::Platform.darwin?
   abort 'dtrace is missing, this platform is not supported' unless have_library("dtrace", "dtrace_open")
 
-  system("cd libusdt && make")
+  system("cd #{File.join(BASE_DIR, 'libusdt')} && make clean && make libusdt.dylib && cp libusdt.dylib /usr/local/lib")
   LIB_DIRS = [File.join(BASE_DIR, 'libusdt'), RbConfig::CONFIG['libdir']]
   HEADER_DIRS = [
                  File.join(BASE_DIR, 'include'),
@@ -48,7 +48,7 @@ elsif StaticTracing::Platform.darwin?
   dir_config(MKMF_TARGET, HEADER_DIRS, LIB_DIRS)
   
   have_header('usdt.h')
-  have_library('usdt')
+  abort "ERROR: libusdt is required. It is included, so this failure is an error." unless have_library('usdt')
 
   $CFLAGS = "-D_GNU_SOURCE -Wall " # -Werror  complaining
   if ENV.key?('DEBUG')
