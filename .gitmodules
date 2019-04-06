@@ -1,3 +1,3 @@
 [submodule "ext/ruby-static-tracing/libusdt"]
 	path = ext/ruby-static-tracing/libusdt
-	url = https://github.com/chrisa/libusdt.git
+	url = https://github.com/dalehamel/libusdt.git

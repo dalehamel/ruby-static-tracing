@@ -5,10 +5,7 @@ Functions here are associated with rubyland operations.
 #ifndef STATIC_TRACING_PROVIDER_H
 #define STATIC_TRACING_PROVIDER_H
 
-#ifndef STATIC_TRACING_USDT_INCLUDED
-#define STATIC_TRACING_USDT_INCLUDED
-#include "usdt.h" // FIXME fork this to add a proper include guard to the header itself
-#endif //STATIC_TRACING_USDT_INCLUDED
+#include "usdt.h"
 
 #include "ruby_static_tracing.h"
 #include "types.h"

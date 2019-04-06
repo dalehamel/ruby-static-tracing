@@ -7,10 +7,7 @@ Functions here are associated with rubyland operations.
 
 #include <ruby.h>
 
-#ifndef STATIC_TRACING_USDT_INCLUDED
-#define STATIC_TRACING_USDT_INCLUDED
 #include "usdt.h"
-#endif // STATIC_TRACING_USDT_INCLUDED
 
 #include "ruby_static_tracing.h"
 #include "types.h"
