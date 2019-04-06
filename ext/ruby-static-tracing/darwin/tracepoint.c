@@ -66,7 +66,7 @@ tracepoint_enabled(VALUE self)
 {
   static_tracing_tracepoint_t *res = NULL;
   TypedData_Get_Struct(self, static_tracing_tracepoint_t, &static_tracing_tracepoint_type, res);
-  return usdt_is_enabled(res->usdt_tracepoint) == 0 ? Qtrue : Qfalse;
+  return usdt_is_enabled(res->usdt_tracepoint) == 0 ? Qfalse : Qtrue;
 }
 
 static const char*
