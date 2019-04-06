@@ -8,7 +8,7 @@ static const char*
 check_name_arg(VALUE name);
 
 /*
-  Wraps ProviderInit from libstapsdt
+  Wraps usdt_create_provider from libusdt.h
 */
 VALUE
 provider_initialize(VALUE self, VALUE name)
@@ -19,47 +19,50 @@ provider_initialize(VALUE self, VALUE name)
   c_name_str = check_name_arg(name);
 
   TypedData_Get_Struct(self, static_tracing_provider_t, &static_tracing_provider_type, res);
-  // res->sdt_provider = providerInit(c_name_str);
+  res->usdt_provider = usdt_create_provider(c_name_str, c_name_str); // FIXME make module from name and just prepend "_module_"
   return self;
 }
 
 // // Internal function used to register a tracepoint against a provider instance
-// SDTProbe_t
-// *provider_add_tracepoint_internal(VALUE self, const char* name, int argc, Tracepoint_arg_types *args)
-// {
-//   return probe;
-// }
+int
+provider_add_tracepoint_internal(VALUE self, usdt_probedef_t *probedef)
+{
+  static_tracing_provider_t *res = NULL;
+  TypedData_Get_Struct(self, static_tracing_provider_t, &static_tracing_provider_type, res);
+  return usdt_provider_add_probe(res->usdt_provider, probedef) == 0 ? Qtrue : Qfalse;
+}
 
 /*
+  Wraps usdt_provider_enable from libusdt.h
 */
 VALUE
 provider_enable(VALUE self)
 {
   static_tracing_provider_t *res = NULL;
   TypedData_Get_Struct(self, static_tracing_provider_t, &static_tracing_provider_type, res);
-//  return providerLoad(res->sdt_provider) == 0 ? Qtrue : Qfalse;
-  return Qnil;
+  return usdt_provider_enable(res->usdt_provider) == 0 ? Qtrue : Qfalse;
 }
 
 /*
+ Wraps usdt_provider_disable from libusdt.h
 */
 VALUE
 provider_disable(VALUE self)
 {
   static_tracing_provider_t *res = NULL;
   TypedData_Get_Struct(self, static_tracing_provider_t, &static_tracing_provider_type, res);
-//  return providerUnload(res->sdt_provider) == 0 ? Qtrue : Qfalse;
-  return Qnil;
+  return usdt_provider_disable(res->usdt_provider) == 0 ? Qtrue : Qfalse;
 }
 
 /*
+ Wraps usdt_provider_free from libusdt.h
 */
 VALUE
 provider_destroy(VALUE self)
 {
   static_tracing_provider_t *res = NULL;
   TypedData_Get_Struct(self, static_tracing_provider_t, &static_tracing_provider_type, res);
-//  providerDestroy(res->sdt_provider);
+  usdt_provider_free(res->usdt_provider);
   return Qnil;
 }
 

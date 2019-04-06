@@ -34,12 +34,17 @@ tracepoint_initialize(VALUE self, VALUE provider, VALUE name, VALUE vargs)
   cProviderInst = rb_funcall(cProvider, rb_intern("register"), 1, provider);
 
   // Use the provider to register a tracepoint
-//  SDTProbe_t *probe = provider_add_tracepoint_internal(cProviderInst, c_name_str, argc, args);
+  usdt_probedef_t *probe = usdt_create_probe(c_name_str, c_name_str, 0, NULL); // FIXME arg parsing
+
+  // FIXME handle error checking here and throw an exception if failure
+  int success = provider_add_tracepoint_internal(cProviderInst, probe);
   TypedData_Get_Struct(self, static_tracing_tracepoint_t, &static_tracing_tracepoint_type, tracepoint);
 
-  // Stare the tracepoint handle in our struct
-//  tracepoint->sdt_tracepoint = probe;
-  tracepoint->args = args;
+  // FIXME check for nulls
+  // Store the tracepoint handle in our struct
+  tracepoint->usdt_tracepoint_def = probe;
+  tracepoint->usdt_tracepoint = probe->probe;
+  //tracepoint->args = args;
 
   return self;
 }
@@ -72,8 +77,7 @@ tracepoint_enabled(VALUE self)
 {
   static_tracing_tracepoint_t *res = NULL;
   TypedData_Get_Struct(self, static_tracing_tracepoint_t, &static_tracing_tracepoint_type, res);
-//  return probeIsEnabled(res->sdt_tracepoint) == 1 ? Qtrue : Qfalse;
-  return Qnil;
+  return usdt_is_enabled(res->usdt_tracepoint) == 0 ? Qtrue : Qfalse;
 }
 
 static const char*

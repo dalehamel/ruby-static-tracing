@@ -17,6 +17,11 @@ end
 # Ruby Extension
 # ==========================================================
 
+task :relink do
+  lib_dir = File.join(BASE_DIR, 'lib', 'ruby-static-tracing')
+  sh "install_name_tool -change libusdt.dylib @loader_path/../ruby-static-tracing/libusdt.dylib #{lib_dir}/ruby_static_tracing.bundle"
+end
+
 $LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
 require 'ruby-static-tracing/platform'
 if StaticTracing::Platform.linux? ||
@@ -26,7 +31,12 @@ if StaticTracing::Platform.linux? ||
     ext.ext_dir = 'ext/ruby-static-tracing'
     ext.lib_dir = 'lib/ruby-static-tracing'
   end
-  task build: :compile
+
+  if StaticTracing::Platform.darwin?
+    task build: [:clean, 'libusdt:up', :compile, :relink]
+  else
+    task build: [:clean, :compile]
+  end	  
 else
   task :build do
   end
@@ -163,11 +173,15 @@ namespace :libusdt do
     system("git submodule update")
   end
 
+  task :clean do
+    system("cd #{File.join(EXT_DIR, "libusdt")} && make clean")
+  end
+
   task :build  do
     system("cd #{File.join(EXT_DIR, "libusdt")} && make")
   end
 
-  task :up => [:get, :build]
+  task :up => [:get, :clean, :build]
 
 end
 

@@ -13,8 +13,7 @@ Functions here are associated with rubyland operations.
 
 typedef struct {
   char *name;
-//  SDTProvider_t *sdt_provider;
-  VALUE tracepoints;
+  usdt_provider_t *usdt_provider;
 } static_tracing_provider_t;
 
 /*
@@ -62,7 +61,7 @@ provider_destroy(VALUE self);
 VALUE
 static_tracing_provider_alloc(VALUE klass);
 
-//SDTProbe_t
-//*provider_add_tracepoint_internal(VALUE self, const char* name, int argc, Tracepoint_arg_types *args);
+int
+provider_add_tracepoint_internal(VALUE self, usdt_probedef_t* probedef);
 
 #endif //STATIC_TRACING_PROVIDER_H

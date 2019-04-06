@@ -20,8 +20,9 @@ typedef union {
 
 typedef struct {
   char *name;
-//  SDTProbe_t *sdt_tracepoint;
-  Tracepoint_arg_types *args;
+  usdt_probedef_t *usdt_tracepoint_def;
+  usdt_probe_t    *usdt_tracepoint;
+  //Tracepoint_arg_types *args;
 } static_tracing_tracepoint_t;
 
 /*
