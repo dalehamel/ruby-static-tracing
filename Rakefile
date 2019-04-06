@@ -18,29 +18,27 @@ end
 # Ruby Extension
 # ==========================================================
 
-task :relink do
-  sh "install_name_tool -change libusdt.dylib @loader_path/../ruby-static-tracing/libusdt.dylib #{LIB_DIR}/ruby_static_tracing.bundle"
-end
-
 $LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
 require 'ruby-static-tracing/platform'
 if StaticTracing::Platform.linux? ||
    StaticTracing::Platform.darwin?
   require 'rake/extensiontask'
 
-#  Rake::ExtensionTask.new('libusdt', GEMSPEC) do |ext|
-#    ext.ext_dir = 'ext/ruby-static-tracing/libusdt'
-#    ext.lib_dir = 'lib/ruby-static-tracing'
-#  end
+  Rake::ExtensionTask.new do |ext|
+    ext.name    = 'libusdt'
+    ext.ext_dir = 'ext/ruby-static-tracing'
+    ext.lib_dir = 'lib/ruby-static-tracing'
+    ext.config_script = 'libusdt-extconf.rb'
+  end
 
   Rake::ExtensionTask.new('ruby_static_tracing', GEMSPEC) do |ext|
     ext.ext_dir = 'ext/ruby-static-tracing'
     ext.lib_dir = 'lib/ruby-static-tracing'
   end
 
-  # FIXME darwin packaging is broken, it doesn't build libusdt
   if StaticTracing::Platform.darwin?
-    task compile: [:clean, 'libusdt:up', 'compile:ruby_static_tracing', :relink]
+    # FIXME find more idiomatic way to sync submodule
+    task compile: [:clean, 'libusdt:up', 'compile:ruby_static_tracing']
     task build: [:clean, :compile]
   else
     task build: [:clean, :compile]
