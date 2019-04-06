@@ -4,6 +4,7 @@ require 'bundler/gem_tasks'
 GEMSPEC = eval(File.read('ruby-static-tracing.gemspec'))
 BASE_DIR = File.expand_path(File.dirname(__FILE__))
 DOCKER_DIR = File.join(BASE_DIR, 'docker')
+EXT_DIR =   File.join(BASE_DIR, "ext/ruby-static-tracing")
 # ==========================================================
 # Packaging
 # ==========================================================
@@ -18,7 +19,8 @@ end
 
 $LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
 require 'ruby-static-tracing/platform'
-if StaticTracing::Platform.linux?
+if StaticTracing::Platform.linux? ||
+   StaticTracing::Platform.darwin?
   require 'rake/extensiontask'
   Rake::ExtensionTask.new('ruby_static_tracing', GEMSPEC) do |ext|
     ext.ext_dir = 'ext/ruby-static-tracing'
@@ -153,6 +155,20 @@ namespace :new do
 
     SCRIPT
   end
+end
+
+namespace :libusdt do
+
+  task :get do
+    system("git submodule update")
+  end
+
+  task :build  do
+    system("cd #{File.join(EXT_DIR, "libusdt")} && make")
+  end
+
+  task :up => [:get, :build]
+
 end
 
 Rake::TestTask.new do |t|

@@ -3,10 +3,15 @@ $LOAD_PATH.unshift File.expand_path("../../../lib", __FILE__)
 require 'mkmf'
 require 'ruby-static-tracing/platform'
 
+BASE_DIR=File.expand_path(File.dirname(__FILE__)) 
+
+MKMF_TARGET='ruby-static-tracing/ruby_static_tracing'
+
 def platform_dir(platform)
   File.expand_path("../../../ext/ruby-static-tracing/#{platform}/", __FILE__)
 end
 
+#  - Linux, via libstapsdt
 if StaticTracing::Platform.linux?
   abort 'libstapsdt.h is missing, please install libstapsdt' unless find_header('libstapsdt.h')
 
@@ -23,12 +28,27 @@ if StaticTracing::Platform.linux?
     $CFLAGS << "-O3"
   end
 
-  create_makefile('ruby-static-tracing/ruby_static_tracing', platform_dir("linux"))
+  create_makefile(MKMF_TARGET, platform_dir("linux"))
+
+#  - Darwin/BSD and other dtrace platforms, via libusdt
+elsif StaticTracing::Platform.darwin?
+
+  LIB_DIRS = [File.join(BASE_DIR, 'libusdt')]
+  HEADER_DIRS = [File.join(BASE_DIR, 'libusdt'), RbConfig::CONFIG['includedir']]
+
+  require 'json'
+  puts JSON.pretty_generate(HEADER_DIRS)
+  dir_config(MKMF_TARGET, HEADER_DIRS, LIB_DIRS)
+  
+  libs = ['-llibusdt']
+  libs.each do |lib|
+    $LOCAL_LIBS << "#{lib} "
+  end
+
+  have_header('usdt.h')
+#  have_library('usdt')
+  create_makefile(MKMF_TARGET, platform_dir('darwin'))
 else
-  # FIXME properly stub this.
-  # Should have 3 cases:
-  #  - Linux, via libstapsdt
-  #  - BSD and other dtrace platforms, via libusdt
   #  - Stub, for other platforms that support neither
   # for now, we will yolo stub this to leave room to handle platforms
   # that support properly support conventional dtrace
