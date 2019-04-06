@@ -33,20 +33,15 @@ if StaticTracing::Platform.linux?
 #  - Darwin/BSD and other dtrace platforms, via libusdt
 elsif StaticTracing::Platform.darwin?
 
-  LIB_DIRS = [File.join(BASE_DIR, 'libusdt')]
+  LIB_DIRS = [File.join(BASE_DIR, 'libusdt'), RbConfig::CONFIG['libdir']]
   HEADER_DIRS = [File.join(BASE_DIR, 'libusdt'), RbConfig::CONFIG['includedir']]
 
   require 'json'
   puts JSON.pretty_generate(HEADER_DIRS)
   dir_config(MKMF_TARGET, HEADER_DIRS, LIB_DIRS)
   
-  libs = ['-llibusdt']
-  libs.each do |lib|
-    $LOCAL_LIBS << "#{lib} "
-  end
-
   have_header('usdt.h')
-#  have_library('usdt')
+  have_library('usdt')
   create_makefile(MKMF_TARGET, platform_dir('darwin'))
 else
   #  - Stub, for other platforms that support neither
