@@ -5,11 +5,11 @@ Functions here are associated with rubyland operations.
 #ifndef STATIC_TRACING_PROVIDER_H
 #define STATIC_TRACING_PROVIDER_H
 
-#include <ruby.h>
 // Include libstapsdt.h to wrap
-#include <libstapsdt.h>
+#include <libstapsdt.h> // FIXME use local
 
 #include "ruby_static_tracing.h"
+#include "types.h"
 #include "tracepoint.h"
 
 typedef struct {

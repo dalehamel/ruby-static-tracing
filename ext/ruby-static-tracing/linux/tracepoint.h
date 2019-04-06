@@ -8,9 +8,9 @@ Functions here are associated with rubyland operations.
 #include <ruby.h>
 // Include libstapsdt.h to wrap
 #include <libstapsdt.h>
-// Probably need to include provider.h to be able to initialize self
 
 #include "ruby_static_tracing.h"
+#include "types.h"
 
 typedef union {
   unsigned long long intval;

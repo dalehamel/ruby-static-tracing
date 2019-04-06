@@ -34,10 +34,12 @@ if StaticTracing::Platform.linux?
 elsif StaticTracing::Platform.darwin?
 
   LIB_DIRS = [File.join(BASE_DIR, 'libusdt'), RbConfig::CONFIG['libdir']]
-  HEADER_DIRS = [File.join(BASE_DIR, 'libusdt'), RbConfig::CONFIG['includedir']]
+  HEADER_DIRS = [
+                 File.join(BASE_DIR, 'include'),
+                 File.join(BASE_DIR, 'libusdt'),
+                 RbConfig::CONFIG['includedir']
+                ]
 
-  require 'json'
-  puts JSON.pretty_generate(HEADER_DIRS)
   dir_config(MKMF_TARGET, HEADER_DIRS, LIB_DIRS)
   
   have_header('usdt.h')

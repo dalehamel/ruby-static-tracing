@@ -76,10 +76,4 @@ module StaticTracing
   end
 end
 
-# FIXME add signal handlers to enable-disable on specific process signals
-# within a trap handler.
-# Specify default signals, but allow these to be overidden for easier integration
-
-# This loads the actual C extension, we might want to guard it
-# for cases where the extension isn't yet built
-require 'ruby-static-tracing/ruby_static_tracing' if StaticTracing::Platform.linux?
+require 'ruby-static-tracing/ruby_static_tracing' if StaticTracing::Platform.linux? || StaticTracing::Platform.darwin?
