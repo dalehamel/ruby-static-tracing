@@ -15,6 +15,6 @@ class LatencyTest < IntegrationTestCase
     # Signal bpftrace to exit, flushing output
     tracer.interrupt(1)
 
-    assert_equal(tracer.output, read_probe_file('latency.out'))
+    assert_tracer_output(tracer.output, read_probe_file('latency.out'))
   end
 end

@@ -10,6 +10,7 @@ class RubyStaticTracingTest < IntegrationTestCase
     target.usr2(1)
     # Signal bpftrace to exit, flushing output
     tracer.interrupt(1)
-    assert_equal(tracer.output, read_probe_file('hello.out'))
+
+    assert_tracer_output(tracer.output, read_probe_file('hello.out'))
   end
 end
