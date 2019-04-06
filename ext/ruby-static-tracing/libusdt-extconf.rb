@@ -34,6 +34,7 @@ all:
 	cp #{File.join(BASE_DIR, 'libusdt', 'libusdt.dylib')} #{LIB_DIR}
 	install_name_tool -change libusdt.dylib @loader_path/../ruby-static-tracing/libusdt.dylib #{File.join(LIB_DIR, 'ruby_static_tracing.bundle')}
 clean:
+	cd #{File.join(BASE_DIR, 'libusdt')} && make clean
 install:
 MAKEFILE
   exit
