@@ -1,20 +1,9 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'ruby-static-tracing/tracers/stack_tracer'
 
 module StaticTracing
   module Tracers
-    class FakeTracePoint
-      def initialize(provider, name, klass1, klass2)
-        @foo = 1
-      end
-
-      def fire(str1, str2)
-        str2
-      end
-    end
-
     class StackTracerTest < MiniTest::Test
       class Example
         def noop
