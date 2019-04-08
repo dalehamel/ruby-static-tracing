@@ -40,7 +40,7 @@ module StaticTracing
 
             def add_override(methods)
               methods.each do |method|
-                Tracepoints.add_tracepoint(@provider, method, @data_types)
+                Tracepoints.add(@provider, method, @data_types)
                 define_method(method.to_s, @wrapping_function)
               end
             end
