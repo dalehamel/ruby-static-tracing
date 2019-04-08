@@ -112,6 +112,49 @@ namespace :docker do
   end
 end
 
+namespace :new do
+  desc "Scaffold a new integration test"
+  task :integration_test, [:test] do |t, args|
+    test_name = args[:test]
+    integration_test_directory = 'integration'
+
+    Dir.chdir(integration_test_directory) do
+      test_folder = "test_#{test_name}"
+      FileUtils.mkdir("test_#{test_name}")
+
+      Dir.chdir(test_folder) do
+        File.open("#{test_folder}.rb", 'w') do |file|
+          file.write(test_scaffold(test_name))
+        end
+        FileUtils.touch("#{test_name}.bt")
+        FileUtils.touch("#{test_name}.out")
+        File.open("#{test_name}.rb", 'w') do |file|
+          file.write(basic_script)
+        end
+      end
+    end
+  end
+
+  def test_scaffold(test_name)
+    <<~TEST
+    require 'integration_helper'
+
+    class #{test_name.capitalize}Test < IntegrationTestCase
+      def test_#{test_name}
+      end
+    end
+    TEST
+  end
+
+  def basic_script
+    <<~SCRIPT
+    require 'ruby-static-tracing'
+    STDOUT.sync = true
+
+    SCRIPT
+  end
+end
+
 Rake::TestTask.new do |t|
   t.libs << "test"
   t.test_files = FileList['test/**/*_test.rb']
