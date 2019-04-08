@@ -44,7 +44,6 @@ tracepoint_initialize(VALUE self, VALUE provider, VALUE name, VALUE vargs)
   // FIXME Do we really need to store both references? refactor this.
   // Store the tracepoint handle in our struct
   tracepoint->usdt_tracepoint_def = probe;
-  tracepoint->usdt_tracepoint = probe->probe;
 
   return self;
 }
@@ -57,7 +56,7 @@ tracepoint_fire(VALUE self, VALUE vargs)
   int argc = 0;
   void *args = check_fire_args(&argc, vargs);
 
-  usdt_fire_probe(res->usdt_tracepoint, argc, args);
+  usdt_fire_probe(res->usdt_tracepoint_def->probe, argc, args);
   return Qnil;
 }
 
@@ -66,7 +65,7 @@ tracepoint_enabled(VALUE self)
 {
   static_tracing_tracepoint_t *res = NULL;
   TypedData_Get_Struct(self, static_tracing_tracepoint_t, &static_tracing_tracepoint_type, res);
-  return usdt_is_enabled(res->usdt_tracepoint) == 0 ? Qfalse : Qtrue;
+  return usdt_is_enabled(res->usdt_tracepoint_def->probe) == 0 ? Qfalse : Qtrue;
 }
 
 static const char*
