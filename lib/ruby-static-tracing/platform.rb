@@ -3,6 +3,11 @@
 module StaticTracing
   module Platform
     extend self
+    UNSUPPORTED_POST_INSTALL_MESSAGE = %(
+    WARNING: You have installed this on an unsupported platform, somehow.
+
+    You should verify for yourself that the behavior on your platform is safe.
+    )
 
     LINUX_POST_INSTALL_MESSAGE = %(
     WARNING: you will need a new kernel (4.14+) that supports eBPF.
@@ -45,6 +50,8 @@ module StaticTracing
           LINUX_POST_INSTALL_MESSAGE
         elsif darwin?
           DARWIN_POST_INSTALL_MESSAGE
+        else
+          UNSUPPORTED_POST_INSTALL_MESSAGE
         end
       end
     end
