@@ -37,7 +37,6 @@ if StaticTracing::Platform.linux?
 elsif StaticTracing::Platform.darwin?
   abort 'dtrace is missing, this platform is not supported' unless have_library("dtrace", "dtrace_open")
 
-  system("cd #{File.join(BASE_DIR, 'libusdt')} && make clean && make libusdt.dylib && cp libusdt.dylib /usr/local/lib")
   LIB_DIRS = [File.join(BASE_DIR, 'libusdt'), RbConfig::CONFIG['libdir']]
   HEADER_DIRS = [
                  File.join(BASE_DIR, 'include'),
