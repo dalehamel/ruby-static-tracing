@@ -19,7 +19,7 @@ module StaticTracing
         @tracepoint.fire('hello', 1)
       end
 
-      @tracepoint.expects(:_fire_tracepoint).once
+      @tracepoint.expects(:fire).once
       @tracepoint.fire(1, 'hello')
     end
   end

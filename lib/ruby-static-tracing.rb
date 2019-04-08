@@ -6,6 +6,7 @@ require 'ruby-static-tracing/version'
 require 'ruby-static-tracing/platform'
 require 'ruby-static-tracing/provider'
 require 'ruby-static-tracing/tracepoint'
+require 'ruby-static-tracing/tracepoints'
 require 'ruby-static-tracing/configuration'
 require 'ruby-static-tracing/tracers'
 

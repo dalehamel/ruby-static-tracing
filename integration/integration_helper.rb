@@ -65,4 +65,15 @@ class IntegrationTestCase < MiniTest::Test
   def read_probe_file(file)
     File.read(file)
   end
+
+  def assert_tracer_output(outout, expected_ouput)
+    msg = <<~EOF
+      Output from tracer:
+      #{mu_pp(outout)}
+
+      Expected output:
+      #{mu_pp(expected_ouput)}
+    EOF
+    assert(outout == expected_ouput, msg)
+  end
 end
