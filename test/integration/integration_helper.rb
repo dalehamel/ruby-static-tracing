@@ -4,9 +4,38 @@ require 'pry-byebug' if ENV['PRY']
 require 'tempfile'
 
 PIDS = []
-def cleanup_pids; PIDS.each {|p| Process.kill('KILL', p) } end
+def cleanup_pids
+  PIDS.each do |p| 
+    Process.kill('KILL', p)
+  rescue Errno::EPERM
+  end
+end
 
 MiniTest::Unit.after_tests { cleanup_pids }
+
+module TraceRunner
+  extend self
+
+  def trace(*flags, script: nil, wait: nil)
+    cmd = ""
+    if StaticTracing::Platform.linux?
+      cmd = "bpftrace"
+      cmd = [cmd, "#{script}.bt"] if script
+    elsif StaticTracing::Platform.darwin?
+      cmd = ['sudo', 'dtrace', '-q'] # FIXME find a way to enter sudo at start of test run to avoid timeouts
+      cmd = [cmd, '-s', "#{script}.dt"] if script
+    else
+      puts "WARNING: no supported tracer for this platform"
+      return
+    end
+
+    cmd = [cmd, flags]
+
+    command = cmd.flatten.join(' ')
+    puts command if ENV['DEBUG']
+    CommandRunner.new(command, wait)
+  end
+end
 
 # FIXME add a "fixtures record" helper to facilitate adding tests / updating fixtures
 class CommandRunner
@@ -29,7 +58,12 @@ class CommandRunner
   end
 
   def interrupt(wait = nil)
-    Process.kill('INT', @pid)
+    if StaticTracing::Platform.darwin?
+      # dtrace runs as root and must be signaled by root
+      system("sudo kill -INT #{@pid}")
+    else
+      Process.kill('INT', @pid)
+    end
     sleep wait if wait
   end
 

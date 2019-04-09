@@ -1,0 +1,4 @@
+expensive_operation*:::execute
+{
+  printf("Attaching 1 probe...\n%s\n\n\n", copyinstr(arg0))
+}

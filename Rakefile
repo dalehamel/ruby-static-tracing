@@ -25,10 +25,10 @@ if StaticTracing::Platform.linux? ||
   require 'rake/extensiontask'
 
   Rake::ExtensionTask.new do |ext|
-    ext.name    = 'libusdt'
+    ext.name    = 'deps'
     ext.ext_dir = 'ext/ruby-static-tracing'
     ext.lib_dir = 'lib/ruby-static-tracing'
-    ext.config_script = 'libusdt-extconf.rb'
+    ext.config_script = 'deps-extconf.rb'
   end
 
   Rake::ExtensionTask.new('ruby_static_tracing', GEMSPEC) do |ext|
@@ -36,9 +36,16 @@ if StaticTracing::Platform.linux? ||
     ext.lib_dir = 'lib/ruby-static-tracing'
   end
 
+  Rake::ExtensionTask.new do |ext|
+    ext.name    = 'post'
+    ext.ext_dir = 'ext/ruby-static-tracing'
+    ext.lib_dir = 'lib/ruby-static-tracing'
+    ext.config_script = 'post-extconf.rb'
+  end
+
   if StaticTracing::Platform.darwin?
-    # FIXME find more idiomatic way to sync submodule
-    task compile: [:clean, 'libusdt:up', 'compile:ruby_static_tracing']
+    task fresh: ['libusdt:clean', :clean]
+    task compile: [:fresh, 'compile:deps', 'compile:ruby_static_tracing', 'compile:post']
     task build: [:clean, :compile]
   else
     task build: [:clean, :compile]
