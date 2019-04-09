@@ -1,4 +1,5 @@
 *.so
+*.so.0
 *.swp
 html
 *.iso

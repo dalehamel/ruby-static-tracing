@@ -11,7 +11,7 @@ def cleanup_pids
   end
 end
 
-MiniTest::Unit.after_tests { cleanup_pids }
+MiniTest.after_run { cleanup_pids }
 
 module TraceRunner
   extend self

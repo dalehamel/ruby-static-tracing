@@ -24,9 +24,10 @@ if StaticTracing::Platform.linux? ||
    StaticTracing::Platform.darwin?
   require 'rake/extensiontask'
 
+  # Task to compile external dep, but let them use their own makefiles
   Rake::ExtensionTask.new do |ext|
     ext.name    = 'deps'
-    ext.ext_dir = 'ext/ruby-static-tracing'
+    ext.ext_dir = 'ext/ruby-static-tracing/lib'
     ext.lib_dir = 'lib/ruby-static-tracing'
     ext.config_script = 'deps-extconf.rb'
   end
@@ -36,20 +37,17 @@ if StaticTracing::Platform.linux? ||
     ext.lib_dir = 'lib/ruby-static-tracing'
   end
 
+  # Task for "post install" of libraries
   Rake::ExtensionTask.new do |ext|
     ext.name    = 'post'
-    ext.ext_dir = 'ext/ruby-static-tracing'
+    ext.ext_dir = 'ext/ruby-static-tracing/lib'
     ext.lib_dir = 'lib/ruby-static-tracing'
     ext.config_script = 'post-extconf.rb'
   end
 
-  if StaticTracing::Platform.darwin?
-    task fresh: ['libusdt:clean', :clean]
-    task compile: [:fresh, 'compile:deps', 'compile:ruby_static_tracing', 'compile:post']
-    task build: [:clean, :compile]
-  else
-    task build: [:clean, :compile]
-  end
+  task fresh:   ['deps:clean', :clean]
+  task compile: [:fresh, 'compile:deps', 'compile:ruby_static_tracing', 'compile:post']
+  task build:   [:fresh, :compile]
 else
   task :build do
   end
@@ -180,25 +178,19 @@ namespace :new do
   end
 end
 
-namespace :libusdt do
+namespace :deps do
   task :get do
     system("git submodule update")
   end
 
   task :clean do
-    system("cd #{File.join(EXT_DIR, 'libusdt')} && make clean")
+    system("cd #{File.join(EXT_DIR, 'lib', 'libusdt')} && make clean")
+    system("cd #{File.join(EXT_DIR, 'lib', 'libstapsdt')} && make clean")
   end
-
-  task :build  do
-    system("cd #{File.join(EXT_DIR, 'libusdt')} && make")
-  end
-
-  task :install  do
-    system("cp #{File.join(EXT_DIR, 'libusdt', 'libusdt.dylib')} #{LIB_DIR}")
-  end
-
-  task :up => [:get, :clean, :build, :install]
 end
+
+desc "Initializes git submodules and any other steps before first build"
+task init: ['deps:get']
 
 Rake::TestTask.new do |t|
   t.libs << "test"

@@ -97,3 +97,9 @@ bundle exec rake integration
 You will need a system that can actually support probes (new enough kernel/eBPF support, SIP disabled, etc) in order to run integration tests.
 
 The integration tests are [described further in their README](./test/integration/README.md)
+
+# Dependencies
+
+## Linux
+
+To build libstapsdt, you must have libelf. Install it for your system, along with related development packages.

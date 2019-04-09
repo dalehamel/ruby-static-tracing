@@ -4,6 +4,7 @@ require 'mkmf'
 require 'ruby-static-tracing/platform'
 
 BASE_DIR=File.expand_path(File.dirname(__FILE__)) 
+LIB_DIR  = File.expand_path('../../../lib/ruby-static-tracing', __FILE__)
 
 MKMF_TARGET='ruby-static-tracing/ruby_static_tracing'
 
@@ -18,10 +19,10 @@ end
 if StaticTracing::Platform.linux?
   abort 'libstapsdt.h is missing, please install libstapsdt' unless find_header('libstapsdt.h')
 
-  LIB_DIRS = [File.join(BASE_DIR, 'libstapsdt'), RbConfig::CONFIG['libdir']]
+  LIB_DIRS = [LIB_DIR, RbConfig::CONFIG['libdir']]
   HEADER_DIRS = [
                  File.join(BASE_DIR, 'include'),
-                 File.join(BASE_DIR, 'libstapsdt'),
+                 File.join(BASE_DIR, 'lib', 'libstapsdt'),
                  RbConfig::CONFIG['includedir']
                 ]
 
@@ -46,10 +47,11 @@ if StaticTracing::Platform.linux?
 elsif StaticTracing::Platform.darwin?
   abort 'dtrace is missing, this platform is not supported' unless have_library("dtrace", "dtrace_open")
 
-  LIB_DIRS = [File.join(BASE_DIR, 'libusdt'), RbConfig::CONFIG['libdir']]
+  LIB_DIRS = [LIB_DIR, RbConfig::CONFIG['libdir']]
+  puts LIB_DIRS.inspect
   HEADER_DIRS = [
                  File.join(BASE_DIR, 'include'),
-                 File.join(BASE_DIR, 'libusdt'),
+                 File.join(BASE_DIR, 'lib', 'libusdt'),
                  RbConfig::CONFIG['includedir']
                 ]
 
