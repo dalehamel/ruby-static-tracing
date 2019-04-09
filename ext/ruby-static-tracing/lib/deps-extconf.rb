@@ -1,4 +1,4 @@
-$LOAD_PATH.unshift File.expand_path("../../../lib", __FILE__)
+$LOAD_PATH.unshift File.expand_path("../../../../lib", __FILE__)
 
 require 'mkmf'
 require 'ruby-static-tracing/platform'
@@ -15,6 +15,7 @@ all:
 	cd #{File.join(BASE_DIR, 'libstapsdt')} && make
 	touch deps.so # HACK
 	cp #{File.join(BASE_DIR, 'libstapsdt', 'out/libstapsdt.so.0')} #{LIB_DIR}
+	cd #{LIB_DIR} && ln -sf libstapsdt.so.0 libstapsdt.so
 clean:
 	cd #{File.join(BASE_DIR, 'libstapsdt')} && make clean
 install:

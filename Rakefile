@@ -180,6 +180,7 @@ end
 
 namespace :deps do
   task :get do
+    system("git submodule init")
     system("git submodule update")
   end
 
