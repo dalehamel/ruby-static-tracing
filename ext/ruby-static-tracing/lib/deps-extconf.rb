@@ -3,15 +3,20 @@ $LOAD_PATH.unshift File.expand_path("../../../lib", __FILE__)
 require 'mkmf'
 require 'ruby-static-tracing/platform'
 
-BASE_DIR = File.expand_path(File.dirname(__FILE__)) 
-LIB_DIR  = File.expand_path('../../../lib/ruby-static-tracing', __FILE__)
+BASE_DIR = File.expand_path(File.dirname(__FILE__))
+LIB_DIR  = File.expand_path('../../../../lib/ruby-static-tracing', __FILE__)
 
 # FIXME have this install libstapsdt
 if StaticTracing::Platform.linux?
+  # This is a bit of a hack to compile libstapsdt.so
+  # and "trick" extconf into thinking it's just another .so
   File.write "Makefile", <<MAKEFILE
 all:
+	cd #{File.join(BASE_DIR, 'libstapsdt')} && make
 	touch deps.so # HACK
+	cp #{File.join(BASE_DIR, 'libstapsdt', 'out/libstapsdt.so.0')} #{LIB_DIR}
 clean:
+	cd #{File.join(BASE_DIR, 'libstapsdt')} && make clean
 install:
 MAKEFILE
   exit
@@ -19,7 +24,7 @@ MAKEFILE
 elsif StaticTracing::Platform.darwin?
   # This is a bit of a hack to compile libusdt.dylib
   # and "trick" extconf into thinking it's just another .bundle
-  # After installing it, we forcefully update the load path for
+  # After installing it (in post-extconf), we forcefully update the load path for
   # ruby_static_tracing.bundle to find it in the same directory
   File.write "Makefile", <<MAKEFILE
 all:

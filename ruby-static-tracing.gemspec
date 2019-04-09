@@ -19,9 +19,9 @@ Gem::Specification.new do |s|
   s.files = Dir['{lib,ext}/**/**/*.{rb,h,c}'] +
 	    Dir['ext/ruby-static-tracing/libusdt/*'] +
 	    Dir['ext/ruby-static-tracing/libusdt/*.{h,c,s}']
-  s.extensions = ['ext/ruby-static-tracing/deps-extconf.rb',
+  s.extensions = ['ext/ruby-static-tracing/lib/deps-extconf.rb',
 		  'ext/ruby-static-tracing/extconf.rb',
-		  'ext/ruby-static-tracing/post-extconf.rb'
+		  'ext/ruby-static-tracing/lib/post-extconf.rb'
 		  ]
   s.add_development_dependency 'rake-compiler', '~> 0.9'
   s.add_development_dependency 'rake', '< 11.0'
