@@ -9,11 +9,11 @@ check_name_arg(VALUE provider);
 static const char*
 check_provider_arg(VALUE provider);
 
-static Tracepoint_arg_types
-*check_vargs(int *argc, VALUE vargs);
+static char
+**check_vargs(int *argc, VALUE vargs);
 
-static Tracepoint_fire_arg
-*check_fire_args(int *argc, VALUE vargs);
+static void
+**check_fire_args(int *argc, VALUE vargs);
 
 VALUE
 tracepoint_initialize(VALUE self, VALUE provider, VALUE name, VALUE vargs)
@@ -25,20 +25,24 @@ tracepoint_initialize(VALUE self, VALUE provider, VALUE name, VALUE vargs)
 
   c_name_str     = check_name_arg(name);
   check_provider_arg(provider); // FIXME should only accept string
-  Tracepoint_arg_types *args = check_vargs(&argc, vargs);
+  char **args = check_vargs(&argc, vargs);
 
   /// Get a handle to global provider list for lookup
   cStaticTracing = rb_const_get(rb_cObject, rb_intern("StaticTracing"));
   cProvider = rb_const_get(cStaticTracing, rb_intern("Provider"));
   cProviderInst = rb_funcall(cProvider, rb_intern("register"), 1, provider);
 
+  // Create a probe
+  usdt_probedef_t *probe = usdt_create_probe(c_name_str, c_name_str, argc, args);
+
   // Use the provider to register a tracepoint
-  SDTProbe_t *probe = provider_add_tracepoint_internal(cProviderInst, c_name_str, argc, args);
+  int success = provider_add_tracepoint_internal(cProviderInst, probe); // FIXME handle error checking here and throw an exception if failure
   TypedData_Get_Struct(self, static_tracing_tracepoint_t, &static_tracing_tracepoint_type, tracepoint);
 
-  // Stare the tracepoint handle in our struct
-  tracepoint->sdt_tracepoint = probe;
-  tracepoint->args = args;
+  // FIXME check for nulls
+  // FIXME Do we really need to store both references? refactor this.
+  // Store the tracepoint handle in our struct
+  tracepoint->usdt_tracepoint_def = probe;
 
   return self;
 }
@@ -49,20 +53,9 @@ tracepoint_fire(VALUE self, VALUE vargs)
   static_tracing_tracepoint_t *res = NULL;
   TypedData_Get_Struct(self, static_tracing_tracepoint_t, &static_tracing_tracepoint_type, res);
   int argc = 0;
+  void *args = check_fire_args(&argc, vargs);
 
-  Tracepoint_fire_arg *args = check_fire_args(&argc, vargs);
-  switch(argc)
-  {
-    case 0: probeFire(res->sdt_tracepoint); break;
-    case 1: probeFire(res->sdt_tracepoint, args[0]); break;
-    case 2: probeFire(res->sdt_tracepoint, args[0], args[1]); break;
-    case 3: probeFire(res->sdt_tracepoint, args[0], args[1], args[2]); break;
-    case 4: probeFire(res->sdt_tracepoint, args[0], args[1], args[2], args[3]); break;
-    case 5: probeFire(res->sdt_tracepoint, args[0], args[1], args[2], args[3], args[4]); break;
-    case 6: probeFire(res->sdt_tracepoint, args[0], args[1], args[2], args[3], args[4], args[5]); break;
-    default: probeFire(res->sdt_tracepoint); break;
-  }
-
+  usdt_fire_probe(res->usdt_tracepoint_def->probe, argc, args);
   return Qnil;
 }
 
@@ -71,7 +64,7 @@ tracepoint_enabled(VALUE self)
 {
   static_tracing_tracepoint_t *res = NULL;
   TypedData_Get_Struct(self, static_tracing_tracepoint_t, &static_tracing_tracepoint_type, res);
-  return probeIsEnabled(res->sdt_tracepoint) == 1 ? Qtrue : Qfalse;
+  return usdt_is_enabled(res->usdt_tracepoint_def->probe) == 0 ? Qfalse : Qtrue;
 }
 
 static const char*
@@ -108,8 +101,8 @@ check_provider_arg(VALUE provider)
   return c_provider_str;
 }
 
-static Tracepoint_arg_types
-*check_vargs(int *argc, VALUE vargs)
+static char
+**check_vargs(int *argc, VALUE vargs)
 {
   if(TYPE(vargs) == T_ARRAY)
   {
@@ -121,16 +114,16 @@ static Tracepoint_arg_types
       printf("ERROR - passed %i args, maximum 6 argument types can be passed", *argc);
       return NULL;
     }
-
-    Tracepoint_arg_types *args = malloc(*argc * sizeof(Tracepoint_arg_types));
+    // FIXME ensure this is freed
+    char **args = malloc(*argc * sizeof(char*));
     for (int i = 0; i < *argc; i++)
     {
       VALUE str = rb_funcall(rb_ary_entry(vargs, i), rb_intern("to_s"), 0, Qnil);
       const char* cStr = RSTRING_PTR(str);
       if (strcmp(cStr, "Integer")) {
-        args[i] = Integer;
+        args[i] = strdup(cStr);
       } else if (strcmp(cStr, "String")) {
-        args[i] = String;
+        args[i] = strdup(cStr);
       } else {
         printf("ERROR - type \"%s\" is unsupported\n", cStr);
       }
@@ -142,8 +135,19 @@ static Tracepoint_arg_types
   }
 }
 
-static Tracepoint_fire_arg
-*check_fire_args(int *argc, VALUE vargs)
+
+/*
+ * Yeah, returning a void ** array is a bit sketchy, but since
+ * usdt_fire_probe takes a void **, that's what we'll give it.
+ *
+ * The structure of the data is actually an array of 64 bit unions
+ * So the size of the data should be argc * 8 bytes.
+ * We assume that reads will be aligned on 64 bits in the tracer.
+ *
+ * The approach libstapsdt takes is pretty similar, just not an array.
+*/
+static void
+**check_fire_args(int *argc, VALUE vargs)
 {
   if(TYPE(vargs) == T_ARRAY)
   {
@@ -158,6 +162,7 @@ static Tracepoint_fire_arg
 
     Tracepoint_fire_arg *args = malloc(*argc * sizeof(Tracepoint_fire_arg));
     //printf("SIZE: %i ARGC: %i \n", sizeof(Tracepoint_fire_arg), *argc);
+    // FIXME check against registered argtypes here
     for (int i = 0; i < *argc; i++)
     {
       VALUE val = rb_ary_entry(vargs, i);
@@ -174,7 +179,8 @@ static Tracepoint_fire_arg
           break;
       }
     }
-    return args;
+    // This downcast is explained the comment section of this function.
+    return (void **) args;
   } else {
     printf("ERROR - array was expected\n");
     return NULL;

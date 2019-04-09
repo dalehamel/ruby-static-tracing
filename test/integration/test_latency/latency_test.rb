@@ -7,7 +7,7 @@ class LatencyTest < IntegrationTestCase
     # Enable probing
     target.prof(1)
 
-    tracer = command("bpftrace latency.bt -p #{target.pid}", wait: 5)
+    tracer = TraceRunner.trace('-p', target.pid, script: 'latency', wait: 5)
 
     # Signal the target to trigger probe firing
     target.usr2(1)

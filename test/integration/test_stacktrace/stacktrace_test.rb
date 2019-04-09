@@ -7,7 +7,7 @@ class StacktraceTest < IntegrationTestCase
     # Enable probing
     target.prof(1)
 
-    tracer = command("bpftrace stacktrace.bt -p #{target.pid}", wait: 5)
+    tracer = TraceRunner.trace('-p', target.pid, script: 'stacktrace', wait: 5)
 
     # Signal the target to trigger probe firing
     target.usr2(1)

@@ -1,13 +1,11 @@
 #ifndef STATIC_TRACING_TRACEPOINT_H
 #define STATIC_TRACING_TRACEPOINT_H
 
-#include <ruby.h>
-// Include libstapsdt.h to wrap
-#include <libstapsdt.h>
+#include "usdt.h"
 
 #include "ruby_static_tracing.h"
-#include "types.h"
 
+// FIXME move this to shared header
 typedef union {
   unsigned long long intval;
   char *             strval;
@@ -15,8 +13,9 @@ typedef union {
 
 typedef struct {
   char *name;
-  SDTProbe_t *sdt_tracepoint;
-  Tracepoint_arg_types *args;
+  usdt_probedef_t *usdt_tracepoint_def;
+  usdt_probe_t    *usdt_tracepoint;
+  //Tracepoint_arg_types *args;
 } static_tracing_tracepoint_t;
 
 /*

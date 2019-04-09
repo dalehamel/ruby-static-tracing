@@ -3,6 +3,8 @@
 html
 *.iso
 *.log
+*.dylib
+*.bundle
 .vagrant
 tmp
 pkg

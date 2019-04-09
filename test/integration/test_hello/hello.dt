@@ -1,0 +1,4 @@
+global*:::hello_test
+{
+  printf("Attaching 1 probe...\n%s\n\n\n", copyinstr(arg0))
+}
