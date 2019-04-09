@@ -1,4 +1,6 @@
-# Prerequisites
+# Linux
+
+On linux, we depend on eBPF.
 
 This functionality depends on having both a linux machine, and a recent linux kernel (4.18+ ideally).
 
@@ -48,7 +50,7 @@ From within this shell, you will now be running with your current working direct
 
 This should build you a container with suitable deps to get going to be able to build the gem and run unit tests.
 
-# Tock example
+## Tock example
 
 In one shell, start ruby:
 
@@ -68,60 +70,30 @@ Trace the function defined in tock.rb
 bpftrace -e 'usdt::global:hello_nsec { printf("%lld %s\n", arg0, str(arg1))}' -p ${PID_OF_RUBY}
 ```
 
-# Development libraries
+# Darwin
 
-If you use the Dockerfile, you can skip this.
-
-This gem can be easily developed and packaged in an ubuntu container.
-
-You'll need `libstapsdt`, you can install this in ubuntu using the xenial (16.04) repository:
-
-```
-sudo add-apt-repository ppa:sthima/oss
-sudo apt-get update
-sudo apt-get install libstapsdt0 libstapsdt-dev
-```
-
-Or build it yourself from source.
-
-From there, you will be able to package the gem and test it on a compatibily linux host.
-
-```
-rake build
-```
-
-# Running
-
-You will need a fairly modern linux kernel to test out development. 4.8 should work, but 4.14 or higher is recommended for the necessary eBPF features.
-
-The easiest way to do this might be in a cloud server, or by spinning up a VM in vmware (easy) or xhyve (advanced) on OS X.
-
-If you have linux locally, you can use kvm or ideally run against your existing setup.
-
-All of the kernel requirements of github.com/iovisor/bcc are required in order for this to work.
-
-At Shopify, you can use the `shopify-toolbox` command to enter an environment that should work fine for development and general testing of this gem.
+On darwin, you use dtrace. You need to disable SIP, as per the gem install instructions
 
 # Testing
 
-## Library testing
+We use minitest for this gem's tests.
 
-Tests wrapping functionality in `libstapsdt` should be able to run in a local ubuntu image running in docker.
+## Unit tests
 
-## E2E testing
+We have unit tests, they can be run with:
 
-Due to the need to access low-level kernel capabilities in a privileged context, this may be a difficult gem to end-to-end test.
+```
+bundle exec rake test
+```
 
-If the testing environment provides root access and has a suitable kernel, then it should be possible to run E2E tests.
+## Integration tests
 
-The test harness will need to be able to set up two processes, and will need a copy of bpftrace available.
+We have integration tests, they can be run with:
 
-Tests will probably take the form of checking output against fixtures, writing simple ruby programs that demonstrate the use of a tracepoint use-case, and then running a wrapper around `bpftrace` to execute a script to check that the probes are able to fire and give predicted output, and show up as registered against the process.
+```
+bundle exec rake integration
+```
 
-## Performance testing
+You will need a system that can actually support probes (new enough kernel/eBPF support, SIP disabled, etc) in order to run integration tests.
 
-Following on from the E2E tests, performance testing can be done in the same environment.
-
-This sort of end-to-end testing can also be done to repeatedly register tracepoints and push edge cases to try and find performance issues.
-
-This should allow for measuring the overhead of tracepoints, by calling traced functions with a high frequency and collecting lots of samples of a traced vs untraced version.
+The integration tests are [described further in their README](./test/integration/README.md)

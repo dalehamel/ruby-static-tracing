@@ -1,18 +1,18 @@
 ![ponycorn](http://www.brendangregg.com/blog/images/2015/pony_ebpf01_small.png)
 
-# Hackdays
+# Status
 
-This project is in a design phase, in preparations for hackdays so we can hit the ground running on the coding.
+It works!
 
-* A [Development guide](./DEVELOPMENT.md) to show how to set up a dev env and test the gem.
+Here's a proof of concept of this funcitonality for ruby:
+
+![probegif](./docs/probetest.gif)
+
+* Check out the [Development guide](./DEVELOPMENT.md) to show how to set up a dev env and test the gem.
 * A rough outline of the [desired ruby language API](./docs/ruby-interface.md) for a potential interface and initial set of features
 * A rough [todo](./TODO.md) exist to illustrate some short-term and long-term things that need to be fixed.
 
-This README is currently aspirational for the end-state after hackdays and future development of this project.
-
-A proof of concept of this funcitonality in ruby:
-
-![probegif](./docs/probetest.gif)
+Both Darwin and Linux should be supported, with some caveats.
 
 # Internals
 
@@ -68,6 +68,12 @@ Here's a demonstration of the latency tracer worknig end-to-end:
 ![latencytracer.gif](./docs/latency_tracer.gif)
 
 # Alternatives
+
+## Print statements and metrics
+
+Ultimately, tracing is just a fancy `printf` in a lot of ways. If plain ol' `puts` and log statements get the job done with an acceptable performance overhead, use'm!
+
+The same is true for metrics, if you have something like statsd that might be a better way to get the data you're looking for.
 
 ## Ruby tracing
 
