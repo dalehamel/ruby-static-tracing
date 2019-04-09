@@ -94,20 +94,31 @@ bpftrace -e 'usdt::ruby:method__entry { @[str(arg1)]++ }' -p ${UNICORN_PID}
 
 https://github.com/thekvn/ruby-usdt
 
-This repo provides much of the inspiration for this project, but it appears to be abandoned project that doesn't support linux probes.
+This repo provides much of the inspiration for this project, but it appears lost to the sands of time.
 
-Porting in its support for dtrace would be a possible option for supporting development hooks.
+We wrap a newer version of libusdt, and support both Darwin and Linux.
 
 ## libusdt
 
 https://github.com/chrisa/libusdt
 
-If libstapsdt is merged into upstream libusdt, it would significantly simplify the implementation of this gem. That project appears to be inactive though, and until the support for dtrace and bpftrace have a unified backend, this project will implement against their interfaces separately.
+This is used by this project to provide Darwin support, but libusdt doesn't support linux.
+
+Works by writing a `dof` note dynamically into the processes heap.
+
+## libstapsdt
+
+https://github.com/sthima/libstapsdt
+
+This is used by this project to provide Linux support, but libusdt doesn't support Darwin.
+
+Works by writing a `ELF` note to a stub library, and `dlopen`'ing it.
 
 ## lttng-ust
 
 There is an existing (apparently unmaintained) [gem](https://github.com/riddochc/lttng-agent-ruby) for ruby that utilizes lttng's userspace support.
 
-It is possible that this could provide improved performance by way of lover overhead as compared to USDT probes.
+It is possible that this could provide improved performance by way of lover overhead as compared to USDT probes. We may support lttng-ust probes in the future,
+as they appear to conform to the same interface. They could be used instead of USDT probes for linux.
 
 lttng-ust does tracing 100% in userspace, as opposed to uprobes which are executed within a kernel context. It may be worthwile to benchmark agints lttng-ust libraries, to ascertain what the magnitude of the difference is overhead is, particularly if USDT probe overhead becomes observable and detrimental.
