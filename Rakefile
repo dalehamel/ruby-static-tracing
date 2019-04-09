@@ -189,6 +189,9 @@ namespace :deps do
   end
 end
 
+desc "Initializes git submodules and any other steps before first build"
+task init: ['deps:get']
+
 Rake::TestTask.new do |t|
   t.libs << "test"
   t.test_files = FileList['test/**/*_test.rb'].exclude(/integration/)
