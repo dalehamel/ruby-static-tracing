@@ -49,7 +49,7 @@ if StaticTracing::Platform.linux? ||
     task build: [:clean, :compile]
   else
     task build: [:clean, :compile]
-  end	  
+  end
 else
   task :build do
   end
@@ -141,7 +141,7 @@ namespace :new do
   desc "Scaffold a new integration test"
   task :integration_test, [:test] do |t, args|
     test_name = args[:test]
-    integration_test_directory = 'integration'
+    integration_test_directory = 'test/integration'
 
     Dir.chdir(integration_test_directory) do
       test_folder = "test_#{test_name}"
