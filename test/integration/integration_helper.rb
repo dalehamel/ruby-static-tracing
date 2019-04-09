@@ -39,6 +39,10 @@ end
 
 # FIXME add a "fixtures record" helper to facilitate adding tests / updating fixtures
 class CommandRunner
+  TRACE_ENV_DEFAULT = {
+    'BPFTRACE_STRLEN' => '100' # workaround for https://github.com/iovisor/bpftrace/issues/305
+  }.freeze
+
   attr_reader :pid, :path
 
   def initialize(command, wait = nil)
@@ -47,7 +51,7 @@ class CommandRunner
     outfile.unlink
     at_exit { File.unlink(@path) if File.exists?(@path) }
 
-    @pid = Process.spawn(command, :out=>[@path, "w"])
+    @pid = Process.spawn(TRACE_ENV_DEFAULT, command, :out=>[@path, "w"])
     PIDS << @pid
     sleep wait if wait
   end

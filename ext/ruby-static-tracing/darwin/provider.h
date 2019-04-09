@@ -1,14 +1,9 @@
-/*
-For core static tracing functions exposed directly to ruby.
-Functions here are associated with rubyland operations.
-*/
 #ifndef STATIC_TRACING_PROVIDER_H
 #define STATIC_TRACING_PROVIDER_H
 
 #include "usdt.h"
 
 #include "ruby_static_tracing.h"
-#include "types.h"
 #include "tracepoint.h"
 
 typedef struct {

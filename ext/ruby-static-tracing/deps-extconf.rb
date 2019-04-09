@@ -10,6 +10,7 @@ LIB_DIR  = File.expand_path('../../../lib/ruby-static-tracing', __FILE__)
 if StaticTracing::Platform.linux?
   File.write "Makefile", <<MAKEFILE
 all:
+	touch deps.so # HACK
 clean:
 install:
 MAKEFILE

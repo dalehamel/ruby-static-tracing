@@ -1,4 +1,4 @@
 usdt::stacktrace_operation:call
 {
-  printf("%s\n", str(arg1))
+  printf("%s", str(arg1))
 }

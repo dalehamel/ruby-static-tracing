@@ -1,16 +1,9 @@
-/*
-For core static tracing functions exposed directly to ruby.
-Functions here are associated with rubyland operations.
-*/
 #ifndef STATIC_TRACING_TRACEPOINT_H
 #define STATIC_TRACING_TRACEPOINT_H
-
-#include <ruby.h>
 
 #include "usdt.h"
 
 #include "ruby_static_tracing.h"
-#include "types.h"
 
 // FIXME move this to shared header
 typedef union {

@@ -1,5 +1,4 @@
 #include "tracepoint.h"
-#include "provider.h"
 
 static const rb_data_type_t
 static_tracing_tracepoint_type;

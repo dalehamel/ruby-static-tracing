@@ -1,5 +1,6 @@
-#include "provider.h"
-#include "tracepoint.h"
+#include "ruby_static_tracing.h"
+
+VALUE eUSDT, eInternal;
 
 void Init_ruby_static_tracing()
 {

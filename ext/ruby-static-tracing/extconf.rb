@@ -18,6 +18,15 @@ end
 if StaticTracing::Platform.linux?
   abort 'libstapsdt.h is missing, please install libstapsdt' unless find_header('libstapsdt.h')
 
+  LIB_DIRS = [File.join(BASE_DIR, 'libstapsdt'), RbConfig::CONFIG['libdir']]
+  HEADER_DIRS = [
+                 File.join(BASE_DIR, 'include'),
+                 File.join(BASE_DIR, 'libstapsdt'),
+                 RbConfig::CONFIG['includedir']
+                ]
+
+  dir_config(MKMF_TARGET, HEADER_DIRS, LIB_DIRS)
+
   have_header 'libstapsdt.h'
 
   unless have_library('stapsdt')
@@ -45,7 +54,7 @@ elsif StaticTracing::Platform.darwin?
                 ]
 
   dir_config(MKMF_TARGET, HEADER_DIRS, LIB_DIRS)
-  
+
   have_header('usdt.h')
   abort "ERROR: libusdt is required. It is included, so this failure is an error." unless have_library('usdt')
 

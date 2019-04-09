@@ -1,5 +1,7 @@
 #include "ruby_static_tracing.h"
 
+VALUE eUSDT, eInternal;
+
 void Init_ruby_static_tracing()
 {
   VALUE cStaticTracing, cProvider, cTracepoint;
@@ -24,13 +26,13 @@ void Init_ruby_static_tracing()
    *
    * Represents failures to fire a tracepoint or register a provider
    */
-//  eUSDT = rb_const_get(cStaticTracing, rb_intern("USDTError"));
+  eUSDT = rb_const_get(cStaticTracing, rb_intern("USDTError"));
 
   /* Document-class: StaticTracing::InternalError
    *
    * An internal StaticTracing error. These errors may constitute bugs.
    */
-//  eInternal = rb_const_get(cStaticTracing, rb_intern("InternalError"));
+  eInternal = rb_const_get(cStaticTracing, rb_intern("InternalError"));
 
   rb_define_alloc_func(cProvider, static_tracing_provider_alloc);
   rb_define_method(cProvider, "provider_initialize", provider_initialize, 1);

@@ -1,7 +1,3 @@
-/*
-For core static tracing functions exposed directly to ruby.
-Functions here are associated with rubyland operations.
-*/
 #ifndef STATIC_TRACING_TRACEPOINT_H
 #define STATIC_TRACING_TRACEPOINT_H
 

@@ -1,16 +1,11 @@
-/*
-For core static tracing functions exposed directly to ruby.
-Functions here are associated with rubyland operations.
-*/
 #ifndef STATIC_TRACING_PROVIDER_H
 #define STATIC_TRACING_PROVIDER_H
 
 // Include libstapsdt.h to wrap
 #include <libstapsdt.h> // FIXME use local
 
-#include "ruby_static_tracing.h"
 #include "types.h"
-#include "tracepoint.h"
+#include "ruby_static_tracing.h"
 
 typedef struct {
   char *name;
