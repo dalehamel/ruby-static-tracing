@@ -48,7 +48,7 @@ Using bpftrace: (upstream issue in progress to add similary functionality to abo
 tplist -p ${PROCESS}
 ```
 
-# Simple hello world
+## Simple hello world
 
 This example prints a 64 bit timestamp representing nanosecond time from a monotonic source, as well as a "hello world" statement, as is tradition.
 
@@ -137,6 +137,45 @@ This demonstrates:
 * Basic usage of bpftrace and dtrace with this gem.
 
 In subsequent examples, none of these concepts are covered again.
+
+## Aggregation functions
+
+While the hello world sample above is powerful for debugging, it's basically just a log statement.
+
+To do something a little more interesting, we can use an aggregation function.
+
+Both bpftrace and dtrace support generating both linear and log2 histograms. linear histograms show the same
+data that is used to construct an ApDex. This type of tracing is good for problems like understanding
+request latency.
+
+For this example, we'll use [randist.rb](../examples/randist.rb) to analyze a pseudo-random distribution of data.
+
+The example should fire out random integers between 0 and 100. We'll see how random it actually is with a linear histogram,
+bucketing the results into steps of 10:
+
+```
+bpftrace -e 'usdt::global:randist {@ = lhist(arg0, 0, 100, 10)}' -p $(pgrep -f ./randist.rb)
+Attaching 1 probe...
+^C
+
+@:
+[0, 10)           817142 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+[10, 20)          815076 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ |
+[20, 30)          815205 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ |
+[30, 40)          814752 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ |
+[40, 50)          815183 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ |
+[50, 60)          816676 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ |
+[60, 70)          816470 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ |
+[70, 80)          815448 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ |
+[80, 90)          816913 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ |
+[90, 100)         814970 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ |
+
+```
+
+It's actually pretty evenly distributed, that's a good sign or a random number generator!
+
+And the results are similar on Darwin:
+
 
 # Resources
 
