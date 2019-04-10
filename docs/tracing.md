@@ -96,19 +96,19 @@ With dtrace
 dtrace -q -n 'global*:::hello_nsec { printf("%lld %s\n", arg0, copyinstr(arg1)) }'
 ```
 
-With dtrace and a script:
+Or, with dtrace and a script:
 
 ```
 dtrace -q -s tock.dt
 ```
 
-With bpftrace (in production, or in vagrant):
+Or, with bpftrace (in production, or in vagrant):
 
 ```
 bpftrace -e 'usdt::global:hello_nsec { printf("%lld %s\n", arg0, str(arg1))}' -p $(pgrep -f ./tock.rb)
 ```
 
-With bpftrace, using a script:
+Or, with bpftrace, using a script:
 ```
 bpftrace ./tock.bt -p $(pgrep -f ./tock.rb)
 ```
@@ -131,7 +131,7 @@ Attaching 1 probe...
 55371897691043 Hello world
 ```
 
-Upon interrupting our tracing program with Control+C, the probes continue to fire.
+Upon interrupting our tracing program with Control+C, the probe stops firing as it is no longer enabled.
 
 This demonstrates:
 
