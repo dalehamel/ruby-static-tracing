@@ -204,6 +204,79 @@ Though note the histogram's format and scale are a little different.
 
 There are similar aggregation functions for max, mean, count, etc that can be used to summarize large data sets - check them out!
 
+## Latency distributions
+
+This example will profile the function call that we use for getting the current monotonic time in nanoseconds:
+
+```
+StaticTracing.nsec
+```
+
+Under the hood, this is just calling a libc function to get the current time against a monotonic source. This is how
+we calculate the latency in wall-clock time. Since we will be potentially running this quite a lot, we want it to be fast!
+
+The [nsec.rb](../examples/nsec.rb) script computes the latency of this call and fires it off in a probe.
+
+Attaching to it with a log2 histogram, we can see that it clusters within a particular latency range:
+
+```
+bpftrace -e 'usdt::global:nsec_latency {@ = hist(arg0)}' -p $(pgrep -f ./nsec.rb)
+Attaching 1 probe...
+^C
+
+@:
+[256, 512)            65 |                                                    |
+[512, 1K)            162 |@@                                                  |
+[1K, 2K)            3647 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+[2K, 4K)            3250 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      |
+[4K, 8K)               6 |                                                    |
+[8K, 16K)              0 |                                                    |
+[16K, 32K)            12 |                                                    |
+[32K, 64K)             2 |                                                    |
+
+```
+
+Let's zoom in on that with a linear histogram to get a better idea of the latency distribution:
+
+```
+bpftrace -e 'usdt::global:nsec_latency {@ = lhist(arg0, 0, 3000, 100)}' -p $(pgrep -f ./nsec.rb)
+Attaching 1 probe...
+^C
+
+@:
+[300, 400)             1 |                                                    |
+[400, 500)            33 |@                                                   |
+[500, 600)            50 |@@                                                  |
+[600, 700)            49 |@@                                                  |
+[700, 800)            42 |@@                                                  |
+[800, 900)            21 |@                                                   |
+[900, 1000)           15 |                                                    |
+[1000, 1100)           9 |                                                    |
+[1100, 1200)          11 |                                                    |
+[1200, 1300)           4 |                                                    |
+[1300, 1400)          16 |                                                    |
+[1400, 1500)           9 |                                                    |
+[1500, 1600)           7 |                                                    |
+[1600, 1700)           8 |                                                    |
+[1700, 1800)          70 |@@@                                                 |
+[1800, 1900)         419 |@@@@@@@@@@@@@@@@@@@@@                               |
+[1900, 2000)         997 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+[2000, 2100)         564 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                       |
+[2100, 2200)          98 |@@@@@                                               |
+[2200, 2300)          37 |@                                                   |
+[2300, 2400)          30 |@                                                   |
+[2400, 2500)          36 |@                                                   |
+[2500, 2600)          46 |@@                                                  |
+[2600, 2700)          86 |@@@@                                                |
+[2700, 2800)          74 |@@@                                                 |
+[2800, 2900)          42 |@@                                                  |
+[2900, 3000)          26 |@                                                   |
+[3000, ...)           35 |@                                                   |
+
+```
+
+We can see that most of the calls are happening within 1700-2200 nanoseconds, which is pretty blazing fast, around 1-2 microseconds.
+Some are faster, and some are slower, representing the long-tails of this distribution, but this can give us confidence that this call will complete quickly.
 
 # Resources
 
