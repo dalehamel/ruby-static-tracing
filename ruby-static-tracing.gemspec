@@ -3,6 +3,14 @@ $LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
 require 'ruby-static-tracing/version'
 require 'ruby-static-tracing/platform'
 
+POST_INSTALL_MESSAGE = <<-eof
+This is alpha quality and not suitable for production use
+... usless you're feeling bold ;)
+
+If you find any bugs, please file them at:
+	github.com/shopify/ruby-static-tracing
+eof
+
 Gem::Specification.new do |s|
   s.name = 'ruby-static-tracing'
   s.version = StaticTracing::VERSION
@@ -27,5 +35,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'mocha'
   s.add_development_dependency 'pry-byebug'
-  s.post_install_message = StaticTracing::Platform.post_install_message
+  s.post_install_message = POST_INSTALL_MESSAGE
 end
