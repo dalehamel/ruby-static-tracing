@@ -121,9 +121,9 @@ static Tracepoint_arg_types
       printf("ERROR - passed %i args, maximum 6 argument types can be passed", *argc);
       return NULL;
     }
-
+    int i;
     Tracepoint_arg_types *args = malloc(*argc * sizeof(Tracepoint_arg_types));
-    for (int i = 0; i < *argc; i++)
+    for (i = 0; i < *argc; i++)
     {
       VALUE str = rb_funcall(rb_ary_entry(vargs, i), rb_intern("to_s"), 0, Qnil);
       const char* cStr = RSTRING_PTR(str);
@@ -158,7 +158,8 @@ static Tracepoint_fire_arg
 
     Tracepoint_fire_arg *args = malloc(*argc * sizeof(Tracepoint_fire_arg));
     //printf("SIZE: %i ARGC: %i \n", sizeof(Tracepoint_fire_arg), *argc);
-    for (int i = 0; i < *argc; i++)
+    int i;
+    for (i = 0; i < *argc; i++)
     {
       VALUE val = rb_ary_entry(vargs, i);
       switch(TYPE(val))
