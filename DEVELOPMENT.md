@@ -72,7 +72,7 @@ bpftrace -e 'usdt::global:hello_nsec { printf("%lld %s\n", arg0, str(arg1))}' -p
 
 # Darwin
 
-On darwin, you use dtrace. You need to disable SIP, as per the gem install instructions
+On darwin, you use dtrace. 
 
 # Testing
 
@@ -94,7 +94,7 @@ We have integration tests, they can be run with:
 bundle exec rake integration
 ```
 
-You will need a system that can actually support probes (new enough kernel/eBPF support, SIP disabled, etc) in order to run integration tests.
+You will need a system that can actually support probes (new enough kernel/eBPF support, dtrace) in order to run integration tests.
 
 The integration tests are [described further in their README](./test/integration/README.md)
 

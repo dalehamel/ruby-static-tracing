@@ -51,7 +51,7 @@ class CommandRunner
     outfile.unlink
     at_exit { File.unlink(@path) if File.exists?(@path) }
 
-    @pid = Process.spawn(TRACE_ENV_DEFAULT, command, :out=>[@path, "w"])
+    @pid = Process.spawn(TRACE_ENV_DEFAULT, command, :out=>[@path, "w"], :err =>'/dev/null')
     PIDS << @pid
     sleep wait if wait
   end
