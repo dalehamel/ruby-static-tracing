@@ -19,23 +19,15 @@ This should be useful for:
 * Collecting stack traces with surgical precision.
 * Exposing other ruby VM characteristics, such as for runtime heap analysis.
 
-# Status
+Both Darwin/OSX and Linux are supported.
 
-It works!
+To get started, check out the [tracing examples included in this repo](./examples) and [the guide that explains them](./docs/tracing.md), showing various practical uses of this gem.
 
-Here's a proof of concept of this functionality for ruby:
+There is a [Development guide](./DEVELOPMENT.md) to show how to set up a dev env and test the gem and try out the linux examples.
+
+More details on the internal workings of USDT probes in dynamic languages are described in [supplementary docs](./docs/internals.md), along with a number of great external references.
 
 ![probegif](./docs/probetest.gif)
-
-* Check out the [Development guide](./DEVELOPMENT.md) to show how to set up a dev env and test the gem.
-* A rough outline of the [desired ruby language API](./docs/ruby-interface.md) for a potential interface and initial set of features
-* A rough [todo](./TODO.md) exist to illustrate some short-term and long-term things that need to be fixed.
-
-Both Darwin and Linux should be supported, with some caveats.
-
-# Internals
-
-More details on the internal workings of USDT probes in dynamic languages are described in [supplementary docs](./docs/internals.md).
 
 # Goals
 

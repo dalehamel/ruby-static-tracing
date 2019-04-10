@@ -50,26 +50,6 @@ From within this shell, you will now be running with your current working direct
 
 This should build you a container with suitable deps to get going to be able to build the gem and run unit tests.
 
-## Tock example
-
-In one shell, start ruby:
-
-```
-bundle exec ruby ./test/tock.rb
-```
-
-In another shell, you should be able to probe this with bpftrace:
-
-Get the pid:
-```
-ps -auxf | grep tock.rb | grep -v grep
-```
-
-Trace the function defined in tock.rb
-```
-bpftrace -e 'usdt::global:hello_nsec { printf("%lld %s\n", arg0, str(arg1))}' -p ${PID_OF_RUBY}
-```
-
 # Darwin
 
 On darwin, you use dtrace. 
