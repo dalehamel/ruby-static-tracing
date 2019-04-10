@@ -80,9 +80,11 @@ Then, in an infinite loop, we check to see if our tracepoint is enabled, and fir
 
 When we run `tock.rb`, it will loop and print:
 
-> Not enabled
-> Not enabled
-> Not enabled
+```
+Not enabled
+Not enabled
+Not enabled
+```
 
 One line about every second. Not very interesting, right?
 
@@ -113,10 +115,12 @@ bpftrace ./tock.bt -p $(pgrep -f ./tock.rb)
 
 We'll notice that the output changes to indicate that the probe has been fired:
 
-> Not enabled
-> Probe fired!
-> Probe fired!
-> Probe fired!
+```
+Not enabled
+Probe fired!
+Probe fired!
+Probe fired!
+```
 
 And, from our tracing program we see:
 
