@@ -91,11 +91,13 @@ When we run our tracing program though:
 With dtrace
 
 ```
+dtrace -q -n 'global*:::hello_nsec { printf("%lld %s\n", arg0, copyinstr(arg1)) }'
 ```
 
 With dtrace and a script:
 
 ```
+dtrace -q -s tock.dt
 ```
 
 With bpftrace (in production, or in vagrant):

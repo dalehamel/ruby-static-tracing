@@ -20,7 +20,6 @@ while true do
     t.fire(StaticTracing.nsec, "Hello world")
     f = StaticTracing.nsec
     puts "fire: #{f-i} ns" if DEBUG
-    puts StaticTracing.nsec
     puts "Probe fired!"
   else
     puts "Not enabled"
