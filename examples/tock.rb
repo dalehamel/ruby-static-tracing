@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+
 require 'ruby-static-tracing'
 
 DEBUG = ENV['DEBUG']

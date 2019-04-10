@@ -24,6 +24,118 @@ dtrace scripts can often be easily converted to bpftrace scripts (see [this chea
 
 # Examples
 
+For most examples, we'll assume you have two terminals side-by-side:
+
+- One to run the program you want to trace (referred to as tracee).
+- One to run your tracing program and observe the output (bpftrace or dtrace).
+
+We'll give examples of both bpftrace and dtrace invocations that you should be able to paste into a terminal yourself, as well as show you the output.
+
+The source and all of these scripts are available in the [examples folder](../examples) of this repository.
+
+## Listing tracepoints
+
+To list tracepoints that you can trace:
+
+On Darwin/OSX:
+
+```
+dtrace -l -P "${PROVIDER}${PID}"
+```
+
+Using bpftrace: (upstream issue in progress to add similary functionality to above)
+```
+tplist -p ${PROCESS}
+```
+
+# Simple hello world
+
+This example prints a 64 bit timestamp representing nanosecond time from a monotonic source, as well as a "hello world" statement, as is tradition.
+
+This is a simplified version of the full [tock.rb script](../examples/tock.rb):
+
+```ruby
+t = StaticTracing::Tracepoint.new('global', 'hello_nsec', Integer, String)
+p = StaticTracing::Provider.fetch(t.provider)
+p.enable
+
+while true do
+  if t.enabled?
+    t.fire(StaticTracing.nsec, "Hello world")
+  else
+    puts "Not enabled"
+  end
+  sleep 1
+end
+```
+
+This example:
+
+* Creates a provider implicitly through it's reference to 'global', and indicates that it will be firing off an Integer and a String to the tracepoint.
+* Registering the tracepoint is like a function declaration - when you fire the tracepoint later, the fire call must match the signature declared by the tracepoint.
+* We fetch the the provider that we created, and enable it.
+* Enabling the provider loads it into memory, but the tracepoint isn't enabled until it's attached to.
+
+Then, in an infinite loop, we check to see if our tracepoint is enabled, and fire it if it is.
+
+When we run `tock.rb`, it will loop and print:
+
+> Not enabled
+> Not enabled
+> Not enabled
+
+One line about every second. Not very interesting, right?
+
+When we run our tracing program though:
+
+With dtrace
+
+```
+```
+
+With dtrace and a script:
+
+```
+```
+
+With bpftrace (in production, or in vagrant):
+
+```
+bpftrace -e 'usdt::global:hello_nsec { printf("%lld %s\n", arg0, str(arg1))}' -p $(pgrep -f ./tock.rb)
+```
+
+With bpftrace, using a script:
+```
+bpftrace ./tock.bt -p $(pgrep -f ./tock.rb)
+```
+
+We'll notice that the output changes to indicate that the probe has been fired:
+
+> Not enabled
+> Probe fired!
+> Probe fired!
+> Probe fired!
+
+And, from our tracing program we see:
+
+```
+Attaching 1 probe...
+55369896776138 Hello world
+55370897337512 Hello world
+55371897691043 Hello world
+```
+
+Upon interrupting our tracing program with Control+C, the probes continue to fire.
+
+This demonstrates:
+
+* How to get data from ruby into our tracing program using a tracepoint.
+* That probes are only enabled when they are attached to.
+* How to read integer and string arguments.
+* Basic usage of bpftrace and dtrace with this gem.
+
+In subsequent examples, none of these concepts are covered again.
+
 # Resources
 
 - [bpftrace reference guide](https://github.com/iovisor/bpftrace/blob/master/docs/reference_guide.md)

@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'ruby-static-tracing'
 
 t = StaticTracing::Tracepoint.new('global', 'nsec_latency', Integer)
