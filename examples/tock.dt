@@ -1,0 +1,4 @@
+global*:::hello_nsec
+{
+  printf("%lld %s\n", arg0, copyinstr(arg1))
+}

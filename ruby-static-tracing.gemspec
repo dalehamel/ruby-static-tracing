@@ -3,10 +3,19 @@ $LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
 require 'ruby-static-tracing/version'
 require 'ruby-static-tracing/platform'
 
+POST_INSTALL_MESSAGE = <<-eof
+This is alpha quality and not suitable for production use
+... usless you're feeling bold ;)
+
+If you find any bugs, please file them at:
+	github.com/shopify/ruby-static-tracing
+eof
+
 Gem::Specification.new do |s|
   s.name = 'ruby-static-tracing'
   s.version = StaticTracing::VERSION
   s.summary = 'USDT tracing for Ruby'
+  s.post_install_message = POST_INSTALL_MESSAGE
   s.description = <<-DOC
     A Ruby C extension that enables defining static tracepoints
     from within a ruby context.
@@ -22,10 +31,10 @@ Gem::Specification.new do |s|
   s.extensions = ['ext/ruby-static-tracing/lib/deps-extconf.rb',
 		  'ext/ruby-static-tracing/extconf.rb',
 		  'ext/ruby-static-tracing/lib/post-extconf.rb']
+  s.add_dependency('unmixer')
   s.add_development_dependency 'rake-compiler', '~> 0.9'
   s.add_development_dependency 'rake', '< 11.0'
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'mocha'
   s.add_development_dependency 'pry-byebug'
-  s.post_install_message = StaticTracing::Platform.post_install_message
 end

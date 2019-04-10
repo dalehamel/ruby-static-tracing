@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     ruby-static-tracing (0.0.5)
+      unmixer
 
 GEM
   remote: https://rubygems.org/
@@ -34,7 +35,6 @@ DEPENDENCIES
   rake (< 11.0)
   rake-compiler (~> 0.9)
   ruby-static-tracing!
-  unmixer
 
 BUNDLED WITH
    1.17.3

@@ -1,22 +1,33 @@
 ![ponycorn](http://www.brendangregg.com/blog/images/2015/pony_ebpf01_small.png)
 
-# Status
+# Tracing ruby in Development and Production
 
-It works!
+Add tracepoints for any question you need answered about your code.
 
-Here's a proof of concept of this funcitonality for ruby:
+Until you enable them, these tracepoints will have 0 overhead, and after you enable them, these tracepoints will have almost no overhead.
+
+No need to continuously log print statements, as output is only generated when tracepoints are actually being traced.
+
+Write and test tracepoints on any Mac or Linux workstation, and have them be accessible to you in production in the exact same way.
+
+This should be useful for:
+
+* Generating latency histograms for methods, code blocks, or entire libraries.
+* Comparing performance characteristics in development versus production.
+* Tracing the wall-lock time of calls to external services.
+* Diagnostic prints (the world's fanciest `printf`).
+* Collecting stack traces with surgical precision.
+* Exposing other ruby VM characteristics, such as for runtime heap analysis.
+
+Both Darwin/OSX and Linux are supported.
+
+To get started, check out the [tracing examples included in this repo](./examples) and [the guide that explains them](./docs/tracing.md), showing various practical uses of this gem.
+
+There is a [Development guide](./DEVELOPMENT.md) to show how to set up a dev env and test the gem and try out the linux examples.
+
+More details on the internal workings of USDT probes in dynamic languages are described in [supplementary docs](./docs/internals.md), along with a number of great external references.
 
 ![probegif](./docs/probetest.gif)
-
-* Check out the [Development guide](./DEVELOPMENT.md) to show how to set up a dev env and test the gem.
-* A rough outline of the [desired ruby language API](./docs/ruby-interface.md) for a potential interface and initial set of features
-* A rough [todo](./TODO.md) exist to illustrate some short-term and long-term things that need to be fixed.
-
-Both Darwin and Linux should be supported, with some caveats.
-
-# Internals
-
-More details on the internal workings of USDT probes in dynamic languages are described in [supplementary docs](./docs/internals.md).
 
 # Goals
 
@@ -57,13 +68,9 @@ If additional context needs to be gathered, this is possible through the use of 
 
 Where possible, table lookups or variables in local context should be preferred in order to gather the data to fire off in the probe. Any helper functions in ruby space should carefully describe their worst-case runtime complexity, and bound this at O(n), where n is a known small integer.
 
-Taking inspiration from the eBPF verifier, it might make sense to introspect any user-defined probepoint behavior, forbidding any unsafe operations. For starters, disabling loops and any unbounded iterators. It probably also makes sense to forbid any method calls not explicitly builtin. This would allow for simple binops, class member access, and simple operations that can be done in constant or easily predictable time.
-
-Until such times as it makes sense to implement advanced techniques such as examining the AST of any user-defined codeblocks, or explicitly creating a minimal DSL, an initial approach is human-based verification. Probes should not change the state of the application, and only be used to gather values that are useful for performance and debugging purposes.
-
 # Latency tracer
 
-Here's a demonstration of the latency tracer worknig end-to-end:
+Here's a demonstration of the latency tracer working end-to-end:
 
 ![latencytracer.gif](./docs/latency_tracer.gif)
 
@@ -74,6 +81,8 @@ Here's a demonstration of the latency tracer worknig end-to-end:
 Ultimately, tracing is just a fancy `printf` in a lot of ways. If plain ol' `puts` and log statements get the job done with an acceptable performance overhead, use'm!
 
 The same is true for metrics, if you have something like statsd that might be a better way to get the data you're looking for.
+
+This type of tracing access at performance analysis, as you can easily generate latency histograms and perform other aggregation functions on scalar data.
 
 ## Ruby tracing
 
