@@ -1,57 +1,10 @@
-# Immediate todo:
-
-- Read up on how to create and store a dict on C object in ruby
-- Ruby allocation types for provider and tracepoint
-
-- How will tracepoints be added to and stored on provider?
- - Tracepoint constructor to accept provider name, lookup or construct provider.
-  * Constructor works by calling `provider.add_tracepoint`, passing vargs
- - Provider to have `add_tracepoint` function as alternative means of instantiating a tracepoint object directly, accepts vargs
-  - Adds the tracepoint to dictionary on provider object
-
-- Providers to exist globally as a singlen in a dict directly on StaticTracing as StaticTracing::Providers
-- TracePoints to exist as a dict on a provider instance.
-
-- Try and run stubs
-
-- On hackdays, will just have to implement the C definitions
-
-# Immediate / current TODO
-
-- [ ] Define Ruby stubs for tracepoint object (interface exposed to ruby)
-- [ ] Define Ruby stubs for provider
-- [ ] Initial stub implementation of libstapsdt as provider for linux platform
- - [ ] Use the right-most part of canonicalized module name (eg, Ruby::Object::Type, provider is Type, lowercased to 'type')
-
-Prove that a static tracepoint can be registered on ruby
-
-# Hack days prep
-
-- [ ] Document design and intended behavior from rubyspace
-- [ ] Mocks for ruby space objects
-- [ ] Minimal working scaffold proving that this can even be done in ruby
- - [ ] Done on a linux vm image without process memory protection
-- [ ] Production machine to test on, with memory protection disabled
- - [ ] Using custom container OS image with kernel that disables cos memory protection
-- [ ] Prepare scaffolding for unit tests
-
-# Other things to fix:
-
-## Ruby type handling
-
-libstapsdt passes up to 8 byte values directly. This can correspond to literal values (ints, enums), or memory addresses corresponding to pointers. Any data that can be encoded in 64 bits can be passed by a probe.
-
-For pointers, if the value stored at the pointer is a byte array corresponding to a C-style string, the string value should be able to be read directly
-by BCC / bpftrace's handling, such as through the `str()` function of bpftrace.
-
-Most use cases will involve either ints (latency values) or strings (symbols / trace metadata or stack traces).
+# Upstream fixes needed
 
 ## Wildcards in bpftrace
 
 When trying to probe without specifying the path, I get an error with bpftrace:
 
 ```
-
 bpftrace -e 'usdt::ruby:method__entry { @[probe]++}' -p 1271
 Wildcard matches aren't available on probe type 'usdt'
 No probes to attach
