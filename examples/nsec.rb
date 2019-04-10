@@ -8,7 +8,8 @@ p.enable
 
 loop do
   s = StaticTracing.nsec
-  StaticTracing.nsec # profiling this call
+  StaticTracing.nsec
   f = StaticTracing.nsec
   t.fire(f-s)
+  sleep 0.001
 end
