@@ -176,6 +176,34 @@ It's actually pretty evenly distributed, that's a good sign or a random number g
 
 And the results are similar on Darwin:
 
+```
+ sudo dtrace -q -n 'global*:::randist { @ = lquantize(arg0, 0, 100, 10) }'
+Password:
+dtrace: system integrity protection is on, some features will not be available
+
+^C
+
+
+           value  ------------- Distribution ------------- count    
+             < 0 |                                         0        
+               0 |@@@@                                     145456   
+              10 |@@@@                                     145094   
+              20 |@@@@                                     145901   
+              30 |@@@@                                     145617   
+              40 |@@@@                                     145792   
+              50 |@@@@                                     145086   
+              60 |@@@@                                     146287   
+              70 |@@@@                                     146041   
+              80 |@@@@                                     145331   
+              90 |@@@@                                     145217   
+          >= 100 |                                         0        
+
+```
+
+Though note the histogram's format and scale are a little different.
+
+There are similar aggregation functions for max, mean, count, etc that can be used to summarize large data sets - check them out!
+
 
 # Resources
 
