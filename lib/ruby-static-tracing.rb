@@ -76,4 +76,4 @@ module StaticTracing
   end
 end
 
-require 'ruby-static-tracing/ruby_static_tracing' if StaticTracing::Platform.linux? || StaticTracing::Platform.darwin?
+require 'ruby-static-tracing/ruby_static_tracing' if StaticTracing::Platform.supported_platform?
