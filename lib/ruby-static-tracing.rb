@@ -8,6 +8,7 @@ require 'ruby-static-tracing/provider'
 require 'ruby-static-tracing/tracepoint'
 require 'ruby-static-tracing/tracepoints'
 require 'ruby-static-tracing/configuration'
+require 'ruby-static-tracing/tracer'
 require 'ruby-static-tracing/tracers'
 
 # FIXME Including StaticTracing should cause every method in a module or class to be registered
@@ -45,7 +46,7 @@ module StaticTracing
   # Overwrite the definition of all functions that are enabled
   # with a wrapped version that has tracing enabled
   def enable!
-    tracers.each(&:enable!)
+    StaticTracing::Tracers.enable!
     StaticTracing::Provider.enable!
     @enabled = true
   end
@@ -53,18 +54,9 @@ module StaticTracing
   # Overwrite the definition of all functions to their original definition,
   # no longer wrapping them
   def disable!
-    tracers.each(&:disable!)
+    StaticTracing::Tracers.disable!
     StaticTracing::Provider.disable!
     @enabled = false
-  end
-
-  # Retrieves a hash of all registered providers
-  def providers
-    @providers ||= {}
-  end
-
-  def tracers
-    @tracers ||= []
   end
 
   def toggle_tracing!

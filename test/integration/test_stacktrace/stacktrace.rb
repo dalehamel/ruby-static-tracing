@@ -10,11 +10,11 @@ class StacktraceOperation
     execute
   end
 
-  StaticTracing::Tracers::StackTracer.register(self, :call)
+  StaticTracing::Tracer::Stack.register(self, :call)
 end
 
 StaticTracing.configure do |config|
-  config.add_tracer(StaticTracing::Tracers::StackTracer)
+  config.add_tracer(StaticTracing::Tracer::Stack)
 end
 
 stack_operation = StacktraceOperation.new

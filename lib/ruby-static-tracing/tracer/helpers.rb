@@ -1,5 +1,5 @@
 module StaticTracing
-  module Tracers
+  module Tracer
     module Helpers
       extend self
 

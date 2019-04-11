@@ -163,7 +163,7 @@ Followed by any other arguments. `long long` here refers to the C storage class,
 Block format:
 
 ```ruby
-StaticTracing::LatencyTracer.register(name: my_awesome_block) do
+StaticTracing::Latency.register(name: my_awesome_block) do
   ...
   # Some existing application code that we want to wrap in a one-off
   ...
@@ -177,7 +177,7 @@ def my_func
   sleep 1
 end
 
-StaticTracing.LatencyTracer.register(:my_func)
+StaticTracing.Latency.register(:my_func)
 ```
 
 This should generate a probe using the existing class/module as a provider (and accept an optional parameter to specify it explicitly).
@@ -192,7 +192,7 @@ Argument signature:
 * arg0 - `internal_latency`: 64 bit integer holding nsecs spent in executing this probe, calculated against a monotonic source.
 * arg1 - `run_latency`: 64 bit integer holding nsecs spent executing the tracepoint's target method or block.
 
-It may be possible to for us to user Latency tracers for our own debugging purposes around other `fire` events, as this should show us the time that the kernel has stolen when the uprobe is executed. It may also be possible 
+It may be possible to for us to user Latency tracers for our own debugging purposes around other `fire` events, as this should show us the time that the kernel has stolen when the uprobe is executed. It may also be possible
 
 ## Stack probes
 
@@ -204,7 +204,7 @@ StaticTracing::Stacktracer.register(:my_func)
 
 Manually specified name:
 ```ruby
-t = StaticTracing::StackTracer.register(name: my_awesome_block)
+t = StaticTracing::Stack.register(name: my_awesome_block)
 
 t.fire
 ```
@@ -215,7 +215,7 @@ These tracers would fire the stack trace when the symbol for a method is entered
 
 It would be great to be able to fire off the current call stack, eg by wrapping [code from vm\_backtrace](https://github.com/ruby/ruby/blob/a8695d5022d7afbf004765bfb86457fbb9d56457/vm_backtrace.c#L987)
 
-This could provide something like “StaticTracing::StackTracer”, but we would need to be very conscious of the overhead of grabbing these stack traces, and profile the underlying ruby C code for this. This is certain to be more expensive than just calculating latency.
+This could provide something like “StaticTracing::Stack”, but we would need to be very conscious of the overhead of grabbing these stack traces, and profile the underlying ruby C code for this. This is certain to be more expensive than just calculating latency.
 
 The overhead here seems to all be in `ec_backtrace_to_ary` which does same processing of the execution context pointer from `GET_EC`. We should profile this function a lot to see if it results in observable overhead, and examine the implementation closely to determine the worst case runtime complexity.
 
@@ -264,7 +264,7 @@ For example:
 ```ruby
 
 class MyController
-  include StaticTracing::Helper::LatencyTracer
+  include StaticTracing::Helper::Latency
   def index; end
   def create; end
   def default_url_options; end

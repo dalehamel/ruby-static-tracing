@@ -18,11 +18,11 @@ class LatencyApp
     puts 'Continuing'
   end
 
-  include StaticTracing::Tracers::Concerns::LatencyTracer
+  include StaticTracing::Tracer::Concerns::Latency
 end
 
 StaticTracing.configure do |config|
-  config.add_tracer(StaticTracing::Tracers::LatencyTracer)
+  config.add_tracer(StaticTracing::Tracer::Latency)
 end
 
 app = LatencyApp.new

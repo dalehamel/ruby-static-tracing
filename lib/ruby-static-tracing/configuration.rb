@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'singleton'
-
 module StaticTracing
   class Configuration
     module Modes
@@ -41,7 +39,7 @@ module StaticTracing
     end
 
     def add_tracer(tracer)
-      StaticTracing.tracers << tracer
+      Tracers.add(tracer)
     end
 
     private

@@ -1,13 +1,13 @@
 require 'unmixer'
 using Unmixer
 
-require 'ruby-static-tracing/tracers/helpers'
+require 'ruby-static-tracing/tracer/helpers'
 
 module StaticTracing
-  module Tracers
+  module Tracer
     class Base
       class << self
-        include Tracers::Helpers
+        include Tracer::Helpers
 
         def register(klass, *method_names, provider: nil)
           provider ||= underscore(klass.name)
