@@ -3,6 +3,7 @@ require 'pry-byebug' if ENV['PRY']
 
 require 'tempfile'
 
+CACHED_DTRACE_PATH = File.expand_path("../../../.bin/dtrace", __FILE__).freeze
 PIDS = []
 def cleanup_pids
   PIDS.each do |p| 
@@ -22,7 +23,7 @@ module TraceRunner
       cmd = "bpftrace"
       cmd = [cmd, "#{script}.bt"] if script
     elsif StaticTracing::Platform.darwin?
-      cmd = ['sudo', 'dtrace', '-q'] # FIXME find a way to enter sudo at start of test run to avoid timeouts
+      cmd = [CACHED_DTRACE_PATH, '-q']
       cmd = [cmd, '-s', "#{script}.dt"] if script
     else
       puts "WARNING: no supported tracer for this platform"
@@ -62,12 +63,7 @@ class CommandRunner
   end
 
   def interrupt(wait = nil)
-    if StaticTracing::Platform.darwin?
-      # dtrace runs as root and must be signaled by root
-      system("sudo kill -INT #{@pid}")
-    else
-      Process.kill('INT', @pid)
-    end
+    Process.kill('INT', @pid)
     sleep wait if wait
   end
 
@@ -114,4 +110,25 @@ class IntegrationTestCase < MiniTest::Test
     EOF
     assert(outout == expected_ouput, msg)
   end
+end
+
+def cache_dtrace
+  puts <<-eof
+  In order to run integration tests on OS X, we need to run
+  dtrace with root permissions. To do this, we will ask you for
+  sudo access to grant SETUID to a copy of the dtrace binary that
+  we will cache in this project directory.
+
+  Once this is done, any time you run integration tests dtrace will
+  run as root, but the test suite won't.
+
+  Please enter your sudo password to continue.
+  eof
+  FileUtils.mkdir_p(File.dirname(CACHED_DTRACE_PATH))
+  FileUtils.cp('/usr/sbin/dtrace', CACHED_DTRACE_PATH)
+  system("sudo chown root #{CACHED_DTRACE_PATH} && sudo chmod a+s #{CACHED_DTRACE_PATH}")
+end
+
+if StaticTracing::Platform.darwin?
+  cache_dtrace unless File.exists?(CACHED_DTRACE_PATH)
 end

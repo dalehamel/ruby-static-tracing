@@ -1,4 +1,4 @@
 stacktrace_operation*:::call
 {
-  printf("Attaching 1 probe...\n%s\n\n", copyinstr(arg1))
+  printf("Attaching 1 probe...\n%s", copyinstr(arg1))
 }
