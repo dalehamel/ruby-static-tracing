@@ -6,11 +6,11 @@ class ExpensiveOperation
     ([] << 1) * 100000
   end
 
-  StaticTracing::Tracers::LatencyTracer.register(self, :execute)
+  StaticTracing::Tracer::Latency.register(self, :execute)
 end
 
 StaticTracing.configure do |config|
-  config.add_tracer(StaticTracing::Tracers::LatencyTracer)
+  config.add_tracer(StaticTracing::Tracer::Latency)
 end
 
 expensive_operation = ExpensiveOperation.new

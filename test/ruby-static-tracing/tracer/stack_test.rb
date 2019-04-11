@@ -3,8 +3,8 @@
 require 'test_helper'
 
 module StaticTracing
-  module Tracers
-    class StackTracerTest < MiniTest::Test
+  module Tracer
+    class StackTest < MiniTest::Test
       class Example
         def noop
           true
@@ -22,17 +22,17 @@ module StaticTracing
           yield foo
         end
 
-        StaticTracing::Tracers::StackTracer
+        StaticTracing::Tracer::Stack
           .register(self, :noop, :noop_with_arg, :noop_with_block,
                    :noop_with_arg_and_block)
       end
 
       def teardown
-        Tracers::StackTracer.disable!
+        Tracer::Stack.disable!
       end
 
       def test_basic_methods_fire_tracepoints
-        Tracers::StackTracer.enable!
+        Tracer::Stack.enable!
         StaticTracing::Tracepoint.any_instance.expects(:fire).once
 
         @example = Example.new
@@ -41,7 +41,7 @@ module StaticTracing
       end
 
       def test_methods_with_args_still_work
-        Tracers::StackTracer.enable!
+        Tracer::Stack.enable!
         StaticTracing::Tracepoint.any_instance.expects(:fire).once
 
         @example = Example.new
@@ -50,7 +50,7 @@ module StaticTracing
       end
 
       def test_methods_with_blocks_still_work
-        Tracers::StackTracer.enable!
+        Tracer::Stack.enable!
         StaticTracing::Tracepoint.any_instance.expects(:fire).once
 
         @example = Example.new
@@ -59,7 +59,7 @@ module StaticTracing
       end
 
       def test_methods_with_blocks_and_args_still_work
-        Tracers::StackTracer.enable!
+        Tracer::Stack.enable!
         StaticTracing::Tracepoint.any_instance.expects(:fire).once
 
         @example = Example.new

@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require 'ruby-static-tracing/tracers/latency_tracer'
+require 'ruby-static-tracing/tracer/latency'
 
 module StaticTracing
-  module Tracers
+  module Tracer
     module Concerns
-      module LatencyTracer
+      module Latency
         def self.included(base)
           methods = base.public_instance_methods(false)
-          StaticTracing::Tracers::LatencyTracer.register(base, methods)
+          StaticTracing::Tracer::Latency.register(base, methods)
         end
       end
     end
