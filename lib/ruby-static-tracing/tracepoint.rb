@@ -26,8 +26,7 @@ module StaticTracing
       validate_args(args)
       @args = args
 
-      if StaticTracing::Platform.linux? ||
-         StaticTracing::Platform.darwin?
+      if StaticTracing::Platform.supported_platform?
         tracepoint_initialize(provider, name, args)
       else
         StaticTracing.issue_disabled_tracepoints_warning

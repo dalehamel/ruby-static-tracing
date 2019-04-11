@@ -29,14 +29,9 @@ Each correspond to:
 
 # Adding tests
 
+We have a rake test that will create all the files needed for a new integration test.
 
-1. Make a new folder: `test_my_awesome_thing`
-2. Write a test program with the functionality you want to test: `my_awesome_thing.rb`
-3. Write a bpftrace probe to execute againts it: `my_awesome_thing.bt`
-4. Capture the expected output on a successful run to make the fixture, stored in `my_awesome_thing.out`
-5. Write a test file that automates this using the `CommandRunner` helper to be the test `my_awesome_thing_test.rb`
-
-Tests that are named appropriately should be automatically picked up by `bundle exec rake integration`.
+`bundle exec rake 'new:integration[new_of_test]'`
 
 # Tips
 

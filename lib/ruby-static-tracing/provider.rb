@@ -42,8 +42,7 @@ module StaticTracing
     attr_reader :namespace
 
     def initialize(namespace)
-      if StaticTracing::Platform.linux? ||
-         StaticTracing::Platform.darwin?
+      if StaticTracing::Platform.supported_platform?
         provider_initialize(namespace)
       else
         StaticTracing.issue_disabled_tracepoints_warning

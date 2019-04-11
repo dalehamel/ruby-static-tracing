@@ -20,8 +20,7 @@ end
 
 $LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
 require 'ruby-static-tracing/platform'
-if StaticTracing::Platform.linux? ||
-   StaticTracing::Platform.darwin?
+if StaticTracing::Platform.supported_platform?
   require 'rake/extensiontask'
 
   # Task to compile external dep, but let them use their own makefiles
@@ -56,6 +55,18 @@ end
 # ==========================================================
 # Development
 # ==========================================================
+
+namespace :deps do
+  task :get do
+    system("git submodule init")
+    system("git submodule update")
+  end
+
+  task :clean do
+    system("cd #{File.join(EXT_DIR, 'lib', 'libusdt')} && make clean")
+    system("cd #{File.join(EXT_DIR, 'lib', 'libstapsdt')} && make clean")
+  end
+end
 
 namespace :vagrant do
   desc "Sets up a vagrant VM, needed for our development environment."
@@ -177,21 +188,6 @@ namespace :new do
     SCRIPT
   end
 end
-
-namespace :deps do
-  task :get do
-    system("git submodule init")
-    system("git submodule update")
-  end
-
-  task :clean do
-    system("cd #{File.join(EXT_DIR, 'lib', 'libusdt')} && make clean")
-    system("cd #{File.join(EXT_DIR, 'lib', 'libstapsdt')} && make clean")
-  end
-end
-
-desc "Initializes git submodules and any other steps before first build"
-task init: ['deps:get']
 
 Rake::TestTask.new do |t|
   t.libs << "test"
