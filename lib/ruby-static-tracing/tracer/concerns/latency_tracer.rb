@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'ruby-static-tracing/tracer/latency'
-
 module StaticTracing
   module Tracer
     module Concerns

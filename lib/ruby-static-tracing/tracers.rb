@@ -2,8 +2,21 @@
 
 module StaticTracing
   class Tracers
+    class InvalidTracerError < StandardError
+      def initialize
+        msg = <<~MSG
+          You need to add a valid tracer.
+
+          To create a valid tracer please inherit from StaticTracing::Tracer::Base
+          and follow the guide on how to create tracers
+        MSG
+        super(msg)
+      end
+    end
+
     class << self
       def add(tracer)
+        raise InvalidTracerError unless tracer < StaticTracing::Tracer::Base
         tracers << tracer
       end
 
@@ -13,6 +26,10 @@ module StaticTracing
 
       def disable!
         tracers.each(&:disable!)
+      end
+
+      def clean
+        @tracers = []
       end
 
       private

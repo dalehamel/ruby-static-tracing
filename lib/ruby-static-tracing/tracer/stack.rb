@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'ruby-static-tracing/tracer/base'
-
 module StaticTracing
   module Tracer
     class Stack < Base
