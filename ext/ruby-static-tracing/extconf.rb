@@ -17,17 +17,17 @@ def lib_dir
 end
 #  - Linux, via libstapsdt
 if StaticTracing::Platform.linux?
-  abort 'libstapsdt.h is missing, please install libstapsdt' unless find_header('libstapsdt.h')
 
   LIB_DIRS = [LIB_DIR, RbConfig::CONFIG['libdir']]
   HEADER_DIRS = [
                  File.join(BASE_DIR, 'include'),
-                 File.join(BASE_DIR, 'lib', 'libstapsdt'),
+                 File.join(BASE_DIR, 'lib', 'libstapsdt', 'src'),
                  RbConfig::CONFIG['includedir']
                 ]
 
   dir_config(MKMF_TARGET, HEADER_DIRS, LIB_DIRS)
 
+  abort 'libstapsdt.h is missing, please install libstapsdt' unless find_header('libstapsdt.h')
   have_header 'libstapsdt.h'
 
   unless have_library('stapsdt')
