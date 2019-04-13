@@ -41,6 +41,8 @@ if StaticTracing::Platform.linux?
     $CFLAGS << "-O3"
   end
 
+  $LDFLAGS += " -Wl,-rpath='\$\$ORIGIN/../ruby-static-tracing' "
+
   create_makefile(MKMF_TARGET, platform_dir("linux"))
 
 #  - Darwin/BSD and other dtrace platforms, via libusdt
