@@ -9,3 +9,4 @@ html
 .vagrant
 tmp
 pkg
+.bin
