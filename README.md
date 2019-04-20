@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/dalehamel/ruby-static-tracing.svg?branch=master)](https://travis-ci.org/dalehamel/ruby-static-tracing)
+
+[![Docker Repository on Quay](https://quay.io/repository/dalehamel/ruby-static-tracing/status "Docker Repository on Quay")](https://quay.io/repository/dalehamel/ruby-static-tracing)
+
 ![ponycorn](http://www.brendangregg.com/blog/images/2015/pony_ebpf01_small.png)
 
 # USDT Report
