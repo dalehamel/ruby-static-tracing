@@ -104,7 +104,7 @@ end
 namespace :docker do
   desc "Builds the development docker image"
   task :build do
-      system("docker build -f #{File.join(DOCKER_DIR, 'Dockerfile.ci')} #{DOCKER_DIR} -t ruby-static-tracing:latest")
+      system("docker build -f #{File.join(DOCKER_DIR, 'Dockerfile.ci')} #{DOCKER_DIR} -t quay.io/dalehamel/ruby-static-tracing")
   end
 
   desc "Runs the development docker image"
@@ -131,6 +131,16 @@ namespace :docker do
   desc "Cleans up all development docker images for this project"
   task :clean do
     system("docker container ls --quiet --filter name=ruby-static-tracing* | xargs -I@ docker container kill @")
+  end
+
+  desc "Pulls development image"
+  task :pull do
+    system("docker pull quay.io/dalehamel/ruby-static-tracing")
+  end
+
+  desc "Push development image"
+  task :push do
+    system("docker push quay.io/dalehamel/ruby-static-tracing")
   end
 
   desc "Fully set up a development docker image, and get a shell"

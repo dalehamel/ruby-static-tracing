@@ -1,0 +1,16 @@
+services:
+  - docker
+language: ruby
+before_install:
+ - bundle install
+ - bundle exec rake docker:run
+script:
+
+env:
+  matrix:
+    secure: 3xK82FztZnSRmxJbLftuPyEhHgO09mCjoQvPiqPoSIwdR+gEaahhcCdIOI9eadP13p0u/ZWiJu0BUwdC+W1wyl8hXxO+zNBCh3FN03yspIgf8lv9xKzBbVcr8bwo03Fp7+tuUC+PGACGQB0bR0Sy0DkzRMnowoqo6RWISiPGzyQwr0EegiwTQEHiPwwPjl2shhsnpnBdKXclC9jo0kyg+v6wTSrjEvvmrl5GEI/SAWxJYLwrvyg3HWN7An692qqGEkv+AVRDM0tET2xEUwDNvITDHDAFlUsfKP+ooIrLdH8MtpOHN+hGaZg5MA0v69vMhXnpjqnYFRpM9zaiQrfMkd7hVUqcHx500f2OVM7W9yAFCA7lVOwGb95KiqAcRqIb1G9Qyxr0V5GPBwjTZcEhVxM9OuYzo0zGO2XsjLVKKGH5KwGZsWIcfwgawvWDQk0H1up4bNqQM9rqYMwKMSQf9BciyovCmVLsQFibjfI0DEG6fbh+go3pMoz7070NnElqTRJmLn/xoUipI01NDda4ZHn3mjiHnggBgT/psx24Ili6D8y+EbguaAi+eZDzwjCSlRI1q1ItrUBsjsM6azGo2cP6ifgBWfZHgv5+KGoMGqDvdVxiHQLFpXlY1XaLF+tZxCxkNhHRxmHXEFaw6+VEdbppnFZz592/5EFPD7ck8N8=
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
+  target_branch: gh-pages
