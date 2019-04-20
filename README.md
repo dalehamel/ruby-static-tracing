@@ -6,7 +6,7 @@
 
 # USDT Report
 
-This gem is described in greater detail in this [USDT report](https://blog.srvthe.net/usdt-report-doc/)
+This gem is described in greater detail in this [USDT report](https://blog.srvthe.net/usdt-report-doc/), and has [rdoc](https://blog.srvthe.net/ruby-static-tracing/index.html)
 
 # Tracing ruby in Development and Production
 
