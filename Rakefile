@@ -110,7 +110,7 @@ namespace :docker do
 
   desc "Runs the development docker image"
   task :run do
-    `docker run --privileged --name ruby-static-tracing-#{Time.now.getutc.to_i} -v $(pwd):/app -d ruby-static-tracing:latest /bin/sh -c "sleep infinity"`.strip
+    `docker run --privileged --name ruby-static-tracing-#{Time.now.getutc.to_i} -v $(pwd):/app -d quay.io/dalehamel/ruby-static-tracing:latest /bin/sh -c "sleep infinity"`.strip
     system("docker exec -ti #{latest_running_container_id} /app/vagrant/debugfs.sh")
   end
 
