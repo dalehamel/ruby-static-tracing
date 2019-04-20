@@ -12,7 +12,7 @@ if StaticTracing::Platform.linux?
   # and "trick" extconf into thinking it's just another .so
   File.write "Makefile", <<MAKEFILE
 all:
-	cd #{File.join(BASE_DIR, 'libstapsdt')} && make
+	cd #{File.join(BASE_DIR, 'libstapsdt')} && make CFLAGS_EXTRA=-DLIBSTAPSDT_MEMORY_BACKED_FD
 	touch deps.so # HACK
 	cp #{File.join(BASE_DIR, 'libstapsdt', 'out/libstapsdt.so.0')} #{LIB_DIR}
 	cd #{LIB_DIR} && ln -sf libstapsdt.so.0 libstapsdt.so
