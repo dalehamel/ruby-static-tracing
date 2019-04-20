@@ -1,4 +1,0 @@
-usdt::global:randist
-{
-  @ = lhist(arg0, 0, 100, 10)
-}

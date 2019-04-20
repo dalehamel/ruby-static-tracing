@@ -1,4 +1,0 @@
-global*:::randist
-{ 
-  @ = lquantize(arg0, 0, 100, 10)
-}
