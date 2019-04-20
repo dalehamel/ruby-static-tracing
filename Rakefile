@@ -20,6 +20,7 @@ end
 
 $LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
 require 'ruby-static-tracing/platform'
+require 'ruby-static-tracing/version'
 if StaticTracing::Platform.supported_platform?
   require 'rake/extensiontask'
 
@@ -118,9 +119,14 @@ namespace :docker do
     system("docker exec -ti #{latest_running_container_id} bash")
   end
 
+  desc "Build and install the gem"
+  task :install do
+    system("docker exec -ti #{latest_running_container_id} bash -c 'bundle install && bundle exec rake install'")
+  end
+
   desc "Runs tests within the development docker image"
   task :tests do
-    system("docker exec -ti #{latest_running_container_id} bash -c 'bundle install && bundle exec rake clean && bundle exec rake build && bundle exec rake test'")
+    system("docker exec -ti #{latest_running_container_id} bash -c 'bundle install && bundle exec rake test'")
   end
 
   desc "Runs integration tests within the development docker image"
@@ -196,6 +202,12 @@ namespace :new do
     STDOUT.sync = true
 
     SCRIPT
+  end
+end
+
+namespace :gem do
+  task :push do
+    system("gem push pkg/ruby-static-tracing-#{StaticTracing::VERSION}.gem")
   end
 end
 
