@@ -19,7 +19,7 @@ RUN apt-get install -y libbcc=0.9.0-1 bcc-tools && apt-get clean
 RUN echo 'PATH="$PATH:/usr/share/bcc/tools"' >> /etc/bash.bashrc
 
 RUN apt-get install -y ruby ruby-dev && apt-get clean
-RUN gem install bundler:1.17.3
+RUN gem install bundler
 
 COPY scripts/fetch-linux-headers.sh /tmp/fetch-linux-headers.sh
 RUN /tmp/fetch-linux-headers.sh
