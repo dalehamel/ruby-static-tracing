@@ -7,8 +7,10 @@ before_install:
 - bundle exec rake docker:run
 - bundle exec rake docker:install
 script:
-- bundle exec rake docker:tests
 - bundle exec rake rdoc
+- bundle exec rake docker:rubocop
+- bundle exec rake docker:clangfmt
+- bundle exec rake docker:test
 - sudo mv html /html && sudo mv README.md /html && sudo rm -rf * && sudo mv /html/* .
 env:
   matrix:

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'minitest/autorun'
 require 'pry-byebug' if ENV['PRY']
 
@@ -6,7 +8,7 @@ require 'tempfile'
 CACHED_DTRACE_PATH = File.expand_path("../../../.bin/dtrace", __FILE__).freeze
 PIDS = []
 def cleanup_pids
-  PIDS.each do |p| 
+  PIDS.each do |p|
     Process.kill('KILL', p)
   rescue Errno::EPERM
   end
@@ -15,18 +17,18 @@ end
 MiniTest.after_run { cleanup_pids }
 
 module TraceRunner
-  extend self
+  module_function
 
   def trace(*flags, script: nil, wait: nil)
-    cmd = ""
+    cmd = ''
     if StaticTracing::Platform.linux?
-      cmd = "bpftrace"
+      cmd = 'bpftrace'
       cmd = [cmd, "#{script}.bt"] if script
     elsif StaticTracing::Platform.darwin?
       cmd = [CACHED_DTRACE_PATH, '-q']
       cmd = [cmd, '-s', "#{script}.dt"] if script
     else
-      puts "WARNING: no supported tracer for this platform"
+      puts 'WARNING: no supported tracer for this platform'
       return
     end
 
@@ -38,7 +40,7 @@ module TraceRunner
   end
 end
 
-# FIXME add a "fixtures record" helper to facilitate adding tests / updating fixtures
+# FIXME: add a "fixtures record" helper to facilitate adding tests / updating fixtures
 class CommandRunner
   TRACE_ENV_DEFAULT = {
     'BPFTRACE_STRLEN' => '100' # workaround for https://github.com/iovisor/bpftrace/issues/305
@@ -50,16 +52,16 @@ class CommandRunner
     outfile = Tempfile.new('ruby-static-tracing_tmp_out')
     @path = outfile.path
     outfile.unlink
-    at_exit { File.unlink(@path) if File.exists?(@path) }
+    at_exit { File.unlink(@path) if File.exist?(@path) }
 
-    @pid = Process.spawn(TRACE_ENV_DEFAULT, command, :out=>[@path, "w"], :err =>'/dev/null')
+    @pid = Process.spawn(TRACE_ENV_DEFAULT, command, out: [@path, 'w'], err: '/dev/null')
     PIDS << @pid
     sleep wait if wait
   end
 
   def output
     output = File.read(@path)
-    return output
+    output
   end
 
   def interrupt(wait = nil)

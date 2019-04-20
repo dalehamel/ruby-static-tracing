@@ -2,8 +2,7 @@
 
 VALUE eUSDT, eInternal;
 
-void Init_ruby_static_tracing()
-{
+void Init_ruby_static_tracing() {
   VALUE cStaticTracing, cProvider, cTracepoint;
 
   cStaticTracing = rb_const_get(rb_cObject, rb_intern("StaticTracing"));
@@ -15,7 +14,7 @@ void Init_ruby_static_tracing()
    */
   cProvider = rb_const_get(cStaticTracing, rb_intern("Provider"));
 
- /*
+  /*
    * Document-class: Statictracing::Tracepoint
    *
    *  A Tracepoint is a wrapper around an SDTProbe
@@ -41,8 +40,8 @@ void Init_ruby_static_tracing()
   rb_define_method(cProvider, "destroy", provider_destroy, 0);
 
   rb_define_alloc_func(cTracepoint, static_tracing_tracepoint_alloc);
-  rb_define_method(cTracepoint, "tracepoint_initialize", tracepoint_initialize, 3);
+  rb_define_method(cTracepoint, "tracepoint_initialize", tracepoint_initialize,
+                   3);
   rb_define_method(cTracepoint, "_fire_tracepoint", tracepoint_fire, 1);
   rb_define_method(cTracepoint, "enabled?", tracepoint_enabled, 0);
 }
-

@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'integration_helper'
 
-# FIXME can any of this be generalized / should the convention be encoded?
+# FIXME: can any of this be generalized / should the convention be encoded?
 class LatencyTest < IntegrationTestCase
   def test_latency
     target = command('bundle exec ruby latency.rb', wait: 1)

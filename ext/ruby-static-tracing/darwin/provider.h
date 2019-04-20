@@ -56,7 +56,6 @@ provider_destroy(VALUE self);
 VALUE
 static_tracing_provider_alloc(VALUE klass);
 
-int
-provider_add_tracepoint_internal(VALUE self, usdt_probedef_t* probedef);
+int provider_add_tracepoint_internal(VALUE self, usdt_probedef_t *probedef);
 
-#endif //STATIC_TRACING_PROVIDER_H
+#endif // STATIC_TRACING_PROVIDER_H

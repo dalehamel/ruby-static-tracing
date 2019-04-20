@@ -7,22 +7,39 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    ast (2.4.0)
     byebug (11.0.1)
     coderay (1.1.2)
+    jaro_winkler (1.5.2)
     metaclass (0.0.4)
     method_source (0.9.2)
     minitest (5.11.3)
     mocha (1.8.0)
       metaclass (~> 0.0.1)
+    parallel (1.17.0)
+    parser (2.6.2.1)
+      ast (~> 2.4.0)
     pry (0.12.2)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
     pry-byebug (3.7.0)
       byebug (~> 11.0)
       pry (~> 0.10)
+    psych (3.1.0)
+    rainbow (3.0.0)
     rake (10.5.0)
     rake-compiler (0.9.9)
       rake
+    rubocop (0.67.2)
+      jaro_winkler (~> 1.5.1)
+      parallel (~> 1.10)
+      parser (>= 2.5, != 2.5.1.1)
+      psych (>= 3.1.0)
+      rainbow (>= 2.2.2, < 4.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 1.4.0, < 1.6)
+    ruby-progressbar (1.10.0)
+    unicode-display_width (1.5.0)
     unmixer (0.4.0)
 
 PLATFORMS
@@ -34,6 +51,7 @@ DEPENDENCIES
   pry-byebug
   rake (< 11.0)
   rake-compiler (~> 0.9)
+  rubocop
   ruby-static-tracing!
 
 BUNDLED WITH

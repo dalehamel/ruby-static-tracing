@@ -8,14 +8,14 @@
 // FIXME move this to shared header
 typedef union {
   unsigned long long intval;
-  char *             strval;
+  char *strval;
 } Tracepoint_fire_arg;
 
 typedef struct {
   char *name;
   usdt_probedef_t *usdt_tracepoint_def;
-  usdt_probe_t    *usdt_tracepoint;
-  //Tracepoint_arg_types *args;
+  usdt_probe_t *usdt_tracepoint;
+  // Tracepoint_arg_types *args;
 } static_tracing_tracepoint_t;
 
 /*
@@ -49,4 +49,4 @@ tracepoint_enabled(VALUE self);
 VALUE
 static_tracing_tracepoint_alloc(VALUE klass);
 
-#endif //STATIC_TRACING_TRACEPOINT_H
+#endif // STATIC_TRACING_TRACEPOINT_H

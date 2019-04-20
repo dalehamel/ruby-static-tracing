@@ -17,15 +17,11 @@ module StaticTracing
       end
 
       def enable!
-        providers.values.each do |provider|
-          provider.enable
-        end
+        providers.values.each(&:enable)
       end
 
       def disable!
-        providers.values.each do |provider|
-          provider.disable
-        end
+        providers.values.each(&:disable)
       end
 
       def clean
@@ -54,24 +50,19 @@ module StaticTracing
       Tracepoint.new(namespace, method_name, *args)
     end
 
-# FIXME - how to store list of tracepoints on provider? Allocate map in C?
-#    def tracepoints
-#      []
-#    end
-    def enable
-    end
+    # FIXME: - how to store list of tracepoints on provider? Allocate map in C?
+    #    def tracepoints
+    #      []
+    #    end
+    def enable; end
 
-    def disable
-    end
+    def disable; end
 
-    # FIXME add binding to check if enabled
-    def enabled?
-    end
+    # FIXME: add binding to check if enabled
+    def enabled?; end
 
-    def destroy
-    end
+    def destroy; end
 
-    def provider_initialize(*)
-    end
+    def provider_initialize(*); end
   end
 end

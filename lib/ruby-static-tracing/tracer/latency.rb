@@ -3,7 +3,7 @@
 module StaticTracing
   module Tracer
     class Latency < Base
-      set_wrapping_function -> (*args, &block) {
+      set_wrapping_function lambda { |*args, &block|
         start_time = StaticTracing.nsec
         result = super(*args, &block)
         duration = StaticTracing.nsec - start_time

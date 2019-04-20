@@ -4,8 +4,8 @@
 // Include libstapsdt.h to wrap
 #include <libstapsdt.h> // FIXME use local
 
-#include "types.h"
 #include "ruby_static_tracing.h"
+#include "types.h"
 
 typedef struct {
   char *name;
@@ -58,7 +58,8 @@ provider_destroy(VALUE self);
 VALUE
 static_tracing_provider_alloc(VALUE klass);
 
-SDTProbe_t
-*provider_add_tracepoint_internal(VALUE self, const char* name, int argc, Tracepoint_arg_types *args);
+SDTProbe_t *provider_add_tracepoint_internal(VALUE self, const char *name,
+                                             int argc,
+                                             Tracepoint_arg_types *args);
 
-#endif //STATIC_TRACING_PROVIDER_H
+#endif // STATIC_TRACING_PROVIDER_H

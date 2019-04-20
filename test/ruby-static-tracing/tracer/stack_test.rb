@@ -24,7 +24,7 @@ module StaticTracing
 
         StaticTracing::Tracer::Stack
           .register(self, :noop, :noop_with_arg, :noop_with_block,
-                   :noop_with_arg_and_block)
+                    :noop_with_arg_and_block)
       end
 
       def teardown
@@ -55,7 +55,7 @@ module StaticTracing
 
         @example = Example.new
 
-        assert_equal(1, @example.noop_with_block { 1 } )
+        assert_equal(1, @example.noop_with_block { 1 })
       end
 
       def test_methods_with_blocks_and_args_still_work
@@ -64,9 +64,8 @@ module StaticTracing
 
         @example = Example.new
 
-        assert_equal(1, @example.noop_with_arg_and_block(1){ |a| a })
+        assert_equal(1, @example.noop_with_arg_and_block(1) { |a| a })
       end
     end
   end
 end
-

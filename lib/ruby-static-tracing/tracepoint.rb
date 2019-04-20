@@ -2,7 +2,6 @@
 
 module StaticTracing
   class Tracepoint #:nodoc:
-
     class InvalidArgumentError < StandardError
       def initialize(argument, expected_type)
         error_message = <<~ERROR_MESSAGE
@@ -16,7 +15,7 @@ module StaticTracing
     end
     class InvalidArgType < StandardError; end
 
-    VALID_ARGS_TYPES = [Integer, String]
+    VALID_ARGS_TYPES = [Integer, String].freeze
 
     attr_reader :provider, :name, :args
 
@@ -40,13 +39,12 @@ module StaticTracing
       _fire_tracepoint(values)
     end
 
-    def enabled?
-    end
+    def enabled?; end
 
     private
 
     def validate_args(values)
-      raise InvalidArgType unless values.all? { |value|  VALID_ARGS_TYPES.include?(value) }
+      raise InvalidArgType unless values.all? { |value| VALID_ARGS_TYPES.include?(value) }
     end
   end
 end

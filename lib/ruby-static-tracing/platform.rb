@@ -2,7 +2,7 @@
 
 module StaticTracing
   module Platform
-    extend self
+    module_function
 
     def linux?
       /linux/.match(RUBY_PLATFORM)

@@ -11,7 +11,7 @@ require 'ruby-static-tracing/configuration'
 require 'ruby-static-tracing/tracer'
 require 'ruby-static-tracing/tracers'
 
-# FIXME Including StaticTracing should cause every method in a module or class to be registered
+# FIXME: Including StaticTracing should cause every method in a module or class to be registered
 # Implement this by introspecting all methods on the includor, and wrapping them.
 module StaticTracing
   extend self
@@ -26,6 +26,7 @@ module StaticTracing
 
   def issue_disabled_tracepoints_warning
     return if defined?(@warning_issued)
+
     @warning_issued = true
     logger.info("USDT tracepoints are not presently supported supported on #{RUBY_PLATFORM} - all operations will no-op")
   end

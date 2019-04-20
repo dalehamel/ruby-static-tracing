@@ -10,7 +10,7 @@
 
 typedef union {
   unsigned long long intval;
-  char *             strval;
+  char *strval;
 } Tracepoint_fire_arg;
 
 typedef struct {
@@ -50,4 +50,4 @@ tracepoint_enabled(VALUE self);
 VALUE
 static_tracing_tracepoint_alloc(VALUE klass);
 
-#endif //STATIC_TRACING_TRACEPOINT_H
+#endif // STATIC_TRACING_TRACEPOINT_H

@@ -27,7 +27,6 @@ end
 
 app = LatencyApp.new
 
-
 loop do
   app.sleep1
   app.sleep2

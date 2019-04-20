@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'ruby-static-tracing'
 STDOUT.sync = true
 
@@ -23,5 +25,5 @@ Signal.trap('USR2') do
   stack_operation.call
 end
 
-while true
+loop do
 end

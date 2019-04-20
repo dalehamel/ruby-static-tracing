@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module StaticTracing
+  # Tracers are a layer of abstraction above tracepoints. They are opinionated
+  # and contextual ways of applying tracepoints to an application.
   class Tracers
+    # Error for an invalid tracer
     class InvalidTracerError < StandardError
       def initialize
         msg = <<~MSG
@@ -17,6 +20,7 @@ module StaticTracing
     class << self
       def add(tracer)
         raise InvalidTracerError unless tracer < StaticTracing::Tracer::Base
+
         tracers << tracer
       end
 

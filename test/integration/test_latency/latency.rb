@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'ruby-static-tracing'
 STDOUT.sync = true
 
 class ExpensiveOperation
   def execute
-    ([] << 1) * 100000
+    ([] << 1) * 100_000
   end
 
   StaticTracing::Tracer::Latency.register(self, :execute)
@@ -19,5 +21,5 @@ Signal.trap('USR2') do
   expensive_operation.execute
 end
 
-while true
+loop do
 end

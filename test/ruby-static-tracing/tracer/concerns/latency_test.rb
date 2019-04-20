@@ -8,13 +8,11 @@ module StaticTracing
     module Concerns
       class LatencyTest < MiniTest::Test
         class Example
-          def noop
-          end
+          def noop; end
 
           include StaticTracing::Tracer::Concerns::Latency
 
-          def untraced_noop
-          end
+          def untraced_noop; end
         end
 
         def setup

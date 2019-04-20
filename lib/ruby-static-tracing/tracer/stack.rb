@@ -2,9 +2,11 @@
 
 module StaticTracing
   module Tracer
+    # A stack tracer gets the stack trace at point when
+    # the tracer is executed
     class Stack < Base
-      set_wrapping_function -> (*args, &block) {
-        current_stack = self.send(:caller).join("\n")
+      set_wrapping_function lambda { |*args, &block|
+        current_stack = send(:caller).join("\n")
         method_name = __method__.to_s
         provider = Tracer::Helpers.underscore(self.class.name)
         Tracepoints.get(provider, method_name).fire(method_name, current_stack)

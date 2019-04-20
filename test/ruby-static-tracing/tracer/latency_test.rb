@@ -6,8 +6,7 @@ module StaticTracing
   module Tracer
     class LatencyTest < MiniTest::Test
       class Example
-        def noop
-        end
+        def noop; end
         Tracer::Latency.register(self, :noop)
 
         def noop_with_args(*args, arg1:)
