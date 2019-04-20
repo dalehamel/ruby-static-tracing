@@ -1,4 +1,0 @@
-usdt::global:hello_nsec
-{
-  printf("%lld %s\n", arg0, str(arg1))
-}

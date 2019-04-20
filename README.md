@@ -1,5 +1,9 @@
 ![ponycorn](http://www.brendangregg.com/blog/images/2015/pony_ebpf01_small.png)
 
+# USDT Report
+
+This gem is described in greater detail in this [USDT report](https://blog.srvthe.net/usdt-report-doc/)
+
 # Tracing ruby in Development and Production
 
 Add tracepoints for any question you need answered about your code.
@@ -21,13 +25,7 @@ This should be useful for:
 
 Both Darwin/OSX and Linux are supported.
 
-To get started, check out the [tracing examples included in this repo](./examples) and [the guide that explains them](./docs/tracing.md), showing various practical uses of this gem.
-
 There is a [Development guide](./DEVELOPMENT.md) to show how to set up a dev env and test the gem and try out the linux examples.
-
-More details on the internal workings of USDT probes in dynamic languages are described in [supplementary docs](./docs/internals.md), along with a number of great external references.
-
-![probegif](./docs/probetest.gif)
 
 # Goals
 

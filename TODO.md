@@ -64,3 +64,5 @@ While not strictly needed, this would be nice to stay consistent.
 
 It would be good to see if there is any performance benefit to using the semaphore based approach over just
 relying no the uprobe trap point.
+
+https://github.com/sthima/libstapsdt/issues/23
