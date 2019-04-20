@@ -8,7 +8,6 @@ before_install:
 - bundle exec rake docker:install
 script:
 - bundle exec rake docker:tests
-- bundle exec rake gem push
 - bundle exec rake rdoc
 - mv html /html && rm -rf * && mv /html/* .
 env:
