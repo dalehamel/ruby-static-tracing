@@ -1,16 +1,28 @@
 services:
-  - docker
+- docker
 language: ruby
 before_install:
- - bundle install
- - bundle exec rake docker:run
+- bundle install
+- bundle exec rake docker:pull
+- bundle exec rake docker:run
+- bundle exec rake docker:install
 script:
-
+- bundle exec rake docker:tests
+- bundle exec rake gem push
+- bundle exec rake rdoc
+- mv html /html && rm -rf * && mv /html/* .
 env:
   matrix:
     secure: 3xK82FztZnSRmxJbLftuPyEhHgO09mCjoQvPiqPoSIwdR+gEaahhcCdIOI9eadP13p0u/ZWiJu0BUwdC+W1wyl8hXxO+zNBCh3FN03yspIgf8lv9xKzBbVcr8bwo03Fp7+tuUC+PGACGQB0bR0Sy0DkzRMnowoqo6RWISiPGzyQwr0EegiwTQEHiPwwPjl2shhsnpnBdKXclC9jo0kyg+v6wTSrjEvvmrl5GEI/SAWxJYLwrvyg3HWN7An692qqGEkv+AVRDM0tET2xEUwDNvITDHDAFlUsfKP+ooIrLdH8MtpOHN+hGaZg5MA0v69vMhXnpjqnYFRpM9zaiQrfMkd7hVUqcHx500f2OVM7W9yAFCA7lVOwGb95KiqAcRqIb1G9Qyxr0V5GPBwjTZcEhVxM9OuYzo0zGO2XsjLVKKGH5KwGZsWIcfwgawvWDQk0H1up4bNqQM9rqYMwKMSQf9BciyovCmVLsQFibjfI0DEG6fbh+go3pMoz7070NnElqTRJmLn/xoUipI01NDda4ZHn3mjiHnggBgT/psx24Ili6D8y+EbguaAi+eZDzwjCSlRI1q1ItrUBsjsM6azGo2cP6ifgBWfZHgv5+KGoMGqDvdVxiHQLFpXlY1XaLF+tZxCxkNhHRxmHXEFaw6+VEdbppnFZz592/5EFPD7ck8N8=
 deploy:
-  provider: pages
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
-  target_branch: gh-pages
+  - provider: rubygems
+    api_key:
+      secure: ivejPWs0XTIEtc1D9suDnusfoP3UnqGSNdfWd8socndHt9dF777CZzUmbCIZe1cypQWW+cNOt2v+hSbPat0ID80axOV1zkinfehy5uG4vGdCZ7MtcIwjmYOp9LJoTJuN/jM8skrudJGwGJUuRtXybpd4F5s6YjF7QwCikjDdTMxMqquVYT8R4Qw5ZqRedINIhnRHnAAJD6l/U8u+0BmqJMC1UyiIihoc3QdquQquu0gY6c6shQHR0J2wFB+KTviV6IGp/fsSY4nBwZaECAAI/xoHpQOhUY61ejRbu+bRa3xiQe+WCBlij3PxROSlGZUasyWDHYqmgrCN/4pHVaUQCLibYicD8OUw/L0Pn4gptgXMb8xklFPiHbLPayHLmAmtmhyNZpovg0kJ2jFYJgxlmvLfiyrnAwUQrWun6WGhWM9YZU6SfZXS7oBkK8RKFdgXpQyI5gN3mtpc8XykmuLLCd6J6oAJWg6B3rsCbM5jrmA2JKLNAm2R7tqlWU5c7+bKQ9gecS8lQO5ZAx6GRSo1qoFXQoilYQMur2X3SlGfaY2NjN056/cgRkqdoYMkMkwp96/ixXE+u2jHKUAx7i2NMERMOzWeu/Ir/LC/RjidODTY9Fw44y6rd/cqmvxXCbMSMkqHgxkzu+XrYArxCvDuM3AvBVurbPM7JPZgcFmxz9M=
+    gem: ruby-static-tracing
+    on:
+      tags: true
+      repo: dalehamel/ruby-static-tracing
+  - provider: pages
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
+    target_branch: gh-pages
