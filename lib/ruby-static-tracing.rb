@@ -48,7 +48,7 @@ module StaticTracing
   # with a wrapped version that has tracing enabled
   def enable!
     StaticTracing::Tracers.enable!
-    StaticTracing::Provider.enable!
+    StaticTracing::Provider.enable! # FIXME individually call enable
     @enabled = true
   end
 
@@ -56,7 +56,7 @@ module StaticTracing
   # no longer wrapping them
   def disable!
     StaticTracing::Tracers.disable!
-    StaticTracing::Provider.disable!
+    StaticTracing::Provider.disable! # FIXME dangerous
     @enabled = false
   end
 
