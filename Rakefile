@@ -144,6 +144,7 @@ namespace :docker do
   task :rubocop do
     exit system("docker exec -ti #{latest_running_container_id} \
          bash -c 'mv vendor ../vendor.bak; bundle install && \
+                 bundle exec rake clean;
                  bundle exec rake rubocop; err=$?;
                  rm -rf vendor; mv ../vendor.bak vendor;
                  exit $err'")
