@@ -37,12 +37,6 @@ module StaticTracing
         providers.values.each(&:disable)
       end
 
-      def clean
-        # FIXME: this should free first
-        @providers = {}
-        @tracepoints = {}
-      end
-
       private
 
       # A global collection of providers
