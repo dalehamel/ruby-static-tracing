@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module StaticTracing
   # A wrapper for a USDT tracepoint provider
   # This corresponds to a namespace of tracepoints
@@ -37,7 +38,7 @@ module StaticTracing
       end
 
       def clean
-        # FIXME this should free first
+        # FIXME: this should free first
         @providers = {}
       end
 
@@ -56,7 +57,7 @@ module StaticTracing
     def add_tracepoint(tracepoint, *args)
       if tracepoint.is_a?(String)
         tracepoint = Tracepoint.new(namespace, tracepoint, *args)
-      elsif(tracepoint.is_a?(Tracepoint))
+      elsif tracepoint.is_a?(Tracepoint)
         @tracepoints << tracepoint
       end
       tracepoint

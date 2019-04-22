@@ -37,7 +37,7 @@ module StaticTracing
 
       # Clears all tracers
       def clean
-        # FIXME - actuallly ensure destroyed to avoid memory leaks
+        # FIXME: - actuallly ensure destroyed to avoid memory leaks
         @tracers = []
       end
 

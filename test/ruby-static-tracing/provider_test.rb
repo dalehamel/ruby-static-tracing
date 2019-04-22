@@ -46,7 +46,7 @@ module StaticTracing
       @provider.disable
     end
 
-    # FIXME this is expected to fail on darwin
+    # FIXME: this is expected to fail on darwin
     def test_enabled_provider_has_nonempty_path
       refute(@provider.enabled?)
       assert(@provider.enable)

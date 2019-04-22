@@ -256,7 +256,7 @@ task :clangfmt do
     Dir["#{File.join(EXT_DIR, dir)}/*.{h,c}"].each do |src|
       tmp = "/tmp/#{src.tr('/', '_')}"
       system("clang-format #{src} > #{tmp}")
-      #system("clang-format -i #{src}")
+      # system("clang-format -i #{src}")
       diff = `diff #{src} #{tmp}`
       system("rm -f #{tmp}")
       unless diff.lines.empty?

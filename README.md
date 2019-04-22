@@ -6,7 +6,7 @@
 
 # USDT Report
 
-This gem is described in greater detail in this [USDT report](https://blog.srvthe.net/usdt-report-doc/), and has [rdoc](https://blog.srvthe.net/ruby-static-tracing/index.html) and code coverage [rdoc](https://blog.srvthe.net/ruby-static-tracing/coverage/index.html)
+This gem is described in greater detail in this [USDT report](https://blog.srvthe.net/usdt-report-doc/), and has rdoc for [master](https://blog.srvthe.net/ruby-static-tracing/index.html) and the [latest release ](https://www.rubydoc.info/gems/ruby-static-tracing/0.0.13), as well as [code coverage from last master build ](https://blog.srvthe.net/ruby-static-tracing/coverage/index.html)
 
 # Tracing ruby in Development and Production
 
