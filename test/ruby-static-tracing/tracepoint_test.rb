@@ -31,5 +31,16 @@ module StaticTracing
     def test_access_provider_through_tracepoint
       assert_equal(@tracepoint.provider.namespace, 'test')
     end
+
+    def test_get_returns_tracepoint
+      tracepoint = Provider.fetch('test').tracepoints['my_method']
+      assert_instance_of Tracepoint, tracepoint
+    end
+
+    def test_raises_error_if_tracepoint_does_not_exists
+      assert_raises(StaticTracing::Tracepoint::TracepointMissingError) do
+        Tracepoint.fetch('test', 'noop')
+      end
+    end
   end
 end

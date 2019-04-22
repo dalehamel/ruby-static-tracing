@@ -29,6 +29,7 @@ module StaticTracing
 
       def teardown
         Tracer::Stack.disable!
+        Tracers.clean
       end
 
       def test_basic_methods_fire_tracepoints
