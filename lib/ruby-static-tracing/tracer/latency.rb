@@ -9,7 +9,7 @@ module StaticTracing
         duration = StaticTracing.nsec - start_time
         method_name = __method__.to_s
         provider = Tracer::Helpers.underscore(self.class.name)
-        # FIXME benchmark this, we may need to cache the provider instance on the object
+        # FIXME: benchmark this, we may need to cache the provider instance on the object
         # This lookup is a bit of a hack
         t = Provider.fetch(provider).tracepoints[method_name]
         t.fire(method_name, duration) if t
