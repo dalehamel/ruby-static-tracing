@@ -9,13 +9,10 @@ class StacktraceTest < IntegrationTestCase
     # Enable probing
     target.prof(1)
 
-    tracer = TraceRunner.trace('-p', target.pid, script: 'stacktrace', wait: 5)
+    tracer = TraceRunner.trace('-p', target.pid, script: 'stacktrace', wait: 1)
 
     # Signal the target to trigger probe firing
     target.usr2(1)
-
-    # Signal bpftrace to exit, flushing output
-    tracer.interrupt(1)
 
     assert_tracer_output(tracer.output, read_probe_file('stacktrace.out'))
   end

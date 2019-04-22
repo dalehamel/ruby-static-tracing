@@ -22,5 +22,14 @@ module StaticTracing
       @tracepoint.expects(:fire).once
       @tracepoint.fire(1, 'hello')
     end
+
+    def test_tracepoint_implicitly_declare_provider
+      p = StaticTracing::Provider.fetch(@tracepoint.provider_name)
+      assert_equal(p.namespace, 'test')
+    end
+
+    def test_access_provider_through_tracepoint
+      assert_equal(@tracepoint.provider.namespace, 'test')
+    end
   end
 end

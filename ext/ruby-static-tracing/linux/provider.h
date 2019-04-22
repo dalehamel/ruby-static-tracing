@@ -54,6 +54,17 @@ provider_disable(VALUE self);
 VALUE
 provider_destroy(VALUE self);
 
+/*
+ * call-seq:
+ *    provider.path() -> string
+ *
+ * Get a path to this provider, if the platform supports it
+ *
+ * Returns string for path, or empty string if failed
+ */
+VALUE
+provider_path(VALUE self);
+
 // Allocate a static_tracing_provider_type struct for ruby memory management
 VALUE
 static_tracing_provider_alloc(VALUE klass);

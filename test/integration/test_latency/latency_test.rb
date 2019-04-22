@@ -6,16 +6,14 @@ require 'integration_helper'
 class LatencyTest < IntegrationTestCase
   def test_latency
     target = command('bundle exec ruby latency.rb', wait: 1)
+
     # Enable probing
     target.prof(1)
 
-    tracer = TraceRunner.trace('-p', target.pid, script: 'latency', wait: 5)
+    tracer = TraceRunner.trace('-p', target.pid, script: 'latency', wait: 1)
 
     # Signal the target to trigger probe firing
     target.usr2(1)
-
-    # Signal bpftrace to exit, flushing output
-    tracer.interrupt(1)
 
     assert_tracer_output(tracer.output, read_probe_file('latency.out'))
   end

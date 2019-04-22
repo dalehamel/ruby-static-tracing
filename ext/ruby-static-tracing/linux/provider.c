@@ -1,5 +1,7 @@
 #include "provider.h"
 
+#include <string.h>
+
 static const rb_data_type_t static_tracing_provider_type;
 
 // Forward decls
@@ -86,11 +88,12 @@ provider_disable(VALUE self) {
   static_tracing_provider_t *res = NULL;
   TypedData_Get_Struct(self, static_tracing_provider_t,
                        &static_tracing_provider_type, res);
+  res->sdt_provider->_filename = NULL; // FIXME upstream should do this
   return providerUnload(res->sdt_provider) == 0 ? Qtrue : Qfalse;
 }
 
 /*
-  Wraps providerUnload from libstapsdt
+  Wraps providerDestroy from libstapsdt
 */
 VALUE
 provider_destroy(VALUE self) {
@@ -99,6 +102,24 @@ provider_destroy(VALUE self) {
                        &static_tracing_provider_type, res);
   providerDestroy(res->sdt_provider);
   return Qnil;
+}
+
+VALUE
+provider_path(VALUE self) {
+  VALUE path;
+  char *_path;
+  static_tracing_provider_t *res = NULL;
+  TypedData_Get_Struct(self, static_tracing_provider_t,
+                       &static_tracing_provider_type, res);
+
+  if (res != NULL && res->sdt_provider != NULL &&
+      res->sdt_provider->_filename != NULL) {
+    _path = res->sdt_provider->_filename;
+    path = strlen(_path) > 0 ? rb_str_new_cstr(_path) : rb_str_new_cstr("");
+  } else {
+    path = rb_str_new_cstr("");
+  }
+  return path;
 }
 
 // Allocate a static_tracing_provider_type struct for ruby memory management

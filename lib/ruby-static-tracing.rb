@@ -24,6 +24,7 @@ module StaticTracing
 
   self.logger = Logger.new(STDERR)
 
+  # This will print a message indicating that tracepoints are disabled on this platform
   def issue_disabled_tracepoints_warning
     return if defined?(@warning_issued)
 
@@ -60,10 +61,16 @@ module StaticTracing
     @enabled = false
   end
 
+  # Toggles between enabling and disabling tracepoints declared through tracers
   def toggle_tracing!
     enabled? ? disable! : enable!
   end
 
+  # Block to configure static tracing, eg:
+  #
+  #   StaticTracing.configure do |config|
+  #     config.add_tracer(StaticTracing::Tracer::Latency)
+  #   end
   def configure
     yield Configuration.instance
   end

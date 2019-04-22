@@ -6,12 +6,10 @@ require 'integration_helper'
 class RubyStaticTracingTest < IntegrationTestCase
   def test_hello
     target = command('bundle exec ruby hello.rb', wait: 1)
-    tracer = TraceRunner.trace('-p', target.pid, script: 'hello', wait: 5)
+    tracer = TraceRunner.trace('-p', target.pid, script: 'hello', wait: 1)
 
     # Signal the target to trigger probe firing
     target.usr2(1)
-    # Signal tracer to exit, flushing output
-    tracer.interrupt(1)
 
     assert_tracer_output(tracer.output, read_probe_file('hello.out'))
   end

@@ -35,9 +35,10 @@ void Init_ruby_static_tracing() {
 
   rb_define_alloc_func(cProvider, static_tracing_provider_alloc);
   rb_define_method(cProvider, "provider_initialize", provider_initialize, 1);
-  rb_define_method(cProvider, "enable", provider_enable, 0);
-  rb_define_method(cProvider, "disable", provider_disable, 0);
+  rb_define_method(cProvider, "_enable_provider", provider_enable, 0);
+  rb_define_method(cProvider, "_disable_provider", provider_disable, 0);
   rb_define_method(cProvider, "destroy", provider_destroy, 0);
+  rb_define_method(cProvider, "path", provider_path, 0);
 
   rb_define_alloc_func(cTracepoint, static_tracing_tracepoint_alloc);
   rb_define_method(cTracepoint, "tracepoint_initialize", tracepoint_initialize,

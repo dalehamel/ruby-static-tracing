@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module StaticTracing
+  # FIXME - why do we need this class? We should store tracepoints
+  # on providers, and get the list of all tracepoints from the list of providers
   class Tracepoints
     class ProviderMissingError < StandardError; end
     class TracepointMissingError < StandardError; end

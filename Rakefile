@@ -256,6 +256,7 @@ task :clangfmt do
     Dir["#{File.join(EXT_DIR, dir)}/*.{h,c}"].each do |src|
       tmp = "/tmp/#{src.tr('/', '_')}"
       system("clang-format #{src} > #{tmp}")
+      #system("clang-format -i #{src}")
       diff = `diff #{src} #{tmp}`
       system("rm -f #{tmp}")
       unless diff.lines.empty?
@@ -278,5 +279,7 @@ end
 # ==========================================================
 require 'rdoc/task'
 RDoc::Task.new do |rdoc|
-  rdoc.rdoc_files.include('lib/*.rb', 'ext/semian/*.c')
+  rdoc.rdoc_files.include('lib/**/*.rb',
+                          'ext/ruby-static-tracing/linux/*.c',
+                          'ext/ruby-static-tracing/linux/*.h')
 end

@@ -24,15 +24,20 @@ module StaticTracing
         tracers << tracer
       end
 
+      # Enables each tracer, overriding original
+      # method definition with traced one
       def enable!
         tracers.each(&:enable!)
       end
 
+      # Disables each tracer, replacing the method definition
       def disable!
         tracers.each(&:disable!)
       end
 
+      # Clears all tracers
       def clean
+        # FIXME - actuallly ensure destroyed to avoid memory leaks
         @tracers = []
       end
 

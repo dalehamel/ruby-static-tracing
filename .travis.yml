@@ -11,7 +11,7 @@ script:
 - bundle exec rake docker:rubocop
 - bundle exec rake docker:clangfmt
 - bundle exec rake docker:test
-- sudo mv html /html && sudo mv README.md /html && sudo rm -rf * && sudo mv /html/* .
+- sudo mv html /html && sudo mv coverage /html && sudo mv README.md /html && sudo rm -rf * && sudo mv /html/* .
 env:
   matrix:
   - secure: usNTQBSlH7EhIn4NMynem1TZ01DMLZ23nZF3XSbDIcJC7FxfoImn7pvHHVXD98NKlzrV6Iz4BiuuhfuzAKlQE4k5p74Vv8kPL4catSX07r4dmb6UL62LDv2Ra3tRDCLCvSGYm3+hhxoGjOupnaTFwVyIR1yF9dSD+PkxXgWSyhbCrXBXXe23l1ew8PXRW2KiYGqk4z/Zjq6np10xkwo/mmHmJw0u3R7Bwwv7Qm6pG+IKHFWv53fRESi+XXntGWmzXdkymLCd6umQnvt2lOxbQnJuwx7tZcGZcl4ldGnXD98LIyQQyY+8vZzBAO7shywVGx6sxfMFwmBwMyBTEKG6GnJ37EBfmIZ6ybovt7Xdzar2RcDE67NSkoxsOvi7g8fNoClF8QLUCXG7+AhfTYzVwyGEiB76W+JvzDsh8DfQJ171UHCrWDdHIquSgzrIqPhzf3z0Vn+nztpJkp7ZHrTZhBH6kqx48q+CqAt/fgX8DkdXOlPNndXK+Ab7/vFhO9IVFF7Po7vTim+C6l/+Y4VngNGLFaQpMNtoeymOA+4AclL0d+IvmLtP+dpS7BuMeWGcmgxnxulYYrFxcQOWuntQ85NxWNs4in+E7meWYylAz4lkOVKDSOr1qSa5g4IxH8XjLY8YVJ1QfH/v3w1yyeE24xNRLLhYtumIHXqtZdu+w70=
