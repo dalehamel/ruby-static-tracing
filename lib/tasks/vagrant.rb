@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :vagrant do
   desc 'Sets up a vagrant VM, needed for our development environment.'
   task :up do

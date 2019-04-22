@@ -161,7 +161,7 @@ end
 # ==========================================================
 require 'rdoc/task'
 RDoc::Task.new do |rdoc|
-  # FIXME add darwin docs
+  # FIXME: add darwin docs
   rdoc.rdoc_files.include('lib/**/*.rb',
                           'ext/ruby-static-tracing/linux/*.c',
                           'ext/ruby-static-tracing/linux/*.h')

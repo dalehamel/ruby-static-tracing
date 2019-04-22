@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 # Quick helpers to get a dev env set up
 namespace :docker do
@@ -81,4 +82,3 @@ namespace :docker do
     end
   end
 end
-
