@@ -5,7 +5,6 @@ module StaticTracing
     class TracepointMissingError < StandardError; end
 
     class << self
-
       # Gets a trace instance by provider name and name
       def fetch(provider, name)
         Provider.fetch(provider).tracepoints.fetch(name.to_s) do

@@ -48,7 +48,8 @@ module StaticTracing
                 define_method(method.to_s, @wrapping_function)
               end
             end
-            def provider; @provider; end;
+
+            attr_reader :provider
           end
         end
 
