@@ -72,7 +72,7 @@ module StaticTracing
     end
   end
 
-  # class ProviderTracepointsTest < MiniTest::Test
+  #class ProviderTracepointsTest < MiniTest::Test
   #  def setup
   #    Tracepoint.new('test', 'my_method', Integer, String)
   #  end
@@ -98,5 +98,5 @@ module StaticTracing
   #  #    p.tracepoints['noop']
   #  #  end
   #  #end
-  # end
+  #end
 end

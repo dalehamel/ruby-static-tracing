@@ -10,7 +10,6 @@ module StaticTracing
 
     # Provider couldn't be found in collection
     class ProviderMissingError < StandardError; end
-    class TracepointMissingError < StandardError; end
 
     class << self
       # Gets a provider by name
@@ -41,7 +40,7 @@ module StaticTracing
       def clean
         # FIXME: this should free first
         @providers = {}
-        @tracepoints = {}
+#        @tracepoints = {}
       end
 
       private

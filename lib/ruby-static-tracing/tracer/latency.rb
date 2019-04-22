@@ -11,8 +11,7 @@ module StaticTracing
         provider = Tracer::Helpers.underscore(self.class.name)
         # FIXME: benchmark this, we may need to cache the provider instance on the object
         # This lookup is a bit of a hack
-        t = Provider.fetch(provider).tracepoints[method_name]
-        t.fire(method_name, duration) if t
+        Tracepoint.fetch(provider, method_name).fire(method_name, duration)
         result
       }
 

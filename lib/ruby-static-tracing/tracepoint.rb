@@ -2,6 +2,18 @@
 
 module StaticTracing
   class Tracepoint
+    class TracepointMissingError < StandardError; end
+
+    class << self
+
+      # Gets a provider instance by name
+      def fetch(provider, name)
+        Provider.fetch(provider).tracepoints.fetch(name) do
+          raise TracepointMissingError
+        end
+      end
+    end
+
     class InvalidArgumentError < StandardError
       def initialize(argument, expected_type)
         error_message = <<~ERROR_MESSAGE
