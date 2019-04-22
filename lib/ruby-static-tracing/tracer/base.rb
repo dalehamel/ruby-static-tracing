@@ -12,7 +12,8 @@ module StaticTracing
         include Tracer::Helpers
 
         def register(klass, *method_names, provider: nil)
-          provider ||= underscore(klass.name)
+          provider_name ||= underscore(klass.name)
+          provider = Provider.register(provider_name)
           method_overrides = function_wrapper.new(provider, @wrapping_function, @data_types)
           modified_classes[klass] ||= method_overrides
           modified_classes[klass].add_override(method_names.flatten)
@@ -20,6 +21,7 @@ module StaticTracing
 
         def enable!
           modified_classes.each do |klass, wrapped_methods|
+            wrapped_methods.provider.enable
             klass.prepend(wrapped_methods)
           end
         end
@@ -42,10 +44,11 @@ module StaticTracing
 
             def add_override(methods)
               methods.each do |method|
-                Tracepoints.add(@provider, method, @data_types)
+                Tracepoint.new(@provider.namespace, method.to_s, *@data_types)
                 define_method(method.to_s, @wrapping_function)
               end
             end
+            def provider; @provider; end;
           end
         end
 

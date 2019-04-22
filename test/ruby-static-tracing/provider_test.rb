@@ -9,12 +9,10 @@ module StaticTracing
       @provider = Provider.register(@namespace)
     end
 
-    def teardown
-      Provider.clean
-    end
+    def teardown; end
 
     def test_instance_not_found
-      assert_raises Provider::ProviderNotFound do
+      assert_raises Provider::ProviderMissingError do
         Provider.fetch('not_registered')
       end
     end
@@ -69,6 +67,13 @@ module StaticTracing
       assert(@provider.enabled?)
       @provider.disable
       refute(@provider.enabled?)
+    end
+
+    def test_raises_error_if_provider_does_not_exists
+      Tracepoint.new('test', 'my_method', Integer, String)
+      assert_raises(StaticTracing::Provider::ProviderMissingError) do
+        Provider.fetch('noop')
+      end
     end
   end
 end

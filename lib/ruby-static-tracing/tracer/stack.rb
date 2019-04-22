@@ -9,7 +9,8 @@ module StaticTracing
         current_stack = send(:caller).join("\n")
         method_name = __method__.to_s
         provider = Tracer::Helpers.underscore(self.class.name)
-        Tracepoints.get(provider, method_name).fire(method_name, current_stack)
+        Tracepoint.fetch(provider, method_name).fire(method_name, current_stack)
+
         super(*args, &block)
       }
 
