@@ -9,7 +9,8 @@ module StaticTracing
     attr_accessor :name
 
     # Provider couldn't be found in collection
-    class ProviderNotFound < StandardError; end
+    class ProviderMissingError < StandardError; end
+    class TracepointMissingError < StandardError; end
 
     class << self
       # Gets a provider by name
@@ -21,7 +22,7 @@ module StaticTracing
       # Gets a provider instance by name
       def fetch(namespace)
         providers.fetch(namespace) do
-          raise ProviderNotFound
+          raise ProviderMissingError
         end
       end
 
@@ -40,6 +41,7 @@ module StaticTracing
       def clean
         # FIXME: this should free first
         @providers = {}
+        @tracepoints = {}
       end
 
       private
@@ -58,9 +60,8 @@ module StaticTracing
       if tracepoint.is_a?(String)
         tracepoint = Tracepoint.new(namespace, tracepoint, *args)
       elsif tracepoint.is_a?(Tracepoint)
-        @tracepoints << tracepoint
+        @tracepoints[tracepoint.name] = tracepoint
       end
-      tracepoint
     end
 
     # Enable the provider, loading it into memory
@@ -95,7 +96,7 @@ module StaticTracing
         StaticTracing.issue_disabled_tracepoints_warning
       end
       @namespace = namespace
-      @tracepoints = []
+      @tracepoints = {}
     end
   end
 end

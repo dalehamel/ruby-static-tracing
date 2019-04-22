@@ -14,7 +14,7 @@ module StaticTracing
     end
 
     def test_instance_not_found
-      assert_raises Provider::ProviderNotFound do
+      assert_raises Provider::ProviderMissingError do
         Provider.fetch('not_registered')
       end
     end
@@ -71,4 +71,32 @@ module StaticTracing
       refute(@provider.enabled?)
     end
   end
+
+  #class ProviderTracepointsTest < MiniTest::Test
+  #  def setup
+  #    Tracepoint.new('test', 'my_method', Integer, String)
+  #  end
+
+  #  def teardown
+  #    Provider.clean
+  #  end
+
+  #  def test_get_returns_tracepoint
+  #    tracepoint = Provider.fetch('test').tracepoints['my_method']
+  #    assert_instance_of Tracepoint, tracepoint
+  #  end
+
+  #  def test_raises_error_if_provider_does_not_exists
+  #    assert_raises(StaticTracing::Provider::ProviderMissingError) do
+  #      Provider.fetch('noop')
+  #    end
+  #  end
+
+  #  #def test_raises_error_if_tracepoint_does_not_exists
+  #  #  assert_raises(StaticTracing::Provider::TracepointMissingError) do
+  #  #    p = Provider.fetch('test')
+  #  #    p.tracepoints['noop']
+  #  #  end
+  #  #end
+  #end
 end
