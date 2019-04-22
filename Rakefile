@@ -4,6 +4,9 @@ require 'rake/testtask'
 require 'rubocop/rake_task'
 require 'bundler/gem_tasks'
 
+require 'tasks/docker'
+require 'tasks/vagrant'
+
 GEMSPEC    = eval(File.read('ruby-static-tracing.gemspec'))
 BASE_DIR   = __dir__
 DOCKER_DIR = File.join(BASE_DIR, 'docker')
@@ -72,121 +75,6 @@ namespace :deps do
   end
 end
 
-namespace :vagrant do
-  desc 'Sets up a vagrant VM, needed for our development environment.'
-  task :up do
-    system('vagrant up')
-  end
-
-  desc 'Provides a shell within vagrant.'
-  task :ssh do
-    system('vagrant ssh')
-  end
-
-  desc 'Enters a shell within our development docker image, within vagrant.'
-  task :shell do
-    system("vagrant ssh -c 'cd /vagrant && bundle exec rake docker:shell'")
-  end
-
-  desc 'Runs tests within the development docker image, within vagrant'
-  task :tests do
-    system("vagrant ssh -c 'cd /vagrant && bundle exec rake docker:tests'")
-  end
-
-  desc 'Runs integration tests within the development docker image, within vagrant'
-  task :integration do
-    system("vagrant ssh -c 'cd /vagrant && bundle exec rake docker:integration'")
-  end
-
-  desc 'Cleans up the vagrant VM'
-  task :clean do
-    system('vagrant destroy')
-  end
-end
-
-# Quick helpers to get a dev env set up
-namespace :docker do
-  desc 'Builds the development docker image'
-  task :build do
-    system("docker build -f #{File.join(DOCKER_DIR, 'Dockerfile.ci')} #{DOCKER_DIR} -t quay.io/dalehamel/ruby-static-tracing")
-  end
-
-  desc 'Runs the development docker image'
-  task :run do
-    `docker run --privileged --name ruby-static-tracing-#{Time.now.getutc.to_i} -v $(pwd):/app -d quay.io/dalehamel/ruby-static-tracing:latest /bin/sh -c "sleep infinity"`.strip
-    system("docker exec -ti #{latest_running_container_id} /app/vagrant/debugfs.sh")
-  end
-
-  desc 'Provides a shell within the development docker image'
-  task :shell do
-    system("docker exec -ti #{latest_running_container_id} bash")
-  end
-
-  desc 'Build and install the gem'
-  task :install do
-    system("docker exec -ti #{latest_running_container_id} bash -c 'bundle install && bundle exec rake install'")
-  end
-  desc 'Runs integration tests within the development docker image'
-  task :integration do
-    system("docker exec -ti #{latest_running_container_id} bash -c 'bundle install && bundle exec rake clean && bundle exec rake build && bundle exec rake integration'")
-  end
-
-  desc 'Wrap running test in docker'
-  task :test do
-    exit system("docker exec -ti #{latest_running_container_id} \
-         bash -c 'mv vendor vendor.bak; bundle install && \
-                 bundle exec rake test; err=$?;
-                 rm -rf vendor; mv vendor.bak vendor;
-                 exit $err'")
-  end
-
-  desc 'Wrap running Rubocop in docker'
-  task :rubocop do
-    exit system("docker exec -ti #{latest_running_container_id} \
-         bash -c 'mv vendor ../vendor.bak; bundle install && \
-                 bundle exec rake clean;
-                 bundle exec rake rubocop; err=$?;
-                 rm -rf vendor; mv ../vendor.bak vendor;
-                 exit $err'")
-  end
-
-  desc 'Check C files for linting issues'
-  task :clangfmt do
-    exit system("docker exec -ti #{latest_running_container_id} \
-         bash -c 'mv vendor vendor.bak; bundle install && \
-                 bundle exec rake clangfmt; err=$?;
-                 rm -rf vendor; mv vendor.bak vendor;
-                 exit $err'")
-  end
-
-  desc 'Cleans up all development docker images for this project'
-  task :clean do
-    system('docker container ls --quiet --filter name=ruby-static-tracing* | xargs -I@ docker container kill @')
-  end
-
-  desc 'Pulls development image'
-  task :pull do
-    system('docker pull quay.io/dalehamel/ruby-static-tracing')
-  end
-
-  desc 'Push development image'
-  task :push do
-    system('docker push quay.io/dalehamel/ruby-static-tracing')
-  end
-
-  desc 'Fully set up a development docker image, and get a shell'
-  task up: %i[build run shell]
-
-  def latest_running_container_id
-    container_id = `docker container ls --latest --quiet --filter status=running --filter name=ruby-static-tracing*`.strip
-    if container_id.empty?
-      raise 'No containers running, please run rake docker:run and then retry this task'
-    else
-      container_id
-    end
-  end
-end
-
 namespace :new do
   desc 'Scaffold a new integration test'
   task :integration_test, [:test] do |_t, args|
@@ -226,12 +114,6 @@ namespace :new do
       STDOUT.sync = true
 
     SCRIPT
-  end
-end
-
-namespace :gem do
-  task :push do
-    system("gem push pkg/ruby-static-tracing-#{StaticTracing::VERSION}.gem")
   end
 end
 
@@ -279,6 +161,7 @@ end
 # ==========================================================
 require 'rdoc/task'
 RDoc::Task.new do |rdoc|
+  # FIXME add darwin docs
   rdoc.rdoc_files.include('lib/**/*.rb',
                           'ext/ruby-static-tracing/linux/*.c',
                           'ext/ruby-static-tracing/linux/*.h')

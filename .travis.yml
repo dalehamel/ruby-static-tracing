@@ -11,6 +11,8 @@ script:
 - bundle exec rake docker:rubocop
 - bundle exec rake docker:clangfmt
 - bundle exec rake docker:test
+- ls /
+- ls /app
 - sudo mv html /html && sudo mv /app/coverage /html/coverage && sudo mv README.md /html && sudo rm -rf * && sudo mv /html/* .
 env:
   matrix:
