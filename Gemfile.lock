@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ruby-static-tracing (0.0.13)
+    ruby-static-tracing (0.0.14)
       unmixer
 
 GEM
