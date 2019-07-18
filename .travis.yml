@@ -1,0 +1,30 @@
+services:
+- docker
+language: ruby
+before_install:
+- bundle install
+- bundle exec rake docker:pull
+- bundle exec rake docker:run
+- bundle exec rake docker:install
+script:
+- bundle exec rake rdoc
+- bundle exec rake docker:rubocop
+- bundle exec rake docker:clangfmt
+- bundle exec rake docker:test
+- rm .gitignore
+- sudo mv html /html && sudo mv coverage /html/coverage && sudo mv README.md /html && sudo rm -rf * && sudo mv /html/* .
+env:
+  matrix:
+  - secure: usNTQBSlH7EhIn4NMynem1TZ01DMLZ23nZF3XSbDIcJC7FxfoImn7pvHHVXD98NKlzrV6Iz4BiuuhfuzAKlQE4k5p74Vv8kPL4catSX07r4dmb6UL62LDv2Ra3tRDCLCvSGYm3+hhxoGjOupnaTFwVyIR1yF9dSD+PkxXgWSyhbCrXBXXe23l1ew8PXRW2KiYGqk4z/Zjq6np10xkwo/mmHmJw0u3R7Bwwv7Qm6pG+IKHFWv53fRESi+XXntGWmzXdkymLCd6umQnvt2lOxbQnJuwx7tZcGZcl4ldGnXD98LIyQQyY+8vZzBAO7shywVGx6sxfMFwmBwMyBTEKG6GnJ37EBfmIZ6ybovt7Xdzar2RcDE67NSkoxsOvi7g8fNoClF8QLUCXG7+AhfTYzVwyGEiB76W+JvzDsh8DfQJ171UHCrWDdHIquSgzrIqPhzf3z0Vn+nztpJkp7ZHrTZhBH6kqx48q+CqAt/fgX8DkdXOlPNndXK+Ab7/vFhO9IVFF7Po7vTim+C6l/+Y4VngNGLFaQpMNtoeymOA+4AclL0d+IvmLtP+dpS7BuMeWGcmgxnxulYYrFxcQOWuntQ85NxWNs4in+E7meWYylAz4lkOVKDSOr1qSa5g4IxH8XjLY8YVJ1QfH/v3w1yyeE24xNRLLhYtumIHXqtZdu+w70=
+deploy:
+- provider: rubygems
+  api_key:
+    secure: ivejPWs0XTIEtc1D9suDnusfoP3UnqGSNdfWd8socndHt9dF777CZzUmbCIZe1cypQWW+cNOt2v+hSbPat0ID80axOV1zkinfehy5uG4vGdCZ7MtcIwjmYOp9LJoTJuN/jM8skrudJGwGJUuRtXybpd4F5s6YjF7QwCikjDdTMxMqquVYT8R4Qw5ZqRedINIhnRHnAAJD6l/U8u+0BmqJMC1UyiIihoc3QdquQquu0gY6c6shQHR0J2wFB+KTviV6IGp/fsSY4nBwZaECAAI/xoHpQOhUY61ejRbu+bRa3xiQe+WCBlij3PxROSlGZUasyWDHYqmgrCN/4pHVaUQCLibYicD8OUw/L0Pn4gptgXMb8xklFPiHbLPayHLmAmtmhyNZpovg0kJ2jFYJgxlmvLfiyrnAwUQrWun6WGhWM9YZU6SfZXS7oBkK8RKFdgXpQyI5gN3mtpc8XykmuLLCd6J6oAJWg6B3rsCbM5jrmA2JKLNAm2R7tqlWU5c7+bKQ9gecS8lQO5ZAx6GRSo1qoFXQoilYQMur2X3SlGfaY2NjN056/cgRkqdoYMkMkwp96/ixXE+u2jHKUAx7i2NMERMOzWeu/Ir/LC/RjidODTY9Fw44y6rd/cqmvxXCbMSMkqHgxkzu+XrYArxCvDuM3AvBVurbPM7JPZgcFmxz9M=
+  gem: ruby-static-tracing
+  on:
+    tags: true
+    repo: dalehamel/ruby-static-tracing
+- provider: pages
+  skip_cleanup: true
+  github_token: "$GITHUB_TOKEN"
+  target_branch: gh-pages

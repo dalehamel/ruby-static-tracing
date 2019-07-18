@@ -1,0 +1,6 @@
+[submodule "ext/ruby-static-tracing/libusdt"]
+	path = ext/ruby-static-tracing/lib/libusdt
+	url = https://github.com/dalehamel/libusdt.git
+[submodule "ext/ruby-static-tracing/lib/libstapsdt"]
+	path = ext/ruby-static-tracing/lib/libstapsdt
+	url = https://github.com/sthima/libstapsdt.git
