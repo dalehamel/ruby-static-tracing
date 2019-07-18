@@ -76,6 +76,7 @@ module StaticTracing
     # Only supported on systems (linux) where backed by file
     def path; end
 
+    # Completely removes the provider
     def destroy; end
 
     private

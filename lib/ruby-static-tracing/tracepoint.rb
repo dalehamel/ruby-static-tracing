@@ -56,6 +56,7 @@ module StaticTracing
       _fire_tracepoint(values)
     end
 
+    # The provider this tracepoint is defined on
     def provider
       Provider.fetch(@provider_name)
     end
