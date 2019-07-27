@@ -33,7 +33,6 @@ Gem::Specification.new do |s|
             s.extensions = ['ext/ruby-static-tracing/lib/deps-extconf.rb',
                             'ext/ruby-static-tracing/extconf.rb',
                             'ext/ruby-static-tracing/lib/post-extconf.rb']
-  s.add_dependency('unmixer')
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'mocha'
   s.add_development_dependency 'pry-byebug'
