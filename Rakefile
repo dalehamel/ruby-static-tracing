@@ -31,6 +31,7 @@ if StaticTracing::Platform.supported_platform?
   require 'rake/extensiontask'
 
   # Task to compile external dep, but let them use their own makefiles
+  # This results in a stub library deps.so
   Rake::ExtensionTask.new do |ext|
     ext.name    = 'deps'
     ext.ext_dir = 'ext/ruby-static-tracing/lib'
@@ -44,6 +45,7 @@ if StaticTracing::Platform.supported_platform?
   end
 
   # Task for "post install" of libraries
+  # This results in a stub library postso
   Rake::ExtensionTask.new do |ext|
     ext.name    = 'post'
     ext.ext_dir = 'ext/ruby-static-tracing/lib'
@@ -62,6 +64,8 @@ end
 # ==========================================================
 # Development
 # ==========================================================
+
+# On linux you must have libelf.h to build libstapsdt
 
 namespace :deps do
   task :get do
@@ -132,6 +136,7 @@ end
 
 RuboCop::RakeTask.new
 
+# Clangfmt to avoid quibbling over C code source styles
 task :clangfmt do
   diffs = []
   %w[linux darwin include].each do |dir|
