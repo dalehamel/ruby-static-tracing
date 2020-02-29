@@ -37,7 +37,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'mocha'
   s.add_development_dependency 'pry-byebug'
-  s.add_development_dependency 'rake', '< 11.0'
+  s.add_development_dependency 'rake', '< 14.0'
   s.add_development_dependency 'rake-compiler', '~> 0.9'
   s.add_development_dependency 'rubocop'
   s.add_development_dependency 'simplecov'
